@@ -7,7 +7,7 @@ var WORLD:ECS_MANAGER
 var START:bool = false
 
 func _ready()->void:
-	WORLD = ECS_MANAGER.new(7, WIDTH, HEIGHT)
+	WORLD = ECS_MANAGER.new(12, WIDTH, HEIGHT)
 	for pop in WORLD.POPULATION:
 		var pos:Vector2 = Vector2(randi() % WIDTH, randi() % HEIGHT)
 		WORLD.spawn_entity(
@@ -21,9 +21,24 @@ func _ready()->void:
 	WORLD.extend_ent_component(hero, MovementComponent.new(h_pos, true, 1), true)
 	WORLD.extend_ent_component(hero, ControllerComponent.new(self, hero))
 	WORLD.extend_ent_component(hero, HealthComponent.new(), true)
-	hero.get_component(VisualComponent).is_static = false
+	var h_visual:VisualComponent = hero.get_component(VisualComponent)
+	h_visual.is_static = false
+	h_visual.visual.color = Color.BLUE
 	var health:HealthComponent = hero.get_component(HealthComponent)
 	health.energy.regen_factor = 0.5
+	
+	for n in 3:
+		var elected:Entity = WORLD.entities.pick_random()
+		while elected == hero: elected = WORLD.entities.pick_random()
+		
+		var old_pos:Vector2 = elected.get_component(MovementComponent).position
+		WORLD.extend_ent_component(elected, HealthComponent.new(), true)
+		WORLD.extend_ent_component(elected, MovementComponent.new(old_pos, true), true)
+		WORLD.extend_ent_component(elected, BehaviorComponent.new())
+		var visual:VisualComponent = elected.get_component(VisualComponent)
+		visual.is_static = false
+		visual.visual.color = Color.RED
+	
 	WORLD.start_system(MovementSystem.new())
 	var visual_system:VisualSystem = VisualSystem.new()
 	visual_system.instance(WORLD)
@@ -32,6 +47,8 @@ func _ready()->void:
 	WORLD.start_system(controller)
 	var health_sys:HealthSystem = HealthSystem.new()
 	WORLD.start_system(health_sys)
+	var behavior_sys:BehaviorSystem = BehaviorSystem.new()
+	WORLD.start_system(behavior_sys)
 	
 	START = true
 func _process(_delta:float)->void:

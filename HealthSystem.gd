@@ -4,6 +4,8 @@ extends System
 func process(world:ECS_MANAGER)->void:
 	for entity:Entity in world.get_all_with_component(HealthComponent):
 		var health:HealthComponent = entity.get_component(HealthComponent)
+		if not health:
+			continue
 		if not health.is_alive:
 			continue
 		check_vitals(entity, world)
