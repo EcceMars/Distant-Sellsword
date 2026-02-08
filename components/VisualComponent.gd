@@ -11,6 +11,7 @@ func _init(anchor_node:Node, visual_node:Node = null, _is_static:bool = is_stati
 		visual = visual_node
 	is_static = _is_static
 	anchor_node.add_child(visual)
+	anchor_node.visual_nodes.append(visual)
 ## Creates a generic debug rect to visualize entities
 func _default()->void:
 	visual = ColorRect.new()

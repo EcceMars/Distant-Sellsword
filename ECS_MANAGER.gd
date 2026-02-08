@@ -4,7 +4,7 @@ extends RefCounted
 
 var WIDTH:int = 0
 var HEIGHT:int = 0
-var POPULATION:int = 0
+var POPULATION:int = 1
 
 ## All entities
 var entities:Array[Entity] = []
@@ -12,6 +12,9 @@ var entities:Array[Entity] = []
 var components:Dictionary[String, Array] = {}
 ## All systems to process the world
 var systems:Array[System] = []
+
+var dying_world:bool = false
+var dead_ratio:float = 0
 
 ## Processes the next state of the world
 func process()->void:
@@ -55,6 +58,11 @@ func despawn_entity(entity:Entity)->void:
 		comp_array.erase(entity)
 	entity.components.clear()
 	entity.uid = -1
+	dead_ratio += 1
+	var living_tot:float = float(POPULATION)
+	living_tot *= 0.4 - 0.1
+	var ratio:float = float(dead_ratio) / living_tot
+	dying_world = ratio > 0.7
 func start_system(system:System)->void:
 	systems.append(system)
 func extend_ent_component(entity:Entity, component:BaseComponent, override:bool = false)->void:

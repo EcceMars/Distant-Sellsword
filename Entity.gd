@@ -1,3 +1,4 @@
+@icon("res://_icon.svg")
 class_name Entity
 extends RefCounted
 

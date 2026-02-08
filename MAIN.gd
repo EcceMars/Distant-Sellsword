@@ -1,13 +1,41 @@
 extends Node
 
-const WIDTH:int = 200
-const HEIGHT:int = 200
+const POPULATION:int = 300
+const FRAME_LEN:float = 0.03
+const WIDTH:int = 800
+const HEIGHT:int = 600
 
 var WORLD:ECS_MANAGER
 var START:bool = false
+var frame:float = FRAME_LEN
+var dead_count:int = 0
+
+var visual_nodes:Array[Node] = []
 
 func _ready()->void:
-	WORLD = ECS_MANAGER.new(12, WIDTH, HEIGHT)
+	generate()
+func _process(_delta:float)->void:
+	if not START: return
+	if frame >= FRAME_LEN:
+		for system:System in WORLD.systems:
+			system.process(WORLD)
+		frame = 0.0
+	frame += _delta
+	if WORLD.dying_world:
+		START = false
+		generate()
+func generate()->void:
+	if WORLD:
+		START = false
+		await get_tree().create_timer(3).timeout
+		print("\n\n\n---------World is anew!---------\n\n\n")
+		for node in visual_nodes:
+			if node:
+				node.queue_free()
+		visual_nodes.clear()
+		await get_tree().create_timer(3).timeout
+	WORLD = null
+	WORLD = ECS_MANAGER.new(POPULATION, WIDTH, HEIGHT)
 	for pop in WORLD.POPULATION:
 		var pos:Vector2 = Vector2(randi() % WIDTH, randi() % HEIGHT)
 		WORLD.spawn_entity(
@@ -27,7 +55,7 @@ func _ready()->void:
 	var health:HealthComponent = hero.get_component(HealthComponent)
 	health.energy.regen_factor = 0.5
 	
-	for n in 3:
+	for n in POPULATION * 0.4:
 		var elected:Entity = WORLD.entities.pick_random()
 		while elected == hero: elected = WORLD.entities.pick_random()
 		
@@ -51,7 +79,3 @@ func _ready()->void:
 	WORLD.start_system(behavior_sys)
 	
 	START = true
-func _process(_delta:float)->void:
-	if not START: return
-	for system:System in WORLD.systems:
-		system.process(WORLD)

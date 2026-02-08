@@ -47,14 +47,15 @@ func act(entity:Entity, behavior:BehaviorComponent, health:HealthComponent, move
 		State.IDLE:
 			idle(movement)
 func idle(movement:MovementComponent)->void:
-	print("Someone at " + str(movement.position) + " is idleing about...")
+	print("Someone at " + str(movement.position) + " is idlying about...")
 	if movement.movable.has_target:
 		movement.clear_path()
 ## Entity periodically wanders about
 func wander(entity:Entity, movement:MovementComponent, world:ECS_MANAGER)->void:
 	print("%d wanders..." % entity.uid)
 	if movement.movable or not movement.movable.has_target or counter % think_interval == 0:
-		var target:Vector2 = movement.position + movement.position * 100 * sign(randi_range(-1, 1))
+		var target:Vector2 = movement.position + movement.position * 10 * sign(randi_range(-1, 1))
+		target = target.clamp(Vector2.ZERO, Vector2(world.WIDTH, world.HEIGHT))
 		var msid:int = world.systems.find_custom(func(a): return a is MovementSystem)
 		var mov_sys:MovementSystem = world.systems[msid]
 		mov_sys.force_move(entity, target)
