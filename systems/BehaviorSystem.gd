@@ -56,8 +56,7 @@ func wander(entity:Entity, movement:MovementComponent, world:ECS_MANAGER)->void:
 	if movement.movable or not movement.movable.has_target or counter % think_interval == 0:
 		var target:Vector2 = movement.position + movement.position * 10 * sign(randi_range(-1, 1))
 		target = target.clamp(Vector2.ZERO, Vector2(world.WIDTH, world.HEIGHT))
-		var msid:int = world.systems.find_custom(func(a): return a is MovementSystem)
-		var mov_sys:MovementSystem = world.systems[msid]
+		var mov_sys:MovementSystem = world.systems[in_registry(MovementSystem)]
 		mov_sys.force_move(entity, target)
 func rest(movement:MovementComponent, health:HealthComponent)->void:
 	print("Someone at " + str(movement.position) + " is sound asleep...")
@@ -71,12 +70,10 @@ func flee(entity:Entity, movement:MovementComponent, world:ECS_MANAGER)->void:
 	away_position.x = clampf(away_position.x, 0, world.WIDTH)
 	away_position.y = clampf(away_position.y, 0, world.HEIGHT)
 	
-	var msid:int = world.systems.find_custom(func(a): return a is MovementSystem)
-	var mov_sys:MovementSystem = world.systems[msid]
+	var mov_sys:MovementSystem = world.systems[in_registry(MovementSystem)]
 	mov_sys.force_move(entity, away_position)
 func seek(entity:Entity, world:ECS_MANAGER)->void:
 	print("%d hungers..." % entity.uid)
 	var center:Vector2 = Vector2(world.WIDTH, world.HEIGHT) * 0.5
-	var msid:int = world.systems.find_custom(func(a): return a is MovementSystem)
-	var mov_sys:MovementSystem = world.systems[msid]
+	var mov_sys:MovementSystem = world.systems[in_registry(MovementSystem)]
 	mov_sys.force_move(entity, center)

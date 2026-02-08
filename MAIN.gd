@@ -17,7 +17,7 @@ func _ready()->void:
 func _process(_delta:float)->void:
 	if not START: return
 	if frame >= FRAME_LEN:
-		for system:System in WORLD.systems:
+		for system:System in WORLD.systems.values():
 			system.process(WORLD)
 		frame = 0.0
 	frame += _delta

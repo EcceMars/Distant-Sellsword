@@ -10,8 +10,7 @@ func handler(event:InputEvent)->void:
 func _init(WORLD:ECS_MANAGER, _controller:ControllerComponent)->void:
 	controller = _controller
 	controller.monitor.get_window().connect("window_input", handler)
-	var msid:int = WORLD.systems.find_custom(func(a): return a is MovementSystem)
-	controller.sys = WORLD.systems[msid]
+	controller.sys = WORLD.systems[in_registry(MovementSystem)]
 func process(_WORLD:ECS_MANAGER)->void:
 	if controller.a_button == KEY_CTRL and controller.m_button:
 		controller.sys.queue_move(controller.entity, controller.monitor.get_viewport().get_mouse_position())

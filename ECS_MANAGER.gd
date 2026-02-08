@@ -11,15 +11,16 @@ var entities:Array[Entity] = []
 ## All components and entity's uids for entities that have them: component_type -> Array[UID]
 var components:Dictionary[String, Array] = {}
 ## All systems to process the world
-var systems:Array[System] = []
+var systems:Dictionary[String, System] = {}
 
 var dying_world:bool = false
 var dead_ratio:float = 0
 
 ## Processes the next state of the world
 func process()->void:
-	for system:System in systems:
-		system.process(self)
+	for system:String in systems:
+		var sys:System = systems[system]
+		sys.process(self)
 func get_all_with_component(component:Script)->Array:
 	return components.get(component.get_global_name())
 func _init(_population:int = 3, width:int = 50, height:int = 50)->void:
@@ -64,7 +65,7 @@ func despawn_entity(entity:Entity)->void:
 	var ratio:float = float(dead_ratio) / living_tot
 	dying_world = ratio > 0.7
 func start_system(system:System)->void:
-	systems.append(system)
+	systems[system.in_registry()] = system
 func extend_ent_component(entity:Entity, component:BaseComponent, override:bool = false)->void:
 	entity.add_component(component, override)
 	var c_name:String = component.in_registry()
