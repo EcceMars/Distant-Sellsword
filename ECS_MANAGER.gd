@@ -6,7 +6,7 @@ var WIDTH:int = 0
 var HEIGHT:int = 0
 var POPULATION:int = 0
 
-## Empty entities
+## All entities
 var entities:Array[Entity] = []
 ## All components and entity's uids for entities that have them: component_type -> Array[UID]
 var components:Dictionary[String, Array] = {}
@@ -19,7 +19,6 @@ func process()->void:
 		system.process(self)
 func get_all_with_component(component:Script)->Array:
 	return components.get(component.get_global_name())
-
 func _init(_population:int = 3, width:int = 50, height:int = 50)->void:
 	POPULATION = _population
 	WIDTH = width
@@ -32,7 +31,6 @@ func _init(_population:int = 3, width:int = 50, height:int = 50)->void:
 	
 	for component in BaseComponent.REGISTRY:
 		components[BaseComponent.REGISTRY[component]] = []
-
 func spawn_entity(_components:Array[BaseComponent])->bool:
 	# Find empty entity
 	var entity:Entity = null
@@ -47,8 +45,22 @@ func spawn_entity(_components:Array[BaseComponent])->bool:
 			return false
 			
 	for component:BaseComponent in _components:
-		entity.add_component(component)
-		components[component.in_registry()].append(entity)
+		extend_ent_component(entity, component)
 	return true
+func despawn_entity(entity:Entity)->void:
+	for component_name in entity.components:
+		var comp_array = components[component_name]
+		var ent_comp = entity.components[component_name]
+		ent_comp.clear()
+		comp_array.erase(entity)
+	entity.components.clear()
+	entity.uid = -1
 func start_system(system:System)->void:
 	systems.append(system)
+func extend_ent_component(entity:Entity, component:BaseComponent, override:bool = false)->void:
+	entity.add_component(component, override)
+	var c_name:String = component.in_registry()
+	if not components.get(c_name):
+		components[c_name] = [entity]
+	else:
+		components[c_name].append(entity)

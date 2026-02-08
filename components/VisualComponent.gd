@@ -18,3 +18,11 @@ func _default()->void:
 	visual.color = Color.PURPLE
 	visual.size = Vector2.ONE * 8
 	visual.position = visual.size * -0.5
+func clear()->void:
+	var ori_color:Color = visual.color
+	visual.create_tween() \
+		.tween_property(visual, "color", Color.WHITE, 0.1)
+	visual.color = ori_color
+	visual.create_tween() \
+		.tween_property(visual, "self_modulate", Color.BLACK, 3.0) \
+		.finished.connect(func(): visual.queue_free())

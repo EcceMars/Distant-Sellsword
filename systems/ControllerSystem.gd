@@ -3,9 +3,9 @@ extends System
 
 var controller:ControllerComponent = null
 func handler(event:InputEvent)->void:
-	if event is InputEventKey and event.is_released():
+	if event is InputEventKey:
 		controller.a_button = event.keycode
-	if event is InputEventMouseButton and event.is_released():
+	if event is InputEventMouseButton:
 		controller.m_button = event.button_index
 func _init(WORLD:ECS_MANAGER, _controller:ControllerComponent)->void:
 	controller = _controller
@@ -13,12 +13,12 @@ func _init(WORLD:ECS_MANAGER, _controller:ControllerComponent)->void:
 	var msid:int = WORLD.systems.find_custom(func(a): return a is MovementSystem)
 	controller.sys = WORLD.systems[msid]
 func process(_WORLD:ECS_MANAGER)->void:
-	if controller.a_button:
-		#TODO: Some actions will be implemented here
-		print(controller.a_button)
-	if controller.m_button:
+	if controller.a_button == KEY_CTRL and controller.m_button:
+		controller.sys.queue_move(controller.entity, controller.monitor.get_viewport().get_mouse_position())
+	elif controller.m_button:
 		controller.sys.force_move(controller.entity, controller.monitor.get_viewport().get_mouse_position())
-	clear()
+	if not Input.is_anything_pressed():
+		clear()
 func clear()->void:
 	controller.a_button = 0
 	controller.m_button = 0
