@@ -54,7 +54,7 @@ func idle(movement:MovementComponent)->void:
 func wander(entity:Entity, movement:MovementComponent, world:ECS_MANAGER)->void:
 	print("%d wanders..." % entity.uid)
 	if movement.movable or not movement.movable.has_target or counter % think_interval == 0:
-		var target:Vector2 = movement.position + movement.position * 10 * sign(randi_range(-1, 1))
+		var target:Vector2 = movement.position + (movement.position * movement.movable.speed) * sign(randi_range(-1, 1))
 		target = target.clamp(Vector2.ZERO, Vector2(world.WIDTH, world.HEIGHT))
 		var mov_sys:MovementSystem = world.systems[in_registry(MovementSystem)]
 		mov_sys.force_move(entity, target)

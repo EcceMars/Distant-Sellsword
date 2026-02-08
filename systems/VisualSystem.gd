@@ -10,6 +10,7 @@ func instance(world:ECS_MANAGER)->void:
 func process(world:ECS_MANAGER)->void:
 	for entity:Entity in world.get_all_with_component(VisualComponent):
 		var visual:VisualComponent = entity.get_component(VisualComponent)
+		if not visual: continue
 		if visual.is_static: continue
 		var movement:MovementComponent = entity.get_component(MovementComponent)
 		if visual and movement:

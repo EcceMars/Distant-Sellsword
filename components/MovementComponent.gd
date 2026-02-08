@@ -4,7 +4,7 @@ extends BaseComponent
 var position:Vector2 = Vector2.ZERO
 var movable:Movable = null
 
-func _init(_position:Vector2, moves:bool = false, _speed:float = 1.0, _facing:Vector2 = Vector2.RIGHT)->void:
+func _init(_position:Vector2, moves:bool = false, _speed:float = 0.7, _facing:Vector2 = Vector2.RIGHT)->void:
 	position = _position
 	if moves:
 		movable = Movable.new(position, _speed, _facing)

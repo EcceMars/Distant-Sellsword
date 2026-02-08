@@ -1,5 +1,5 @@
-#@icon("res://assets/icons/_icon.svg")
-@icon("res://assets/icons/mult_icon.svg")
+# Entity.gd
+@icon("res://assets/icons/main_icon.png")
 ## This class holds an [param uid] and a dictionary <component_name> -> [class BaseComponent]
 class_name Entity
 extends RefCounted

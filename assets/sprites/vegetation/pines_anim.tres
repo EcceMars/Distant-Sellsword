@@ -1,0 +1,32 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://lys0une5owga"]
+
+[ext_resource type="Texture2D" uid="uid://b5wr8xe65d1q7" path="res://assets/sprites/vegetation/pines.png" id="1_a4h16"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlshf"]
+atlas = ExtResource("1_a4h16")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r2b7d"]
+atlas = ExtResource("1_a4h16")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w4usw"]
+atlas = ExtResource("1_a4h16")
+region = Rect2(32, 0, 16, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mlshf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2b7d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w4usw")
+}],
+"loop": false,
+"name": &"idle",
+"speed": 5.0
+}]
