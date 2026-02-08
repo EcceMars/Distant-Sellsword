@@ -1,5 +1,5 @@
-class_name BaseComponent
-extends Resource
+@icon("res://assets/icons/component_icon.png")
+class_name BaseComponent extends Resource
 
 static var REGISTRY:Dictionary[Script, String] = {
 	BehaviorComponent: "BehaviorComponent",

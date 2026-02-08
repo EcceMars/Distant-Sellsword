@@ -23,6 +23,8 @@ func process()->void:
 		sys.process(self)
 func get_all_with_component(component:Script)->Array:
 	return components.get(component.get_global_name())
+func get_system(system:Script)->System:
+	return systems.get(system.get_global_name())
 func _init(_population:int = 3, width:int = 50, height:int = 50)->void:
 	POPULATION = _population
 	WIDTH = width
@@ -61,7 +63,7 @@ func despawn_entity(entity:Entity)->void:
 	entity.uid = -1
 	dead_ratio += 1
 	var living_tot:float = float(POPULATION)
-	living_tot *= 0.4 - 0.1
+	living_tot *= 0.5
 	var ratio:float = float(dead_ratio) / living_tot
 	dying_world = ratio > 0.7
 func start_system(system:System)->void:

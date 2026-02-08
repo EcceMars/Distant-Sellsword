@@ -26,21 +26,13 @@ func _default()->void:
 	visual.size = Vector2.ONE * 8
 	visual.position = visual.size * -0.5
 func clear()->void:
-	if visual is ColorRect:
-		var ori_color:Color = visual.color
-		visual.create_tween() \
-			.tween_property(visual, "color", Color.WHITE, 0.1)
-		visual.color = ori_color
-		visual.create_tween() \
-			.tween_property(visual, "self_modulate", Color.BLACK, 3.0) \
-			.finished.connect(func(): visual.queue_free())
-	else:
-		var ori_color:Color = visual.self_modulate
-		visual.create_tween() \
-			.tween_property(visual, "self_modulate", Color.WHITE, 0.1)
-		visual.self_modulate = ori_color
-		visual.create_tween() \
-			.tween_property(visual, "self_modulate", Color.BLACK, 3.0) \
-			.finished.connect(func(): visual.queue_free())
+	var tween:Tween = visual.create_tween()
+	# Quick flash to dark (very brief)
+	tween.tween_property(visual, "modulate", Color(0.06, 0.06, 0.06), 0.08)
+	# Immediately chain: go back toward original for ~0.1–0.15 s total "hit" feel
+	tween.tween_property(visual, "modulate", Color.WHITE, 0.12)
+	# Then long death fade
+	tween.tween_property(visual, "modulate", Color.BLACK, 2.8)
+	tween.tween_callback(visual.queue_free)
 func _to_string()->String:
 	return str("VisualComponent:\n\tStatic ", is_static, " of type ", "ERROR" if not visual else visual.get_script())

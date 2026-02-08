@@ -1,3 +1,4 @@
+@icon("res://assets/icons/system_icon.png")
 class_name System
 extends RefCounted
 

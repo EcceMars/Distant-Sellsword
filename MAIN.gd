@@ -1,6 +1,6 @@
 extends Node
 
-const POPULATION:int = 300
+const POPULATION:int = 20
 const FRAME_LEN:float = 0.03
 const WIDTH:int = 800
 const HEIGHT:int = 600
@@ -56,15 +56,19 @@ func _process(_delta:float)->void:
 		generate()
 func generate()->void:
 	if WORLD:
-		START = false
 		await get_tree().create_timer(3).timeout
-		print("\n\n\n---------World is anew!---------\n\n\n")
+		var visible:Array = WORLD.get_all_with_component(VisualComponent)
+		for visual in visible:
+			var vcomp:VisualComponent = visual.get_component(VisualComponent)
+			if vcomp:
+				vcomp.clear()
 		await get_tree().create_timer(3).timeout
 		for node in visual_nodes:
 			if node:
 				node.queue_free()
 		visual_nodes.clear()
-		await get_tree().create_timer(3).timeout
+		await get_tree().create_timer(1).timeout
+		print("\n\n\n---------World is anew!---------\n\n\n")
 		canvas_node.queue_free()
 	WORLD = null
 	WORLD = ECS_MANAGER.new(POPULATION, WIDTH, HEIGHT)
