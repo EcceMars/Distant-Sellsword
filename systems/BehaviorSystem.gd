@@ -37,4 +37,3 @@ func think(entity:Entity)->void:
 	
 	if CHOICE and CHOICE != behavior_comp.active_behavior:
 		behavior_comp.active_behavior = CHOICE
-		print(behavior_comp.check_behavior(entity))

@@ -6,6 +6,7 @@ static var REGISTRY:Dictionary[Script, String] = {
 	BehaviorSystem: "BehaviorSystem",
 	ControllerSystem: "ControllerSystem",
 	HealthSystem: "HealthSystem",
+	InformationSystem: "InformationSystem",
 	MovementSystem: "MovementSystem",
 	VisualSystem: "VisualSystem"
 }

@@ -1,16 +1,17 @@
 extends Node
 
-const POPULATION:int = 20
+const POPULATION:int = 200
 const FRAME_LEN:float = 0.03
-const WIDTH:int = 800
-const HEIGHT:int = 600
+const WIDTH:int = 600
+const HEIGHT:int = 400
 
 var WORLD:ECS_MANAGER
-var START:bool = false
+var RUNNING:bool = false
 var frame:float = FRAME_LEN
 var dead_count:int = 0
 
 var canvas_node:Node2D = null
+var ui_node:Control = null
 var visual_nodes:Array[Node] = []
 
 var anim_texture_list:Dictionary[String, Variant] = {
@@ -26,6 +27,9 @@ var anim_texture_list:Dictionary[String, Variant] = {
 }
 var sprites_ref:Dictionary = {}
 func _ready()->void:
+	_load_sprites()
+	generate()
+func _load_sprites()->void:
 	for type in anim_texture_list:
 		if anim_texture_list[type] is Dictionary:
 			for w_type in anim_texture_list[type]:
@@ -33,26 +37,24 @@ func _ready()->void:
 				var res_path:String = anim_texture_list[type].get(w_type)
 				anim_sprite.sprite_frames = load(res_path)
 				anim_sprite.y_sort_enabled = true
-				anim_sprite.play()
+				anim_sprite.play("idle")
 				sprites_ref[w_type] = anim_sprite
 		else:
 			var anim_sprite:AnimatedSprite2D = AnimatedSprite2D.new()
 			var frames = load(anim_texture_list[type])
 			anim_sprite.sprite_frames = frames
 			anim_sprite.y_sort_enabled = true
-			anim_sprite.play()
+			anim_sprite.play("idle")
 			sprites_ref[type] = anim_sprite
-
-	generate()
 func _process(_delta:float)->void:
-	if not START: return
+	if not RUNNING: return
 	if frame >= FRAME_LEN:
-		for system:System in WORLD.systems.values():
+		for system:System in WORLD.systems.values().duplicate():
 			system.process(WORLD)
 		frame = 0.0
 	frame += _delta
 	if WORLD.dying_world:
-		START = false
+		RUNNING = false
 		generate()
 func generate()->void:
 	if WORLD:
@@ -62,17 +64,14 @@ func generate()->void:
 			var vcomp:VisualComponent = visual.get_component(VisualComponent)
 			if vcomp:
 				vcomp.clear()
-		await get_tree().create_timer(3).timeout
-		for node in visual_nodes:
-			if node:
-				node.queue_free()
-		visual_nodes.clear()
-		await get_tree().create_timer(1).timeout
+		await get_tree().create_timer(3.5).timeout
 		print("\n\n\n---------World is anew!---------\n\n\n")
 		canvas_node.queue_free()
+		ui_node.queue_free()
 	WORLD = null
 	WORLD = ECS_MANAGER.new(POPULATION, WIDTH, HEIGHT)
 	prepeare_canvas()
+	prepare_ui()
 	for pop in WORLD.POPULATION:
 		var pos:Vector2 = Vector2(randi() % WIDTH, randi() % HEIGHT)
 		WORLD.spawn_entity(
@@ -86,6 +85,7 @@ func generate()->void:
 	WORLD.extend_ent_component(hero, MovementComponent.new(h_pos, true, 1), true)
 	WORLD.extend_ent_component(hero, ControllerComponent.new(canvas_node, hero))
 	WORLD.extend_ent_component(hero, HealthComponent.new(), true)
+	WORLD.extend_ent_component(hero, InformationComponent.new("Hero", "Male", true))
 	WORLD.extend_ent_component(hero, VisualComponent.new(canvas_node, sprites_ref.PLAYER, false), true)
 	var health:HealthComponent = hero.get_component(HealthComponent)
 	health.energy.regen_factor = 0.5
@@ -102,29 +102,39 @@ func generate()->void:
 		WORLD.extend_ent_component(elected, VisualComponent.new(canvas_node, sprites_ref[rand_name], false), true)
 	var rita:Entity = WORLD.entities.pick_random()
 	while rita == hero or not rita.get_component(MovementComponent).movable: rita = WORLD.entities.pick_random()
+	var rita_pos:Vector2 = rita.get_component(MovementComponent).position
+	WORLD.extend_ent_component(rita, MovementComponent.new(rita_pos, true, 0.7), true)
 	WORLD.extend_ent_component(rita, VisualComponent.new(canvas_node, sprites_ref.RITA, false), true)
+	WORLD.extend_ent_component(rita, InformationComponent.new("Rita", "Female", true))
 	
+	# Start systems
 	WORLD.start_system(MovementSystem.new())
 	var visual_system:VisualSystem = VisualSystem.new()
 	visual_system.instance(WORLD)
 	WORLD.start_system(visual_system)
 	var controller:ControllerSystem = ControllerSystem.new(WORLD, hero.get_component(ControllerComponent))
 	WORLD.start_system(controller)
-	var health_sys:HealthSystem = HealthSystem.new()
-	WORLD.start_system(health_sys)
-	var behavior_sys:BehaviorSystem = BehaviorSystem.new()
-	WORLD.start_system(behavior_sys)
+	WORLD.start_system(HealthSystem.new())
+	WORLD.start_system(BehaviorSystem.new())
+	var info_system:InformationSystem = InformationSystem.new(ui_node)
+	info_system.instance(WORLD)
+	WORLD.start_system(info_system)
 	
-	START = true
+	RUNNING = true
 ## For now, the canvas node only serves to y_sort the sprites
 func prepeare_canvas()->void:
 	canvas_node = Node2D.new()
+	canvas_node.name = "SPRITE_CANVAS"
 	canvas_node.y_sort_enabled = true
-	var canvas_script:GDScript = GDScript.new()
-	canvas_script.source_code = "extends Node2D; var visual_nodes:Array[Node] = []; func set_ref(v_arr:Array[Node])->void: visual_nodes = v_arr"
-	canvas_script.reload()
+	var canvas_script:GDScript = load("res://CanvasScript.gd")
 	canvas_node.set_script(canvas_script)
 	canvas_node.set_ref(visual_nodes)
-	canvas_node.name = "SPRITE_CANVAS"
-	canvas_node.process_mode = Node.PROCESS_MODE_DISABLED
+	canvas_node.process_mode = Node.PROCESS_MODE_INHERIT
 	add_child(canvas_node)
+## Prepares the UI container for [InformationComponent]
+func prepare_ui()->void:
+	ui_node = Control.new()
+	ui_node.name = "UI_CONTAINER"
+	ui_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui_node.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(ui_node)
