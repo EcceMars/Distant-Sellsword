@@ -123,6 +123,7 @@ class WanderBehaviour extends Behavior:
 	
 	func _init()->void:
 		name = "WANDER"
+		last_time_at = randi() % interval
 	func priority(entity:Entity)->float:
 		var health:HealthComponent = entity.get_component(HealthComponent)
 		if not health or not health.is_alive or not health.is_conscious:
@@ -133,13 +134,19 @@ class WanderBehaviour extends Behavior:
 		var mov_sys:MovementSystem = world.get_system(MovementSystem)
 		if not mov_sys: return
 		var movement:MovementComponent = entity.get_component(MovementComponent)
-		if not movement or not movement.movable:
-			return
+		if not movement or not movement.movable: return
 		
-		var speed:float = movement.movable.speed * 50
-		var target:Vector2 = movement.position + Vector2(
-			randf_range(-speed, speed),
-			randf_range(-speed, speed))
+		if movement.movable.target.size() > 4: return
+		last_time_at += 1
+		if last_time_at < interval: return
+		
+		last_time_at = 0
+		interval = randi_range(30, 120)
+		
+		var distance:float = movement.movable.speed * randi_range(30, 60)
+		var rand_angle:float = randf() * TAU
+		var offset:Vector2 = Vector2(cos(rand_angle), sin(rand_angle)) * distance
+		var target:Vector2 = movement.position + offset
 		target = target.clamp(Vector2.ZERO, Vector2(world.WIDTH, world.HEIGHT))
 		mov_sys.queue_move(entity, target)
 ## Fallback behavior

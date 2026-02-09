@@ -1,7 +1,7 @@
 extends Node
 
 const POPULATION:int = 200
-const FRAME_LEN:float = 0.03
+const FRAME_LEN:float = 0.04
 const WIDTH:int = 600
 const HEIGHT:int = 400
 
