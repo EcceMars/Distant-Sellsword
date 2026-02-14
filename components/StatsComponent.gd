@@ -1,4 +1,4 @@
-class_name HealthComponent
+class_name StatsComponent
 extends BaseComponent
 
 var blood:Vital
@@ -19,6 +19,7 @@ func _init(
 	energy = Vital.new(energy_max, energy_max, e_reg)	# Faster regen when resting
 	hunger = Vital.new(hunger_max, hunger_max, h_reg)	# Decays over time
 	thirst = Vital.new(thirst_max, thirst_max, t_reg)	# Decays faster than hunger
+	flag = Flag.STATS
 ## Vital stats container
 class Vital:
 	var value:float

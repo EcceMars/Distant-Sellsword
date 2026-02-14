@@ -1,30 +1,32 @@
 class_name InformationSystem
-extends System
+extends BaseSystem
 
 var UI_NODE:Control = null
 var THEME:Theme = null
+
 func _init(ui_node:Control)->void:
 	UI_NODE = ui_node
 	THEME = PixelTheme.create()
-func instance(world:ECS_MANAGER)->void:
-	for entity:Entity in world.get_all_with_component(InformationComponent):
-		var info:InformationComponent = entity.get_component(InformationComponent)
+func instance(REG:REGISTRY)->void:
+	for uid:int in REG.get_entities_by(INFO_FLAG):
+		var info:InformationComponent = REG.COMPONENT_STORE[uid].get(INFO_FLAG)
 		if info and not info.panel_ref:
-			create_panel(entity, info)
-func process(world:ECS_MANAGER)->void:
-	for entity:Entity in world.get_all_with_component(InformationComponent):
-		var info:InformationComponent = entity.get_component(InformationComponent)
-		if not info: continue
+			create_panel(uid, REG)
+func process(REG:REGISTRY)->void:
+	for uid:int in REG.get_entities_by(INFO_FLAG):
+		var info:InformationComponent = REG.COMPONENT_STORE[uid].get(INFO_FLAG)
+		if not info.is_active: continue
 		
 		if info.is_active and not info.panel_ref:
-			create_panel(entity, info)
+			create_panel(uid, REG)
 		
 		if info.is_active and info.panel_ref:
-			update(entity, info)
+			update(uid, REG)
 ## Generates a UI container for displaying information
-func create_panel(entity:Entity, info:InformationComponent)->void:
+func create_panel(uid:int, REG:REGISTRY)->void:
+	var info:InformationComponent = REG.COMPONENT_STORE[uid].get(INFO_FLAG)
 	var panel:PanelContainer = PanelContainer.new()
-	panel.name = "InfoPanel_%d" % entity.uid
+	panel.name = "InfoPanel_%d" % uid
 	panel.theme = THEME
 	
 	var vbox:VBoxContainer = VBoxContainer.new()
@@ -39,13 +41,13 @@ func create_panel(entity:Entity, info:InformationComponent)->void:
 	info.containers["Title"] = title
 	vbox.add_child(title)
 	
-	var health:HealthComponent = entity.get_component(HealthComponent)
-	if health:
+	var stats:StatsComponent = REG.COMPONENT_STORE[uid].get(STATS_FLAG)
+	if stats:
 		for vital_data in [
-			["Blood", health.blood],
-			["Energy", health.energy],
-			["Hunger", health.hunger],
-			["Thirst", health.thirst]
+			["Blood", stats.blood],
+			["Energy", stats.energy],
+			["Hunger", stats.hunger],
+			["Thirst", stats.thirst]
 		]:
 			var label:Label = Label.new()
 			label.name = vital_data[0]
@@ -54,7 +56,7 @@ func create_panel(entity:Entity, info:InformationComponent)->void:
 			info.containers[vital_data[0]] = label
 			vbox.add_child(label)
 		
-	var behavior:BehaviorComponent = entity.get_component(BehaviorComponent)
+	var behavior:BehaviorComponent = REG.get_component(uid, BEHAV_FLAG)
 	if behavior:
 		var mind_state:Label = Label.new()
 		mind_state.name = "Behavior"
@@ -66,11 +68,13 @@ func create_panel(entity:Entity, info:InformationComponent)->void:
 	info.panel_ref = panel
 	UI_NODE.add_child(panel)
 #TASK: Maybe there would be no need to check for components here as the [InformationComponent.ID] members tend to accuse that the entity does have such components (checking is nonetheless safer)
-func update(entity:Entity, info:InformationComponent)->void:
+func update(uid:int, REG:REGISTRY)->void:
+	var info:InformationComponent = REG.COMPONENT_STORE[uid][INFO_FLAG]
+	if not info: return
 	if not info.is_active: return
 	if not is_instance_valid(info.panel_ref): return
 	
-	var movement:MovementComponent = entity.get_component(MovementComponent)
+	var movement:MovementComponent = REG.COMPONENT_STORE[uid].get(MOV_FLAG)
 	if movement:
 		# Panel above entity
 		var panel_size:Vector2 = info.panel_ref.size
@@ -81,16 +85,16 @@ func update(entity:Entity, info:InformationComponent)->void:
 			)
 		info.panel_ref.position = panel_pos.floor()
 	
-	var health:HealthComponent = entity.get_component(HealthComponent)
-	if health:
-		update_vital_label(info.containers.Blood, health.blood, "Blood")
-		update_vital_label(info.containers.Energy, health.energy, "Energy")
-		update_vital_label(info.containers.Hunger, health.hunger, "Hunger")
-		update_vital_label(info.containers.Thirst, health.thirst, "Thirst")
-	var behavior:BehaviorComponent = entity.get_component(BehaviorComponent)
+	var stat:StatsComponent = REG.COMPONENT_STORE[uid].get(STATS_FLAG)
+	if stat:
+		update_vital_label(info.containers.Blood, stat.blood, "Blood")
+		update_vital_label(info.containers.Energy, stat.energy, "Energy")
+		update_vital_label(info.containers.Hunger, stat.hunger, "Hunger")
+		update_vital_label(info.containers.Thirst, stat.thirst, "Thirst")
+	var behavior:BehaviorComponent = REG.get_component(uid, BEHAV_FLAG)
 	if behavior:
 		info.containers.STATE.text = behavior.active_behavior.name 
-func update_vital_label(label:Label, vital:HealthComponent.Vital, name:String)->void:
+func update_vital_label(label:Label, vital:StatsComponent.Vital, name:String)->void:
 	var ratio:float = vital.ratio()
 	label.text = "%s: %.0f" % [name, vital.value]
 	

@@ -1,19 +1,21 @@
-@icon("res://assets/icons/component_icon.png")
-class_name BaseComponent extends Resource
+class_name BaseComponent
+extends RefCounted
 
-static var REGISTRY:Dictionary[Script, String] = {
-	BehaviorComponent: "BehaviorComponent",
-	ControllerComponent: "ControllerComponent",
-	HealthComponent: "HealthComponent",
-	InformationComponent: "InformationComponent",
-	MovementComponent: "MovementComponent",
-	VisualComponent: "VisualComponent"
-}
+var flag:Flag = Flag.NONE
+## Bitmask table for components
+enum Flag {
+	NONE = 0,
+	
+	ACTOR		= 1 << 0,		## For handling player input
+	BEHAVIOR	= 1 << 1,		## AI behavior
+	INFORMATION	= 1 << 2,		## Holds data for UI, exposing the [StatsComponent]
+	ITEM		= 1 << 3,		## Used for item entities (e.g. goods, resources)
+	MOVEMENT	= 1 << 4,		## Holds position, and, if movable, relevant data
+	STATS		= 1 << 5,		## General data about the entity (e.g. name, hitpoints)
+	TERRAIN		= 1 << 6,		## Describes terrain data (e.g. grass, water)
+	VISUAL		= 1 << 7,		## Holds references to the visual node that [REGISTRY.CANVAS] carries
+	WEATHER		= 1 << 8		## Describes a quick phenomenom (e.g. wind, thunder etc.)
+	}
 
-## Returns the name of the [BaseComponent] as [String].
-## If no script is provided or if the script does not extends [BaseComponent], this func will either return null (error) or the [BaseComponent] class that called it 
-func in_registry(script:Script = null)->String:
-	if script:
-		return REGISTRY.get(script)
-	return REGISTRY.get(get_script())
-func clear()->void: pass
+func _to_string()->String:
+	return get_script().get_global_name()

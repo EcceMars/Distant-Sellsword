@@ -12,14 +12,13 @@ config_version=5
 
 config/name="Distant: Sellsword"
 config/description="ECS-RPG sim for Godot 4.6."
-run/main_scene="uid://bl1l5yacj580m"
+run/main_scene="uid://bvloqrj2lnpvt"
 config/features=PackedStringArray("4.6", "Mobile")
-config/icon="uid://d116fh8ui4fem"
-config/macos_native_icon="res://assets/icons/mult_icon.icns"
-config/windows_native_icon="res://assets/icons/mult_icon.ico"
 
 [debug]
 
+gdscript/warnings/integer_division=0
+gdscript/warnings/narrowing_conversion=0
 gdscript/warnings/int_as_enum_without_cast=0
 
 [physics]

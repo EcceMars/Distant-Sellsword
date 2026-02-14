@@ -12,6 +12,7 @@ var id:ID = null
 func _init(_name:String, _gender:String, _is_active:bool = false)->void:
 	is_active = _is_active
 	id = ID.new(_name, _gender)
+	flag = Flag.INFORMATION
 ## RPG-esque information
 class ID extends InformationComponent:
 	var name:String = "noname"
