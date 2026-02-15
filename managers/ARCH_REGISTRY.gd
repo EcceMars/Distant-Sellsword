@@ -41,7 +41,7 @@ func get_archetype(key:String)->EntityArchetype:
 ## [param position] - Spawn position
 ## [param overrides] - Runtime property overrides
 func spawn(key:String, REG:REGISTRY, position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
-	var archetype: EntityArchetype = get_archetype(key)
+	var archetype:EntityArchetype = get_archetype(key)
 	if not archetype:
 		return -1
 	return archetype.spawn(REG, position, overrides)

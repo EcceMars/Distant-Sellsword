@@ -162,7 +162,7 @@ func spawn_tree(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int
 func spawn(archetype_key: String, position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
 	return ARCHETYPES.spawn(archetype_key, self, position, overrides)
 ## Helper for random positioning
-func _random_position() -> Vector2:
+func _random_position()->Vector2:
 	return Vector2(
 		randi() % WIDTH * SCALE,
 		randi() % HEIGHT * SCALE

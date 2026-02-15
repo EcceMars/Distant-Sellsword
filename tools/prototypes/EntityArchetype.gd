@@ -70,7 +70,6 @@ func spawn(REG:REGISTRY, position:Vector2, overrides:Dictionary = {}) -> int:
 	_add_actor(REG, uid, overrides)
 	return uid
 func _add_movement(REG:REGISTRY, uid:int, position:Vector2, overrides:Dictionary)->void:
-	if not has_position: return
 	position = overrides.get("position", position)
 	is_solid = overrides.get("is_solid", is_solid)
 	moves = overrides.get("moves", moves)
