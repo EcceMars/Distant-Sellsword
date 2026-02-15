@@ -7,8 +7,8 @@ const HEIGHT:int = 24
 const SCALE:int = 16
 
 var REG:REGISTRY = null
-var act_frame:float = 0.01
-var frame_len:float = 0.01
+var frame_len:float = 0.03
+var act_frame:float = frame_len
 
 func _ready() -> void:
 	var CANVAS:Node2D = Node2D.new()
@@ -23,6 +23,7 @@ func _ready() -> void:
 	REG.start_system(BehaviorSystem.new())
 	REG.start_system(InformationSystem.new(UI))
 	REG.start_system(StatsSystem.new())
+	REG.start_system(AnimationSystem.new())
 	
 	REG.get_system(ActorSystem).MOV_SYS = REG.get_system(MovementSystem)
 	

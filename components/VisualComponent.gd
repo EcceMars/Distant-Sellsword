@@ -18,24 +18,27 @@ var animation_speed:float = 1.0
 func _init(
 	REG:REGISTRY,
 	_sprite_type:SpriteType = SpriteType.DEBUG,
-	sprite_resource = null  ## SpriteFrames for animated, Texture2D for static
-)->void:
+	anim_key:String = ""  ## SpriteFrames for animated, Texture2D for static
+	)->void:
 	sprite_type = _sprite_type
 	flag = Flag.VISUAL
-	_create_sprite(REG, sprite_resource)
-
-func _create_sprite(REG:REGISTRY, resource)->void:
+	_create_sprite(REG, anim_key)
+func _create_sprite(REG:REGISTRY, anim_key:String)->void:
 	match sprite_type:
 		SpriteType.STATIC:
 			sprite = Sprite2D.new()
-			if resource is Texture2D:
-				sprite.texture = resource
+			if anim_key:
+				var texture = DataStore.get_frames(anim_key)
+				if texture is Texture2D:
+					sprite.texture = texture
 			sprite.centered = true
 		
 		SpriteType.ANIMATED:
 			sprite = AnimatedSprite2D.new()
-			if resource is SpriteFrames:
-				sprite.sprite_frames = resource
+			if anim_key:
+				var frames = DataStore.get_frames(anim_key)
+				if frames is SpriteFrames:
+					sprite.sprite_frames = frames
 			sprite.centered = true
 		
 		SpriteType.DEBUG:

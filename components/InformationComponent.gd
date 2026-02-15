@@ -18,9 +18,7 @@ class ID extends InformationComponent:
 	var name:String = "noname"
 	var gender:String = "Female":
 		set(value):
-			if value != "Male":
-				return
-			gender = "Female"
+			gender = "Male" if value == "Male" else "Female"
 	var blood = null
 	var energy = null
 	var hunger = null

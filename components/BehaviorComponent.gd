@@ -95,7 +95,6 @@ class RestBehavior extends Behavior:
 		if movement.movable:
 			movement.movable.clear()
 		if stats:
-			stats.is_conscious = false
 			stats.energy.regen_factor += regen_boost
 ## TODO: As there is no resource/gather system/component for now, this serves only as a stub
 class SeekFoodBehavior extends Behavior:

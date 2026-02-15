@@ -46,7 +46,7 @@ func _update_animation(REG:REGISTRY)->void:
 		
 		anim_sprite.speed_scale = component.animation_speed
 ## Modifies the current animation at [param uid]
-func set_animaiton(uid:int, animation_name:String, REG:REGISTRY)->void:
+func set_animation(uid:int, animation_name:String, REG:REGISTRY)->void:
 	var vis_comp:VisualComponent = REG.COMPONENT_STORE[uid].get(VIS_FLAG)
 	if not vis_comp or not vis_comp.sprite_type == ANIM_FLAG: return
 	

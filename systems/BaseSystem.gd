@@ -3,6 +3,7 @@ class_name BaseSystem
 extends RefCounted
 
 const ACTOR_FLAG:BaseComponent.Flag = BaseComponent.Flag.ACTOR
+const ANIM_STATE_FLAG:BaseComponent.Flag = BaseComponent.Flag.ANIMATION_STATE
 const BEHAV_FLAG:BaseComponent.Flag = BaseComponent.Flag.BEHAVIOR
 const INFO_FLAG:BaseComponent.Flag = BaseComponent.Flag.INFORMATION
 const MOV_FLAG:BaseComponent.Flag = BaseComponent.Flag.MOVEMENT
@@ -11,6 +12,7 @@ const VIS_FLAG:BaseComponent.Flag = BaseComponent.Flag.VISUAL
 
 static var TYPES:Dictionary[Script, String] = {
 	ActorSystem: "ActorSystem",
+	AnimationSystem: "AnimationSystem",
 	BehaviorSystem: "BehaviorSystem",
 	StatsSystem: "StatsSystem",
 	InformationSystem: "InformationSystem",

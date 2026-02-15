@@ -142,22 +142,30 @@ class CONSTRUCTOR:
 	static func spawn_player(REG:REGISTRY)->int:
 		var uid:int = REG.create_entity()
 		var mov_component:MovementComponent = MovementComponent.new(rand_vec2(REG), true, true, 1, 5)
-		var vis_component:VisualComponent = VisualComponent.new(REG)
+		var vis_component:VisualComponent = VisualComponent.new(
+			REG,
+			VisualComponent.SpriteType.ANIMATED,
+			"m_knight")
 		var act_component:ActorComponent = ActorComponent.new(uid)
 		var stats_component:StatsComponent = StatsComponent.new()
 		var info_component:InformationComponent = InformationComponent.new("Iphrit", "Male", true)
+		var a_state_component:AnimationStateComponent = AnimationStateComponent.new()
 		
 		REG.add_component(uid, mov_component)
 		REG.add_component(uid, vis_component)
 		REG.add_component(uid, act_component)
 		REG.add_component(uid, stats_component)
 		REG.add_component(uid, info_component)
+		REG.add_component(uid, a_state_component)
 
 		return uid
 	static func spawn_tree(REG:REGISTRY)->int:
 		var uid:int = REG.create_entity()
 		var mov_component:MovementComponent = MovementComponent.new(rand_vec2(REG))
-		var vis_component:VisualComponent = VisualComponent.new(REG)
+		var vis_component:VisualComponent = VisualComponent.new(
+			REG,
+			VisualComponent.SpriteType.ANIMATED,
+			"pine_tree")
 			
 		REG.add_component(uid, mov_component)
 		REG.add_component(uid, vis_component)
@@ -166,16 +174,20 @@ class CONSTRUCTOR:
 	static func spawn_villager(REG:REGISTRY)->int:
 		var uid:int = REG.create_entity()
 		var mov_component:MovementComponent = MovementComponent.new(rand_vec2(REG), true, true, 1, 5)
-		var vis_component:VisualComponent = VisualComponent.new(REG)
+		var vis_component:VisualComponent = VisualComponent.new(
+			REG, VisualComponent.SpriteType.ANIMATED,
+			"f_human")
 		var behavior_component:BehaviorComponent = BehaviorComponent.new()
 		var stats_component:StatsComponent = StatsComponent.new()
 		var info_component:InformationComponent = InformationComponent.new(["Rita", "Elya", "Randa"].pick_random(), "Female", true)
+		var a_state_component:AnimationStateComponent = AnimationStateComponent.new()
 		
 		REG.add_component(uid, mov_component)
 		REG.add_component(uid, vis_component)
 		REG.add_component(uid, behavior_component)
 		REG.add_component(uid, stats_component)
 		REG.add_component(uid, info_component)
+		REG.add_component(uid, a_state_component)
 
 		return uid
 	
