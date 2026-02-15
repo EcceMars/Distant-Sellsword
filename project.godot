@@ -20,7 +20,7 @@ config/windows_native_icon="res://assets/img/icons/mult_icon.ico"
 
 [autoload]
 
-DataStore="*uid://bnxgjkbaa3xcv"
+REGISTRY="*uid://cgt3mj8kf4k7y"
 
 [debug]
 

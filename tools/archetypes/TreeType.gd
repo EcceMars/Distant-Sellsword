@@ -8,7 +8,7 @@ func _init() -> void:
 	
 	# Visual
 	sprite_type = VisualComponent.SpriteType.ANIMATED
-	anim_key = "pine_tree"
+	anim_key = "pines"
 	
 	# Movement - has position but cannot move (yet!)
 	moves = false
@@ -24,7 +24,7 @@ func _init() -> void:
 func spawn(REG: REGISTRY, position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
 	# Could randomize tree types here
 	if not overrides.has("anim_key"):
-		# Future: ["pine_tree", "oak_tree", "willow_tree"].pick_random()
-		overrides["anim_key"] = "pine_tree"
+		# Future: ["pine_anim", "oak_tree", "willow_tree"].pick_random()
+		overrides["anim_key"] = "pines"
 	
 	return super.spawn(REG, position, overrides)

@@ -42,7 +42,9 @@ func _update_animation(REG:REGISTRY)->void:
 		if not is_instance_valid(anim_sprite): continue
 		
 		if anim_sprite.animation != component.current_animation:
+			if not anim_sprite.sprite_frames.has_animation(component.current_animation): component.current_animation = component.previous_animation
 			anim_sprite.play(component.current_animation)
+			component.previous_animation = component.current_animation
 		
 		anim_sprite.speed_scale = component.animation_speed
 ## Modifies the current animation at [param uid]

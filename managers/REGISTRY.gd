@@ -1,6 +1,5 @@
 ## Accessor and store for all relevant data ([Object] as this should always be live).
 ## This object acts as the world for the ECS
-class_name REGISTRY
 extends Object
 
 var WIDTH:int = 32
@@ -15,8 +14,14 @@ var COMPONENT_STORE:Dictionary[int, Dictionary] = {}
 var ENTITY_COMPONENT_REGISTRY:Dictionary[int, Array] = {}
 ## Collection of systems
 var SYSTEMS:Dictionary[String, BaseSystem] = {}
-## Archetype constructor
-var ARCHETYPES:ArchetypeRegistry = null
+
+# REGISTRIES
+## Animation registry
+var AN_REG:AnimationRegistry = null
+## Archetype registry
+var AR_REG:ArchetypeRegistry = null
+## Behavior registry
+var BE_REG:BehaviorRegistry = null
 
 ## [Node2D] responsible for holding [VisualComponent] sprites
 var CANVAS:Node2D = null
@@ -34,7 +39,9 @@ func _init(max_entities:int = MAX_ENTITIES, canvas:Node2D = CANVAS, width:int = 
 	HEIGHT = height
 	SCALE = scale
 	
-	ARCHETYPES = ArchetypeRegistry.new()
+	AN_REG = AnimationRegistry.new()
+	AR_REG = ArchetypeRegistry.new()
+	BE_REG = BehaviorRegistry.new()
 	
 	for n:int in MAX_ENTITIES:
 		ENTITIES[n] = 0
@@ -146,21 +153,45 @@ func get_system(system:Script)->BaseSystem:
 func spawn_player(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
 	if not overrides.has("position"):
 		overrides["position"] = _random_position()
-	return ARCHETYPES.spawn("actor", self, position, overrides)
+	return AR_REG.spawn("actor", self, position, overrides)
 
 func spawn_villager(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
 	if not overrides.has("position"):
 		overrides["position"] = _random_position()
-	return ARCHETYPES.spawn("villager", self, position, overrides)
+	return AR_REG.spawn("villager", self, position, overrides)
 
 func spawn_tree(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
 	if not overrides.has("position"):
 		overrides["position"] = _random_position()
-	return ARCHETYPES.spawn("tree", self, position, overrides)
+	return AR_REG.spawn("tree", self, position, overrides)
+
+## Spawn food item
+func spawn_food(position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
+	if not overrides.has("position"):
+		overrides["position"] = position if position != Vector2.ZERO else _random_position()
+	return AR_REG.spawn("food", self, position, overrides)
+
+## Spawn water item
+func spawn_water(position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
+	if not overrides.has("position"):
+		overrides["position"] = position if position != Vector2.ZERO else _random_position()
+	return AR_REG.spawn("water", self, position, overrides)
+
+## Spawn wood resource
+func spawn_wood(position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
+	if not overrides.has("position"):
+		overrides["position"] = position if position != Vector2.ZERO else _random_position()
+	return AR_REG.spawn("wood", self, position, overrides)
+
+## Spawn stone resource
+func spawn_stone(position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
+	if not overrides.has("position"):
+		overrides["position"] = position if position != Vector2.ZERO else _random_position()
+	return AR_REG.spawn("stone", self, position, overrides)
 
 ## Generic spawn by archetype key
 func spawn(archetype_key: String, position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
-	return ARCHETYPES.spawn(archetype_key, self, position, overrides)
+	return AR_REG.spawn(archetype_key, self, position, overrides)
 ## Helper for random positioning
 func _random_position()->Vector2:
 	return Vector2(

@@ -7,7 +7,13 @@ extends RefCounted
 var ARCHETYPES:Dictionary[String, Script] = {
 	"actor": ActorType,
 	"tree": TreeType,
-	"villager": VillagerType
+	"villager": VillagerType,
+	
+	# Items
+	"food": FoodItemType,
+	"water": WaterItemType,
+	"wood": WoodItemType,
+	"stone": StoneItemType,
 	}
 
 ## Registered archetypes by key name

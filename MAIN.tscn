@@ -6,6 +6,7 @@
 script = ExtResource("1_0llpg")
 
 [node name="UI" type="Control" parent="." unique_id=663036910]
+z_index = 1
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

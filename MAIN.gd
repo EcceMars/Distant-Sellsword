@@ -42,9 +42,7 @@ func _spawn_initial_entities() -> void:
 	for i in range(2):
 		REG.spawn_villager()
 	
-	# Spawn player
-	var player_uid:int = REG.spawn_player()
-	print(REG.get_entity_components(player_uid))
+	REG.spawn_player(Vector2.ZERO, {"anim_key": "m_knight"})
 
 func _process(delta:float)->void:
 	if act_frame >= frame_len:
