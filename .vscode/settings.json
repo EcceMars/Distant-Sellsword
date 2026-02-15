@@ -1,0 +1,14 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/*.uid": true,
+        "**/*.gd.uid": true,
+        "**/*.import": true,
+        "**/*.tmp": true,
+    },
+    "godotTools.editorPath.godot4": "c:\\Users\\eccem\\Downloads\\Godot_v4.6.1-rc1_win64.exe\\Godot_v4.6.1rc1.exe"
+}

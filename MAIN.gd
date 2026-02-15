@@ -17,6 +17,7 @@ func _ready() -> void:
 	add_child(CANVAS)
 	REG = REGISTRY.new(MAX_ENTITIES, CANVAS, WIDTH, HEIGHT, SCALE)
 	
+	# Initialize systems
 	REG.start_system(MovementSystem.new())
 	REG.start_system(VisualSystem.new())
 	REG.start_system(ActorSystem.new(REG))
@@ -27,11 +28,23 @@ func _ready() -> void:
 	
 	REG.get_system(ActorSystem).MOV_SYS = REG.get_system(MovementSystem)
 	
-	REG.CONSTRUCTOR.spawn_tree(REG)
-	REG.CONSTRUCTOR.spawn_villager(REG)
-	REG.CONSTRUCTOR.spawn_player(REG)
+	_spawn_initial_entities()
 	
 	REG.get_system(ActorSystem).scan_for_actors(REG)
+
+## Spawn starting entities using the new archetype system
+func _spawn_initial_entities() -> void:
+	# Spawn some trees
+	for i in range(3):
+		REG.spawn_tree()
+	
+	# Spawn villagers
+	for i in range(2):
+		REG.spawn_villager()
+	
+	# Spawn player
+	REG.spawn_player()
+
 func _process(delta:float)->void:
 	if act_frame >= frame_len:
 		act_frame = 0.0

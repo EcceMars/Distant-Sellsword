@@ -15,10 +15,12 @@ var COMPONENT_STORE:Dictionary[int, Dictionary] = {}
 var ENTITY_COMPONENT_REGISTRY:Dictionary[int, Array] = {}
 ## Collection of systems
 var SYSTEMS:Dictionary[String, BaseSystem] = {}
+## Archetype constructor
+var ARCHETYPES:ArchetypeRegistry = null
 
 ## [Node2D] responsible for holding [VisualComponent] sprites
 var CANVAS:Node2D = null
-## List of [CANVAS] node
+## List of [CANVAS] child nodes
 var visual_nodes:Array[Node] = []
 
 var MAX_ENTITIES:int = 64
@@ -31,6 +33,8 @@ func _init(max_entities:int = MAX_ENTITIES, canvas:Node2D = CANVAS, width:int = 
 	WIDTH = width
 	HEIGHT = height
 	SCALE = scale
+	
+	ARCHETYPES = ArchetypeRegistry.new()
 	
 	for n:int in MAX_ENTITIES:
 		ENTITIES[n] = 0
@@ -138,61 +142,28 @@ func start_system(system:BaseSystem)->void:
 func get_system(system:Script)->BaseSystem:
 	return SYSTEMS.get(system.get_global_name())
 ## Reference for quick build of entities
-class CONSTRUCTOR:
-	static func spawn_player(REG:REGISTRY)->int:
-		var uid:int = REG.create_entity()
-		var mov_component:MovementComponent = MovementComponent.new(rand_vec2(REG), true, true, 1, 5)
-		var vis_component:VisualComponent = VisualComponent.new(
-			REG,
-			VisualComponent.SpriteType.ANIMATED,
-			"m_knight")
-		var act_component:ActorComponent = ActorComponent.new(uid)
-		var stats_component:StatsComponent = StatsComponent.new()
-		var info_component:InformationComponent = InformationComponent.new("Iphrit", "Male", true)
-		var a_state_component:AnimationStateComponent = AnimationStateComponent.new()
-		
-		REG.add_component(uid, mov_component)
-		REG.add_component(uid, vis_component)
-		REG.add_component(uid, act_component)
-		REG.add_component(uid, stats_component)
-		REG.add_component(uid, info_component)
-		REG.add_component(uid, a_state_component)
+## Convenience spawn methods using archetypes
+func spawn_player(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
+	if not overrides.has("position"):
+		overrides["position"] = _random_position()
+	return ARCHETYPES.spawn("actor", self, position, overrides)
 
-		return uid
-	static func spawn_tree(REG:REGISTRY)->int:
-		var uid:int = REG.create_entity()
-		var mov_component:MovementComponent = MovementComponent.new(rand_vec2(REG))
-		var vis_component:VisualComponent = VisualComponent.new(
-			REG,
-			VisualComponent.SpriteType.ANIMATED,
-			"pine_tree")
-			
-		REG.add_component(uid, mov_component)
-		REG.add_component(uid, vis_component)
-		
-		return uid
-	static func spawn_villager(REG:REGISTRY)->int:
-		var uid:int = REG.create_entity()
-		var mov_component:MovementComponent = MovementComponent.new(rand_vec2(REG), true, true, 1, 5)
-		var vis_component:VisualComponent = VisualComponent.new(
-			REG, VisualComponent.SpriteType.ANIMATED,
-			"f_human")
-		var behavior_component:BehaviorComponent = BehaviorComponent.new()
-		var stats_component:StatsComponent = StatsComponent.new()
-		var info_component:InformationComponent = InformationComponent.new(["Rita", "Elya", "Randa"].pick_random(), "Female", true)
-		var a_state_component:AnimationStateComponent = AnimationStateComponent.new()
-		
-		REG.add_component(uid, mov_component)
-		REG.add_component(uid, vis_component)
-		REG.add_component(uid, behavior_component)
-		REG.add_component(uid, stats_component)
-		REG.add_component(uid, info_component)
-		REG.add_component(uid, a_state_component)
+func spawn_villager(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
+	if not overrides.has("position"):
+		overrides["position"] = _random_position()
+	return ARCHETYPES.spawn("villager", self, position, overrides)
 
-		return uid
-	
-	static func rand_vec2(REG:REGISTRY)->Vector2:
-		return Vector2(
-			randi() % REG.WIDTH * REG.SCALE,
-			randi() % REG.HEIGHT * REG.SCALE
-		)
+func spawn_tree(position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
+	if not overrides.has("position"):
+		overrides["position"] = _random_position()
+	return ARCHETYPES.spawn("tree", self, position, overrides)
+
+## Generic spawn by archetype key
+func spawn(archetype_key: String, position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
+	return ARCHETYPES.spawn(archetype_key, self, position, overrides)
+## Helper for random positioning
+func _random_position() -> Vector2:
+	return Vector2(
+		randi() % WIDTH * SCALE,
+		randi() % HEIGHT * SCALE
+	)

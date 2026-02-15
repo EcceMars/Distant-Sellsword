@@ -14,6 +14,9 @@ config/name="Distant: Sellsword"
 config/description="ECS-RPG sim for Godot 4.6."
 run/main_scene="uid://bvloqrj2lnpvt"
 config/features=PackedStringArray("4.6", "Mobile")
+config/icon="uid://wq4ic5mghebp"
+config/macos_native_icon="res://assets/img/icons/mult_icon.icns"
+config/windows_native_icon="res://assets/img/icons/mult_icon.ico"
 
 [autoload]
 

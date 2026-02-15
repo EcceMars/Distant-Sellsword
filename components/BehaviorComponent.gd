@@ -6,7 +6,7 @@ var active_behavior:Behavior = null
 ## List of all behaviors
 var behaviors:Array[Behavior] = []
 
-func _init()->void:
+func _init(_behavior_keys:Array = [])->void:
 	behaviors = [
 		FleeBehavior.new(),
 		IdleBehavior.new(),
