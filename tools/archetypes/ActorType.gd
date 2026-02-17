@@ -12,7 +12,7 @@ func _init() -> void:
 	moves = true
 	is_solid = true
 	movement_type = MovementComponent.Movable.Flag.GROUND
-	movement_speed = 5.0
+	movement_speed = 5
 	
 	# Stats
 	has_stats = true

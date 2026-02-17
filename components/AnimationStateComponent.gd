@@ -1,11 +1,13 @@
+## Holds animation state data.
 class_name AnimationStateComponent
 extends BaseComponent
 
+## Currently implemented animation states
 enum State {	IDLE, WALK	}
 
 var current:State = State.IDLE
 var previous:State = State.IDLE
-var latency:float = 0.0
+var latency:float = 0.0		## EXPERIMENTAL: still unsure
 
 func _init()->void:
 	flag = Flag.ANIMATION_STATE

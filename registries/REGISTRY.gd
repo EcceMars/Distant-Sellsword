@@ -3,6 +3,7 @@
 extends Node
 
 enum C_FLAGS {
+	ACTOR = BaseComponent.Flag.ACTOR,
 	ANIM = BaseComponent.Flag.ANIMATION_STATE,
 	BEHAV = BaseComponent.Flag.BEHAVIOR,
 	MOVE = BaseComponent.Flag.MOVEMENT,
@@ -14,6 +15,9 @@ var WIDTH:int = 32
 var HEIGHT:int = 24
 var SCALE:int = 16		## Grid/sprite scale
 var MAX_ENTITIES:int = 64
+
+## Delta accumulator
+var DELTA:float = 0.0
 
 ## Next open unique id
 var _open_uid:int = 0
@@ -59,8 +63,7 @@ func start(MAIN:Node, max_entities:int = MAX_ENTITIES, canvas:Node2D = CanvasScr
 	BE_REG = BehaviorRegistry.new()
 	IT_REG = ItemRegistry.new()
 	SP_REG = SpriteRegistry.new()
-	
-	print(SP_REG)
+
 	
 	DATA = load("res://registries/GENERAL_DATA.tres")
 
@@ -140,6 +143,8 @@ func has_components(uid:int, required_mask:int)->bool:
 	if not _is_valid_entity(uid):
 		return false
 	return (ENTITIES[uid] & required_mask) == required_mask
+func get_ent_position(uid:int)->Vector2:
+	return REG.get_component(uid, C_FLAGS.MOVE).get("position")
 ## Registers an unused unique id and returns it.
 func _request_uid()->int:
 	if _open_uid >= MAX_ENTITIES: return -1

@@ -1,6 +1,8 @@
 class_name CanvasScript
 extends Node2D
 
+var DEBUG:bool = false
+
 var GRID_WIDTH:int = REG.WIDTH * REG.SCALE +1
 var GRID_HEIGHT:int = REG.HEIGHT * REG.SCALE +1
 var TILE_RECT:Rect2 = Rect2(0, 0, REG.SCALE, REG.SCALE)
@@ -33,6 +35,7 @@ func cleanup(visual:Node)->void:
 	queue_deletion.erase(visual)
 	visual.queue_free()
 func _draw()->void:
+	if not DEBUG: return
 	_draw_grid()
 	#for mov_component:MovementComponent in REG.get_all_components_of(REG.C_FLAGS.MOVE):
 		#draw_string(ThemeDB.fallback_font, mov_component.position, str(mov_component.position))

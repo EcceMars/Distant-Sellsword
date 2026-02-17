@@ -1,4 +1,4 @@
-## Data component for player input.
+## Simple data input to hold event and the entity it moves.
 class_name ActorComponent
 extends BaseComponent
 

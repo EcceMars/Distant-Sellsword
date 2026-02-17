@@ -5,33 +5,42 @@ const AC_STATE = AnimationStateComponent.State
 const STATE:Dictionary = {
 	AC_STATE.IDLE: "idle",
 	AC_STATE.WALK: "walk",
-	#AC_STATE.ACT: "act",
-	#AC_STATE.REST: "rest",
-	#AC_STATE.ATTACK: "attack",
-	#AC_STATE.DEATH: "death"
 }
 
 func process()->void:
 	for uid:int in REG.get_entities_by(ANIM_STATE_FLAG | VIS_FLAG):
 		var anim_state:AnimationStateComponent = REG.get_component(uid, ANIM_STATE_FLAG)
 		var vis_comp:VisualComponent = REG.get_component(uid, VIS_FLAG)
-		if not vis_comp: return
 		
-		if vis_comp.sprite_type != VisualComponent.SpriteType.ANIMATED:
+		if not vis_comp or vis_comp.sprite_type != VisualComponent.SpriteType.ANIMATED:
 			continue
 		
-		var mov_comp:MovementComponent = REG.get_component(uid, MOV_FLAG)
-		if mov_comp and mov_comp.movable:
-			anim_state.change(AC_STATE.WALK)
-		else:
-			anim_state.change(AC_STATE.IDLE)
+		# Determine desired animation state
+		var target_state:AC_STATE = _determine_animation_state(uid)
 		
-		var behavior:BehaviorComponent = REG.get_component(uid, BEHAV_FLAG)
-		if behavior:
-			match behavior.active_behavior.name:
-				#"REST": anim_state.change(AC_STATE.REST)
-				"MOVE", "SEEK_FOOD": anim_state.change(AC_STATE.WALK)
+		# Apply the state change (will only change if different)
+		anim_state.change(target_state)
 		
+		# Update visual component
 		var anim_name:String = STATE.get(anim_state.current, "idle")
 		vis_comp.current_animation = anim_name
-		anim_state.latency += 1
+
+func _determine_animation_state(uid:int) -> AC_STATE:
+	# Priority 1: Check behavior overrides
+	var behavior:BehaviorComponent = REG.get_component(uid, BEHAV_FLAG)
+	if behavior:
+		match behavior.active_behavior.name:
+			"REST":
+				return AC_STATE.IDLE  # Or create REST state
+			"MOVE", "SEEK_FOOD":
+				return AC_STATE.WALK
+	
+	# Priority 2: Check movement state
+	var mov_comp:MovementComponent = REG.get_component(uid, MOV_FLAG)
+	if mov_comp and mov_comp.movable:
+		# Use has_target to determine if we should be walking
+		if mov_comp.movable.has_target:
+			return AC_STATE.WALK
+	
+	# Default to idle
+	return AC_STATE.IDLE

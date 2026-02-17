@@ -77,8 +77,6 @@ func _offset(size:Vector2)->Vector2:
 	if size.x > REG.SCALE: offset.x = - factor
 	if size.y > REG.SCALE: offset.y = - size.y + factor
 	
-	print(size, " -> ", offset, ": y_offset ", (size.y / (size.y / REG.SCALE)))
-	
 	return offset
 func clear()->void:
 	queue_destroy = true

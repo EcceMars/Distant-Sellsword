@@ -77,13 +77,12 @@ func create(overrides:Dictionary = {})->int:
 	_add_animation_state(uid, overrides)
 	#_add_information(uid, overrides)
 	_add_actor(uid, overrides)
-	
-	print(uid, ": ", REG.get_entity_components(uid))
 
 	return uid
 func _add_actor(uid:int, overrides:Dictionary)->void:
 	if not is_actor and not overrides.get("is_actor", false):
 		return
+	
 	
 	var component:ActorComponent = ActorComponent.new(uid)
 	REG.add_component(uid, component)
