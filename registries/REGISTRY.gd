@@ -144,6 +144,8 @@ func has_components(uid:int, required_mask:int)->bool:
 		return false
 	return (ENTITIES[uid] & required_mask) == required_mask
 func get_ent_position(uid:int)->Vector2:
+	var mov_component:MovementComponent = REG.get_component(uid, C_FLAGS.MOVE)
+	if not mov_component: return -Vector2.ONE
 	return REG.get_component(uid, C_FLAGS.MOVE).get("position")
 ## Registers an unused unique id and returns it.
 func _request_uid()->int:
@@ -154,3 +156,11 @@ func _request_uid()->int:
 ## A check if entity ID is valid (0 : _open_uid).
 func _is_valid_entity(uid:int)->bool:
 	return uid in range(0, _open_uid) and ENTITIES.has(uid)
+func _display_entity_info(uid:int)->bool:
+	if not _is_valid_entity(uid): return false
+	var components:Dictionary = get_entity_components(uid)
+	var message:String = "%d:\n" % uid
+	for type:BaseComponent.Flag in components:
+		message += "\t" + str(type) + ": " + str(components[type]) + "\n"
+	print(message)
+	return true

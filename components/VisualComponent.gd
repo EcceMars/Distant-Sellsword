@@ -35,6 +35,10 @@ func _create_sprite(sprite_key:String, position:Vector2i, debug_color:Color) -> 
 					sprite.texture = texture
 					var texture_size:Vector2 = texture.get_size()
 					sprite.offset = _offset(texture_size)
+			else:
+				push_warning("[VisualComponent] Texture '%s' not found, using debug visual" % sprite_key)
+				_default(position, debug_color)
+				return
 			sprite.position = position
 			sprite.centered = false
 		

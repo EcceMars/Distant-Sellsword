@@ -34,7 +34,6 @@ func create(overrides:Dictionary = {})->int:
 	if mov:
 		item.world_position = mov.position
 		item.owner_uid = -1  # Start on ground
-	
 	REG.add_component(uid, item)
 	REG.IT_REG.register_item(uid, item)
 	

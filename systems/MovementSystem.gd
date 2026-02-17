@@ -13,6 +13,7 @@ enum MoveState {
 	ARRIVED     # Just reached destination this frame
 }
 
+var grid_positions:Dictionary[Vector2i, int] = {}
 var blocked_positions:Dictionary[Vector2i, int] = {}
 
 func process()->void:
@@ -22,7 +23,7 @@ func process()->void:
 	frame = 0.0
 	
 	var mov_ent_arr:Array[int] = REG.get_entities_by(MOV_FLAG)
-	_update_obstacles(mov_ent_arr)
+	_update_grid_obj(mov_ent_arr)
 	
 	for uid:int in mov_ent_arr:
 		var mov_component:MovementComponent = REG.get_component(uid, MOV_FLAG)
@@ -96,7 +97,7 @@ func _process_movement(mov_component:MovementComponent)->void:
 	if current_pos.distance_to(target_pos) < 0.01:
 		movable.path.pop_front()
 		movable.last_point = _world_to_grid(mov_component.position)
-
+	mov_component.grid_posi = _world_to_grid(mov_component.position)
 func _clear_movement(mov_component:MovementComponent)->void:
 	var movable:MovementComponent.Movable = mov_component.movable
 	if movable:
@@ -145,14 +146,15 @@ func queue_move(uid:int, target:Vector2, local:bool = false)->bool:
 	mov_component.movable.has_target = true
 	return true
 
-func _update_obstacles(mov_ent_arr:Array[int])->void:
+func _update_grid_obj(mov_ent_arr:Array[int])->void:
+	grid_positions.clear()
 	blocked_positions.clear()
 	for uid:int in mov_ent_arr:
 		var mov_component:MovementComponent = REG.get_component(uid, MOV_FLAG)
-		if mov_component and mov_component.solid:
-			var grid_posi:Vector2i = _world_to_grid(mov_component.position)
-			blocked_positions[grid_posi] = uid
-
+		if mov_component:
+			var grid_posi:Vector2i = mov_component.grid_posi
+			grid_positions[grid_posi] = uid
+			if mov_component.solid: blocked_positions[grid_posi] = uid
 func _check_movable(mov_component:MovementComponent)->MovementComponent:
 	if mov_component and mov_component.movable:
 		return mov_component

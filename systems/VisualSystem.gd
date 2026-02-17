@@ -24,7 +24,6 @@ func _update_positions()->void:
 	for uid:int in uids:
 		var vis_comp:VisualComponent = REG.get_component(uid, VIS_FLAG)
 		if not vis_comp: continue
-		if vis_comp.sprite_type == VisualComponent.SpriteType.STATIC: continue
 		
 		var mov_comp:MovementComponent = REG.get_component(uid, MOV_FLAG)
 		if not mov_comp: continue

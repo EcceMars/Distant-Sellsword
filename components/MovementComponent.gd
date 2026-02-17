@@ -2,6 +2,7 @@ class_name MovementComponent
 extends BaseComponent
 
 var position:Vector2 = -Vector2.ONE
+var grid_posi:Vector2i = position
 ## Solid entities block affect pathing (usually of other grounded entities)
 var solid:bool = true
 ## Extends entity for mobility
@@ -13,6 +14,7 @@ func _init(_position:Vector2, _solid:bool = true, moves:bool = false,
 		speed:float = 1.0
 	)->void:
 	position = _position
+	grid_posi = Vector2i(position).snappedi(REG.SCALE)
 	solid = _solid
 	if moves:
 		movable = MovementComponent.Movable.new()
