@@ -82,7 +82,7 @@ func _scan_category(dir_path:String)->void:
 	var file_name:String = dir.get_next()
 	
 	while file_name != "":
-		if not dir.current_is_dir() and file_name.ends_with(".tres"):
+		if not dir.current_is_dir(): #and file_name.ends_with(".tres"):
 			var key:String = file_name.get_basename()
 			var full_path:String = dir_path.path_join(file_name)
 			

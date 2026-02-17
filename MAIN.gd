@@ -14,6 +14,7 @@ func _ready()->void:
 	REG.start_system(ActorSystem.new(CAM))
 	
 	REG.AR_REG.register_entity("villager")
+	REG.AR_REG.register_entity("berries")
 	REG.AR_REG.register_entity("duck")
 	REG.AR_REG.register_entity("actor")
 	REG.AR_REG.register_entity("tree")

@@ -104,7 +104,7 @@ func _is_eligible(mov_component:MovementComponent, stat_component:StatsComponent
 ## ensuring that such component has the [MovementComponent.Movable] member.
 ## If not, returns [code]null[/code].
 func _check_movable(mov_component:MovementComponent)->MovementComponent:
-	if mov_component.movable:
+	if mov_component and mov_component.movable:
 		return mov_component
 	return null
 ## Any point appended to path must be snapped to the grid—as most of the moving input comes from the mouse.

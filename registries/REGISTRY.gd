@@ -32,6 +32,8 @@ var SYSTEMS:Dictionary[String, BaseSystem] = {}
 var AR_REG:ArchetypeRegistry = null
 ## [BehaviorRegistry]
 var BE_REG:BehaviorRegistry = null
+## [ItemRegistry]
+var IT_REG:ItemRegistry = null
 ## [SpriteRegistry]
 var SP_REG:SpriteRegistry = null
 ## [DataRegistry]
@@ -55,6 +57,7 @@ func start(MAIN:Node, max_entities:int = MAX_ENTITIES, canvas:Node2D = CanvasScr
 	
 	AR_REG = ArchetypeRegistry.new()
 	BE_REG = BehaviorRegistry.new()
+	IT_REG = ItemRegistry.new()
 	SP_REG = SpriteRegistry.new()
 	
 	print(SP_REG)

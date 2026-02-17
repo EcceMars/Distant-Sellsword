@@ -11,7 +11,7 @@ var ARCHETYPES:Dictionary[String, Script] = {
 	"duck": DuckType,
 	#
 	## Items
-	#"food": FoodItemType,
+	"berries": BerriesItemType,
 	#"water": WaterItemType,
 	#"wood": WoodItemType,
 	#"stone": StoneItemType,

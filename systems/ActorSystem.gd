@@ -15,12 +15,6 @@ func _init(CAM:Camera2D)->void:
 func handle_input(event:InputEvent)->void:
 	if not (event is InputEventKey or event is InputEventMouseButton):
 		return
-	#if event is InputEventKey:
-		#for actor:ActorComponent in REG.get_all_components_of(ACTOR_FLAG):
-			#actor.a_button = event.keycode
-	#if event is InputEventMouseButton:
-		#for actor:ActorComponent in REG.get_all_components_of(ACTOR_FLAG):
-			#actor.m_button = event.button_index
 func process()->void:
 	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
 	for actor:ActorComponent in REG.get_all_components_of(ACTOR_FLAG):
@@ -28,6 +22,11 @@ func process()->void:
 		
 		if not MOV_SYS._is_eligible(movement): continue
 		var input_dir:Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		if Input.is_action_just_released("wheel_down"):
+			CAM_NODE.zoom -= Vector2.ONE * 0.1
+		if Input.is_action_just_released("wheel_up"):
+			CAM_NODE.zoom += Vector2.ONE * 0.1
+		CAM_NODE.zoom = CAM_NODE.zoom.clamp(Vector2.ONE * 0.1, Vector2.ONE * 3)
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			var mouse_pos:Vector2 = CAM_NODE.get_canvas_transform().affine_inverse() * CAM_NODE.get_viewport().get_mouse_position()
 			CAM_TARGET = mouse_pos
