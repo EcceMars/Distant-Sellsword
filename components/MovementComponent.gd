@@ -28,10 +28,10 @@ class Movable:
 		UNDER,		## Moves underground, colliding with others of the same [param mov_type]
 		WATER }		## Can only collide with other aquatic entities (e.g. fishes)
 	var path:Array[Vector2i] = []		## While an entity may move between two points by fractions, the pathing deals with the grid (for solid entities position)
+	var last_attempt:Vector2 = -Vector2.ONE		## Last position attempted
+	var last_point:Vector2i = -Vector2i.ONE		## Last secured position
 	var speed:float = 1.0
 	var mov_type:Flag = Flag.GROUND
 	var faces_right:bool = true			## Sprites only face either right or left
-	var has_target:bool = false
 	func clear()->void:
 		path.clear()
-		has_target = false

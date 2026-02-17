@@ -1,7 +1,14 @@
+class_name CanvasScript
 extends Node2D
+
+var GRID_WIDTH:int = REG.WIDTH * REG.SCALE +1
+var GRID_HEIGHT:int = REG.HEIGHT * REG.SCALE +1
+var TILE_RECT:Rect2 = Rect2(0, 0, REG.SCALE, REG.SCALE)
 
 var visual_nodes:Array[Node] = []
 var queue_deletion:Array[Node] = []
+
+var mov_sys:MovementSystem = null
 
 ## Use [Main.gd]'s visual_nodes array here
 func set_ref(v_arr:Array[Node])->void:
@@ -25,3 +32,18 @@ func cleanup(visual:Node)->void:
 	visual_nodes.erase(visual)
 	queue_deletion.erase(visual)
 	visual.queue_free()
+func _draw()->void:
+	_draw_grid()
+	#for mov_component:MovementComponent in REG.get_all_components_of(REG.C_FLAGS.MOVE):
+		#draw_string(ThemeDB.fallback_font, mov_component.position, str(mov_component.position))
+	if not mov_sys: mov_sys = REG.SYSTEMS["MovementSystem"]
+	for point:Vector2i in mov_sys.blocked_positions:
+		var rect:Rect2 = Rect2(point, TILE_RECT.end)
+		draw_rect(rect, Color.SKY_BLUE, true)
+func _draw_grid()->void:
+	for col:int in range(0, GRID_WIDTH, REG.SCALE):
+		draw_string(ThemeDB.fallback_font, Vector2i(col, -10), str(col))
+		draw_line(Vector2i(col, 0), Vector2i(col, GRID_HEIGHT), Color.DARK_RED)
+	for row:int in range(0, GRID_HEIGHT, REG.SCALE):
+		draw_string(ThemeDB.fallback_font, Vector2i(-10, row), str(row))
+		draw_line(Vector2i(0, row), Vector2i(GRID_WIDTH, row), Color.DARK_RED)

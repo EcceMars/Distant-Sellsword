@@ -1,6 +1,9 @@
 class_name StatsComponent
 extends BaseComponent
 
+var char_name:String = ""
+var gender:String = "Female"
+
 var blood:Vital
 var energy:Vital
 var hunger:Vital
@@ -10,10 +13,19 @@ var is_alive:bool = true
 var is_conscious:bool = true
 
 func _init(
+	_name:String = char_name,
+	_gender:String = gender,
+	
 	blood_max:float = 100.0, b_reg:float = 0.1,
 	energy_max:float = 100.0, e_reg:float = 0.5,
 	hunger_max:float = 100.0, h_reg:float = -0.2,
 	thirst_max:float = 100.0, t_reg:float = -0.3)->void:
+	
+	if not _name:
+		char_name = REG.DATA.female_names.pick_random() if _gender == "Female" else REG.DATA.male_names.pick_random()
+	else:
+		char_name = _name
+	gender = _gender
 	
 	blood = Vital.new(blood_max, blood_max, b_reg)		# Slow regen
 	energy = Vital.new(energy_max, energy_max, e_reg)	# Faster regen when resting

@@ -1,9 +1,11 @@
-[gd_scene format=3 uid="uid://bvloqrj2lnpvt"]
+[gd_scene format=3 uid="uid://fo45wuye3147"]
 
-[ext_resource type="Script" uid="uid://bae40lto27hr6" path="res://MAIN.gd" id="1_0llpg"]
+[ext_resource type="Script" uid="uid://bajb6o38s30uy" path="res://MAIN.gd" id="1_0llpg"]
 
-[node name="MAIN" type="Node" unique_id=1149854532]
+[node name="MAIN" type="Node" unique_id=1149854532 node_paths=PackedStringArray("CAM")]
 script = ExtResource("1_0llpg")
+CAM = NodePath("CAM")
+FRAME_LEN = 0.05
 
 [node name="UI" type="Control" parent="." unique_id=663036910]
 z_index = 1
@@ -11,3 +13,5 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="CAM" type="Camera2D" parent="." unique_id=958866767]

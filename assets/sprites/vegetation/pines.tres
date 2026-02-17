@@ -1,18 +1,39 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://lys0une5owga"]
 
-[ext_resource type="Texture2D" uid="uid://b5wr8xe65d1q7" path="res://assets/sprites/vegetation/pines.png" id="1_a4h16"]
+[ext_resource type="Texture2D" uid="uid://duhnc7144jh5c" path="res://assets/sprites/vegetation/pines_wind.png" id="1_jyq52"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_mlshf"]
-atlas = ExtResource("1_a4h16")
-region = Rect2(0, 0, 16, 16)
+[sub_resource type="AtlasTexture" id="AtlasTexture_twwsr"]
+atlas = ExtResource("1_jyq52")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8hjd"]
+atlas = ExtResource("1_jyq52")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a03jg"]
+atlas = ExtResource("1_jyq52")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_plxsh"]
+atlas = ExtResource("1_jyq52")
+region = Rect2(144, 0, 48, 48)
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mlshf")
+"texture": SubResource("AtlasTexture_twwsr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n8hjd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a03jg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_plxsh")
 }],
-"loop": false,
+"loop": true,
 "name": &"idle",
 "speed": 5.0
 }]

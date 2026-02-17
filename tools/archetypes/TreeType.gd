@@ -15,16 +15,16 @@ func _init() -> void:
 	is_solid = true
 	
 	has_stats = false
-	has_ai = false
+	has_behavior = false
 	has_animations = false
 	has_information = false
 	is_actor = false
 
 ## Example of archetype with variant support
-func spawn(REG: REGISTRY, position: Vector2 = Vector2.ZERO, overrides: Dictionary = {}) -> int:
+func spawn(overrides:Dictionary = {}) -> int:
 	# Could randomize tree types here
 	if not overrides.has("anim_key"):
 		# Future: ["pine_anim", "oak_tree", "willow_tree"].pick_random()
 		overrides["anim_key"] = "pines"
 	
-	return super.spawn(REG, position, overrides)
+	return super.create(overrides)

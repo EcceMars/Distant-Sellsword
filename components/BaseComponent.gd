@@ -1,3 +1,4 @@
+@icon("res://assets/img/icons/component_icon.png")
 class_name BaseComponent
 extends RefCounted
 

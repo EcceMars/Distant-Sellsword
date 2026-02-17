@@ -1,7 +1,7 @@
 class_name AnimationStateComponent
 extends BaseComponent
 
-enum State {	IDLE, WALK, ACT, REST, ATTACK, DEATH	}
+enum State {	IDLE, WALK	}
 
 var current:State = State.IDLE
 var previous:State = State.IDLE

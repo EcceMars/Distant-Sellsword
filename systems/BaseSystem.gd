@@ -1,6 +1,7 @@
 @icon("res://assets/img/icons/system_icon.png")
+## Extends from [Object] as no system should be unloaded while the game is running.
 class_name BaseSystem
-extends RefCounted
+extends Object
 
 const ACTOR_FLAG:BaseComponent.Flag = BaseComponent.Flag.ACTOR
 const ANIM_STATE_FLAG:BaseComponent.Flag = BaseComponent.Flag.ANIMATION_STATE
@@ -13,15 +14,15 @@ const VIS_FLAG:BaseComponent.Flag = BaseComponent.Flag.VISUAL
 static var TYPES:Dictionary[Script, String] = {
 	ActorSystem: "ActorSystem",
 	AnimationSystem: "AnimationSystem",
-	BehaviorSystem: "BehaviorSystem",
+	#BehaviorSystem: "BehaviorSystem",
 	StatsSystem: "StatsSystem",
-	InformationSystem: "InformationSystem",
+	#InformationSystem: "InformationSystem",
 	MovementSystem: "MovementSystem",
 	VisualSystem: "VisualSystem"
-}
+	}
 
 ## Updating base function for all systems
-func process(_REG:REGISTRY)->void: pass
+func process()->void: pass
 ## Returns the name of the [System] as [String].
 ## If no script is provided or if the script does not extends [System], this func will either return null (error) or the [System] class that called it 
 func in_registry(script:Script = null)->String:

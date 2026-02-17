@@ -1,52 +1,25 @@
 extends Node
-@onready var UI:Control = $UI
 
-const MAX_ENTITIES:int = 320
-const WIDTH:int = 32
-const HEIGHT:int = 24
-const SCALE:int = 16
+@export var CAM:Camera2D
+@export var FRAME_LEN:float = 0.01
+var frame:float = FRAME_LEN
 
-var REG:REGISTRY = null
-var frame_len:float = 0.03
-var act_frame:float = frame_len
-
-func _ready() -> void:
-	var CANVAS:Node2D = Node2D.new()
-	CANVAS.name = "CANVAS"
-	CANVAS.y_sort_enabled = true
-	add_child(CANVAS)
-	REG = REGISTRY.new(MAX_ENTITIES, CANVAS, WIDTH, HEIGHT, SCALE)
+func _ready()->void:
+	REG.start(self)
 	
-	# Initialize systems
 	REG.start_system(MovementSystem.new())
 	REG.start_system(VisualSystem.new())
-	REG.start_system(ActorSystem.new(REG))
-	REG.start_system(BehaviorSystem.new())
-	REG.start_system(InformationSystem.new(UI))
 	REG.start_system(StatsSystem.new())
 	REG.start_system(AnimationSystem.new())
+	REG.start_system(ActorSystem.new(CAM))
 	
-	REG.get_system(ActorSystem).MOV_SYS = REG.get_system(MovementSystem)
-	
-	_spawn_initial_entities()
-	
-	REG.get_system(ActorSystem).scan_for_actors(REG)
-
-## Spawn starting entities using the new archetype system
-func _spawn_initial_entities() -> void:
-	# Spawn some trees
-	for i in range(3):
-		REG.spawn_tree()
-	
-	# Spawn villagers
-	for i in range(2):
-		REG.spawn_villager()
-	
-	REG.spawn_player(Vector2.ZERO, {"anim_key": "m_knight"})
+	REG.AR_REG.register_entity("villager")
+	REG.AR_REG.register_entity("duck")
+	REG.AR_REG.register_entity("actor")
+	REG.AR_REG.register_entity("tree")
 
 func _process(delta:float)->void:
-	if act_frame >= frame_len:
-		act_frame = 0.0
-		for system:BaseSystem in REG.SYSTEMS.values():
-			system.process(REG)
-	act_frame += delta
+	if frame >= FRAME_LEN:
+		REG.update()
+		frame = 0.0
+	frame += delta

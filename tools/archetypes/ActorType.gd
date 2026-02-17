@@ -11,8 +11,8 @@ func _init() -> void:
 	# Movement
 	moves = true
 	is_solid = true
-	mov_type = MovementComponent.Movable.Flag.GROUND
-	mov_speed = 5.0
+	movement_type = MovementComponent.Movable.Flag.GROUND
+	movement_speed = 5.0
 	
 	# Stats
 	has_stats = true
@@ -26,7 +26,7 @@ func _init() -> void:
 	thirst_regen = -0.3
 	
 	# No AI behavior for player
-	has_ai = false
+	has_behavior = false
 	
 	# Animation
 	has_animations = true
@@ -34,7 +34,7 @@ func _init() -> void:
 	
 	# Information
 	has_information = true
-	display_name = "Iphrit"
+	char_name = "Iphrit"
 	gender = "Male"
 	show_ui = true
 	

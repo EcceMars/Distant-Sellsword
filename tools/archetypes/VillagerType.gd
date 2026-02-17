@@ -2,10 +2,6 @@
 class_name VillagerType
 extends EntityArchetype
 
-## Pool of random names for villagers
-const FEMALE_NAMES:Array[String] = ["Rita", "Elya", "Randa", "Mira", "Lysa", "Kara"]
-const MALE_NAMES:Array[String] = ["Bran", "Tomas", "Erik", "Alden", "Jorin"]
-
 func _init() -> void:
 	archetype = "Villager"
 	
@@ -16,8 +12,8 @@ func _init() -> void:
 	# Movement
 	moves = true
 	is_solid = true
-	mov_type = MovementComponent.Movable.Flag.GROUND
-	mov_speed = 5.0
+	movement_type = MovementComponent.Movable.Flag.GROUND
+	movement_speed = 5.0
 	
 	# Stats
 	has_stats = true
@@ -31,7 +27,7 @@ func _init() -> void:
 	thirst_regen = -0.3
 	
 	# AI
-	has_ai = true
+	has_behavior = true
 	# TODO: Load from behavior resources once Phase 2 is complete
 	behavior_keys = ["flee", "rest", "seek_food", "wander", "idle"]
 	
@@ -47,18 +43,19 @@ func _init() -> void:
 	is_actor = false
 
 ## Override to randomize villager names
-func spawn(REG:REGISTRY, position:Vector2 = Vector2.ZERO, overrides:Dictionary = {})->int:
+func spawn(overrides:Dictionary = {})->int:
 	# Auto-generate random name if not provided
-	if not overrides.has("display_name"):
+	if not overrides.has("char_name"):
 		var gen: String = overrides.get("gender", gender)
 		if gen == "Male":
-			overrides["display_name"] = MALE_NAMES.pick_random()
+			overrides["char_name"] = REG.DATA.male_names.pick_random()
 		else:
-			overrides["display_name"] = FEMALE_NAMES.pick_random()
+			overrides["char_name"] =  REG.DATA.female_names.pick_random()
 	
 	# Randomize sprite variant if not specified
 	if not overrides.has("anim_key"):
 		var variants:Array[String] = ["f_human", "f_dwarf", "f_ranger", "f_woodcutter"]
 		overrides["anim_key"] = variants.pick_random()
+		overrides["has_animations"] = true
 	
-	return super.spawn(REG, position, overrides)
+	return super.create(overrides)
