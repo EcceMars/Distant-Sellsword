@@ -60,7 +60,7 @@ func _to_string()->String:
 	var message:String = get_script().get_global_name()
 	var list:Dictionary[String, float] = {}
 	if blood: list["Blood"] = blood.ratio()
-	if energy: list["Enery"] = energy.ratio()
+	if energy: list["Energy"] = energy.ratio()
 	if hunger: list["Hunger"] = hunger.ratio()
 	if thirst: list["Thrist"] = thirst.ratio()
 	return message + str(list)

@@ -42,6 +42,7 @@ func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	if data.behavior_keys.size() > 0:	_add_behavior(uid)
 	if data.has_information:			_add_information(uid)
 	if data.has_memory:					_add_memory(uid)
+	if data.is_item:					_add_item_condition(uid, data.item_type)
 
 	_post_build(uid)
 	return uid
@@ -99,6 +100,8 @@ func _add_memory(uid: int) -> void:
 		data.vision_range,
 		data.vision_width
 	))
+func _add_item_condition(uid:int, item_type:String)->void:
+	REG.add_component(uid, ItemComponent.new(item_type))
 ## Returns a random unoccupied world position snapped to the grid.
 ## Falls back to [constant Vector2.ZERO] after 16 failed attempts.
 func _random_position()->Vector2:
@@ -145,7 +148,10 @@ class Data:
 	var has_animations:bool = false
 	var has_information:bool = false
 	var has_memory:bool = false
+	var is_item:bool = false
 	## Memory
 	var memory_focus_limit:int = 8
 	var vision_range:float = 5.0 * REG.SCALE
 	var vision_width:float = 2.0 * REG.SCALE
+	## Item
+	var item_type:String = "Generic"

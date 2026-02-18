@@ -5,10 +5,11 @@ extends BaseSystem
 ## How many ticks between perception updates, keyed by behavior type.
 ## Entities with no memory, or with INPUT behavior, skip perception entirely.
 const PERCEPTION_INTERVALS:Dictionary = {
-	BaseBehavior.Type.REST:		40,
-	BaseBehavior.Type.IDLE:		20,
-	BaseBehavior.Type.WANDER:	10,
-	BaseBehavior.Type.FLEE:		2,
+	BaseBehavior.Type.REST:			40,
+	BaseBehavior.Type.IDLE:			10,
+	BaseBehavior.Type.SEEK_FOOD:	2,
+	BaseBehavior.Type.WANDER:		10,
+	BaseBehavior.Type.FLEE:			2,
 	}
 
 const MEMORY_FLAG:	BaseComponent.Flag = BaseComponent.Flag.MEMORY
@@ -27,7 +28,7 @@ func process() -> void:
 
 		_update_perception(uid, behav)
 		_activate_all(uid, behav)
-		_select_behavior(behav)
+		_select_behavior(uid, behav)
 		behav.active_behavior.act(uid)
 ## Calls [method BaseBehavior.activate] on every behavior the entity owns,
 ## so each can update its priority before [method _select_behavior] runs.
@@ -75,6 +76,7 @@ func _update_perception(uid:int, behav:BehaviorComponent) -> void:
 
 		var relation:MemoryComponent.Relation = _classify(candidate_uid)
 		mem.remember(candidate_uid, relation, world_pos, REG.tick)
+		#print(mem.entries.get(candidate_uid))
 ## Classifies a candidate entity into a [enum MemoryComponent.Relation].
 ## Items are FOOD; everything else starts as NEUTRAL.
 func _classify(candidate_uid:int)->MemoryComponent.Relation:
@@ -82,14 +84,15 @@ func _classify(candidate_uid:int)->MemoryComponent.Relation:
 		return MemoryComponent.Relation.FOOD
 	return MemoryComponent.Relation.NEUTRAL
 ## Selects the highest-priority behavior and swaps if it has changed.
-func _select_behavior(behav:BehaviorComponent)->void:
+func _select_behavior(uid:int, behav:BehaviorComponent)->void:
 	var best:BaseBehavior = null
 	var best_priority:float = -1.0
-
+	
 	for type:BaseBehavior.Type in behav.behaviors:
+		
 		var candidate:BaseBehavior = behav.behaviors[type]
 		if not candidate: continue
-		var p:float = candidate.get_priority()
+		var p:float = candidate.get_priority(uid)
 		if p > best_priority:
 			best_priority = p
 			best = candidate

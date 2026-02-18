@@ -16,7 +16,7 @@ enum Relation {
 
 ## All currently remembered entities, keyed by their uid.
 var entries:Dictionary[int, MemoryEntry] = {}
-var focus_limit:int = 8
+var focus_limit:int = 32
 
 # Vision parameters
 var vision_range:float = 5.0 * REG.SCALE		## How far it sees
@@ -52,11 +52,52 @@ func remember(
 		entries[uid].last_tick     = tick
 		entries[uid].relation      = relation
 		return
-
+	
 	if entries.size() >= focus_limit:
 		_evict_oldest()
 
 	entries[uid] = MemoryEntry.new(uid, relation, position, tick)
+## Forces the entity to scan its immediate surroundings and update memory
+## with all visible entities. Returns array of newly discovered uids.
+func look(owner_uid:int, current_tick:int) -> Array[int]:
+	var updated_uids:Array[int] = []
+	
+	# Get owner's position and vision triangle
+	var mov:MovementComponent = REG.get_component(owner_uid, BaseComponent.Flag.MOVEMENT)
+	if not mov:
+		return updated_uids
+	
+	var BEHAV_SYS:BehaviorSystem = REG.SYSTEMS.get("BehaviorSystem")
+	if not BEHAV_SYS: 
+		return []
+	
+	var vision_triangle:Triangle2D = build_vision_triangle(mov)
+	
+	# Get all entities with visual components (visible things)
+	var visible_uids:Array[int] = REG.get_entities_by(BaseComponent.Flag.VISUAL)
+	
+	for target_uid:int in visible_uids:
+		if target_uid == owner_uid:
+			continue  # Skip self
+			
+		# Get target's position
+		var target_mov:MovementComponent = REG.get_component(target_uid, BaseComponent.Flag.MOVEMENT)
+		if not target_mov:
+			continue
+			
+		# Check if target is within vision triangle
+		if not vision_triangle.has_point(target_mov.position):
+			continue
+
+		# Determine relation to target
+		var relation:Relation = BEHAV_SYS._classify(target_uid)
+		
+		# Remember what we saw
+		remember(target_uid, relation, target_mov.position, current_tick)
+		updated_uids.append(target_uid)
+	
+	last_update_tick = current_tick
+	return updated_uids
 ## Builds the vision [Triangle2D] for this entity based on its [MovementComponent].
 func build_vision_triangle(mov:MovementComponent)->Triangle2D:
 	var faces_right:bool = true
@@ -87,7 +128,7 @@ func forget(uid:int)->void:
 ## Evicts the entry with the lowest [member MemoryEntry.last_tick].
 func _evict_oldest()->void:
 	var oldest_uid:int  = -1
-	var oldest_tick:int = 10_000
+	var oldest_tick:int = 100_000_000_000
 	for uid:int in entries:
 		if entries[uid].last_tick < oldest_tick:
 			oldest_tick = entries[uid].last_tick
@@ -115,3 +156,5 @@ class MemoryEntry:
 		relation		= _relation
 		last_position	= _position
 		last_tick		= _tick
+	func _to_string()->String:
+		return "%d (%d) was last seen at " % [uid, relation] + str(last_position)

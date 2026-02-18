@@ -14,9 +14,12 @@ func _clean_registry()->void:
 	for uid:int in uids:
 		var component:VisualComponent = REG.get_component(uid, VIS_FLAG)
 		if component and component.queue_destroy:
-			component.sprite.queue_free()
-			REG.visual_nodes.erase(component.sprite)
-			REG.delete_component(uid, VIS_FLAG)
+			if component.destroy_time <= 0:
+				component.sprite.queue_free()
+				REG.visual_nodes.erase(component.sprite)
+				REG.destroy_entity(uid)
+			else:
+				component.destroy_time -= REG.DELTA
 ## Update sprite positions to [MovementComponent]
 func _update_positions()->void:
 	var uids:Array[int] = REG.get_entities_by(VIS_FLAG | MOV_FLAG)

@@ -5,8 +5,8 @@ extends BaseBehavior
 func _init()->void:
 	behavior_name = "Input"
 	type = Type.INPUT
-
-func get_priority()->float:
+	active = true
+func get_priority(_uid:int)->float:
 	if not active: return 0.0
 	return priority
 func activate(_uid:int)->void: pass

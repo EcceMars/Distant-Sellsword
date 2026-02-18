@@ -11,8 +11,9 @@ func _init()->void:
 	behavior_name = "Wander"
 	type = Type.WANDER
 	priority = 0.2
+	active = true
 
-func get_priority()->float:
+func get_priority(_uid:int)->float:
 	if not active: return 0.0
 	return priority
 func act(uid:int)->void:

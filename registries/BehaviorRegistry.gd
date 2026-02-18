@@ -6,11 +6,12 @@ extends BaseRegistry
 const BEHAV_CFLAG:BaseComponent.Flag = BaseComponent.Flag.BEHAVIOR
 
 var BEHAVIORS:Dictionary[BaseBehavior.Type, GDScript] = {
-	BaseBehavior.Type.FLEE:		FleeBehavior,
-	BaseBehavior.Type.IDLE:		IdleBehavior,
-	BaseBehavior.Type.INPUT:	InputBehavior,
-	BaseBehavior.Type.REST:		RestBehavior,
-	BaseBehavior.Type.WANDER:	WanderBehavior,
+	BaseBehavior.Type.FLEE:			FleeBehavior,
+	BaseBehavior.Type.IDLE:			IdleBehavior,
+	BaseBehavior.Type.INPUT:		InputBehavior,
+	BaseBehavior.Type.REST:			RestBehavior,
+	BaseBehavior.Type.SEEK_FOOD:	SeekFoodBehavior,
+	BaseBehavior.Type.WANDER:		WanderBehavior,
 }
 
 ## Cache for behavior instances

@@ -5,6 +5,8 @@ extends Node
 enum C_FLAGS {
 	ANIM = BaseComponent.Flag.ANIMATION_STATE,
 	BEHAV = BaseComponent.Flag.BEHAVIOR,
+	ITEM = BaseComponent.Flag.ITEM,
+	MEMORY = BaseComponent.Flag.MEMORY,
 	MOVE = BaseComponent.Flag.MOVEMENT,
 	STATS = BaseComponent.Flag.STATS,
 	VISUAL = BaseComponent.Flag.VISUAL
@@ -84,6 +86,13 @@ func create_entity()->int:
 ## Uses swap-and-pop pattern for O(1) removal.
 func destroy_entity(uid:int)->void:
 	if not _is_valid_entity(uid): return
+	
+	var item:ItemComponent = get_component(uid, C_FLAGS.ITEM)
+	if item:
+		IT_REG.unregister_item(uid)
+	var visual:VisualComponent = get_component(uid, C_FLAGS.VISUAL)
+	if visual:
+		visual.clear()
 	
 	# Get the last entity's data
 	var last_uid:int = _open_uid - 1

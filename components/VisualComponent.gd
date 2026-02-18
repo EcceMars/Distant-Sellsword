@@ -9,7 +9,9 @@ enum SpriteType {
 
 var sprite:Node = null
 var sprite_type:SpriteType = SpriteType.DEBUG
+
 var queue_destroy:bool = false
+var destroy_time:float = 0.0
 
 ## Animation state (only used when sprite_type == ANIMATED)
 var current_animation:String = "idle"

@@ -23,11 +23,11 @@ func _ready()->void:
 	# Spawn world entities
 	for _i:int in 8:  REG.AR_REG.spawn(ArchetypeRegistry.Type.TREE)
 	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.VILLAGER)
-	for _i:int in 3:  REG.AR_REG.spawn(ArchetypeRegistry.Type.DUCK)
+	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.DUCK)
 	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY)
 
 	var player_uid:int = REG.AR_REG.spawn(ArchetypeRegistry.Type.ACTOR)
-
+	
 	CAM_ANCHOR.start(REG.get_ent_position(player_uid))
 	CAM_ANCHOR.follow_uid = player_uid
 

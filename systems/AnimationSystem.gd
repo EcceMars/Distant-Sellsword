@@ -45,3 +45,61 @@ func _determine_animation_state(uid:int)->AC_STATE:
 	
 	# Default to idle
 	return AC_STATE.IDLE
+func _shake_sprite(sprite:Node2D, duration:float = 0.2, intensity:float = 5.0)->void:
+	if not sprite or not sprite.is_inside_tree() or not sprite.position: return
+	
+	var original_position:Vector2 = sprite.position
+	var elapsed:float = 0.0
+	
+	# Create a tween for the shake effect
+	var tween:Tween = REG.CANVAS.create_tween()
+	tween.set_parallel(true)
+	
+	# Shake by randomly offsetting position over time
+	while elapsed < duration:
+		var offset:Vector2 = Vector2(
+			randf_range(-intensity, intensity),
+			randf_range(-intensity, intensity)
+		)
+		tween.tween_property(sprite, "position", original_position + offset, 0.05)
+		elapsed += 0.05
+	
+	# Return to original position
+	tween.tween_property(sprite, "position", original_position, 0.05)
+func burst_particles(sprite:Node2D, color:Color = Color.RED, amount:int = 8) -> void:
+	if not sprite or not sprite.is_inside_tree() or not sprite.position: return
+	
+	# Create a temporary particles node
+	var particles:GPUParticles2D = GPUParticles2D.new()
+	
+	# Create a simple particle material
+	var material:ParticleProcessMaterial = ParticleProcessMaterial.new()
+	material.color = color
+	material.direction = Vector3.UP * -1  # Spread upward
+	material.spread = 180.0  # Spread in all directions
+	material.gravity = Vector3(0, 200, 0)  # Slight downward gravity
+	material.initial_velocity_min = 50.0
+	material.initial_velocity_max = 100.0
+	material.scale_min = 0.5
+	material.scale_max = 1.5
+	
+	# Configure the particles node
+	particles.process_material = material
+	particles.amount = amount
+	particles.explosiveness = 1.0  # Burst all at once
+	particles.one_shot = true
+	particles.lifetime = 0.8
+	
+	# Set position to the visual component's location
+	if sprite:
+		particles.position = sprite.position + Vector2(8, 8)  # Center of 16x16 sprite
+	else:
+		particles.position = Vector2(16, 16)  # Default position
+	
+	# Add to scene and emit
+	REG.CANVAS.add_child(particles)
+	particles.emitting = true
+	
+	# Clean up when done
+	await REG.CANVAS.get_tree().create_timer(particles.lifetime + 0.1).timeout
+	particles.queue_free()
