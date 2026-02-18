@@ -5,6 +5,7 @@ extends BaseRegistry
 
 static var BEHAVIORS:Dictionary[String, Script] = {
 	"idle": IdleBehavior,
+	"input": InputBehavior,
 	"wander": WanderBehavior
 	}
 

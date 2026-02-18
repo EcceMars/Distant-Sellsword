@@ -1,61 +1,17 @@
-## Concrete archetype for NPC villagers with AI behavior
 class_name VillagerType
 extends EntityArchetype
 
-func _init() -> void:
-	archetype = "Villager"
-	
-	# Visual
-	sprite_type = VisualComponent.SpriteType.ANIMATED
-	anim_key = "f_human"
-	
-	# Movement
-	moves = true
-	is_solid = true
-	movement_type = MovementComponent.Movable.Flag.GROUND
-	movement_speed = 5.0
-	
-	# Stats
-	has_stats = true
-	blood_max = 100.0
-	blood_regen = 0.1
-	energy_max = 100.0
-	energy_regen = 0.5
-	hunger_max = 100.0
-	hunger_regen = -0.2
-	thirst_max = 100.0
-	thirst_regen = -0.3
-	
-	# AI
-	has_behavior = true
-	# TODO: Load from behavior resources once Phase 2 is complete
-	behavior_keys = ["flee", "rest", "seek_food", "wander", "idle"]
-	
-	# Animation
-	has_animations = true
-	
-	# Information
-	has_information = true
-	gender = "Female"
-	show_ui = true
-	
-	# Not player-controlled
-	is_actor = false
+func _init()->void:
+	label = "Villager"
+	data.sprite_type = VisualComponent.SpriteType.ANIMATED
+	data.sprite_key = "f_human"
+	data.moves = true
+	data.is_solid = true
+	data.has_stats = true
+	data.behavior_keys = ["flee", "rest", "wander", "idle"]
+	data.has_animations = true
+	data.has_information = true
 
-## Override to randomize villager names
-func spawn(overrides:Dictionary = {})->int:
-	# Auto-generate random name if not provided
-	if not overrides.has("char_name"):
-		var gen: String = overrides.get("gender", gender)
-		if gen == "Male":
-			overrides["char_name"] = REG.DATA.male_names.pick_random()
-		else:
-			overrides["char_name"] =  REG.DATA.female_names.pick_random()
-	
-	# Randomize sprite variant if not specified
-	if not overrides.has("anim_key"):
-		var variants:Array[String] = ["f_human", "f_dwarf", "f_ranger", "f_woodcutter"]
-		overrides["anim_key"] = variants.pick_random()
-		overrides["has_animations"] = true
-	
-	return super.create(overrides)
+func _prepare()->void:
+	data.char_name = REG.DATA.female_names.pick_random()
+	data.sprite_key = ["f_human", "f_dwarf", "f_ranger"].pick_random()

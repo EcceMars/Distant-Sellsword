@@ -1,0 +1,2 @@
+class_name InputBehavior
+extends BaseBehavior

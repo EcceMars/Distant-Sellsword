@@ -1,59 +1,40 @@
 ## Central registry for entity archetypes.
-## Provides lookup and spawning interface for all entity blueprints.
+## Access via [method REGISTRY.AR_REG].
 class_name ArchetypeRegistry
 extends BaseRegistry
 
-## WARNING: this should be updated with all types that are added to the project
-var ARCHETYPES:Dictionary[String, Script] = {
-	## Actors
-	"actor": ActorType,
-	"villager": VillagerType,
-	"duck": DuckType,
-	#
-	## Items
-	"berries": BerriesItemType,
-	#"water": WaterItemType,
-	#"wood": WoodItemType,
-	#"stone": StoneItemType,
-	#
-	# Objects
-	"tree": TreeType,
+## Hardcoded archetype identifiers. Update when adding new types.
+enum Type {
+	ACTOR,
+	BERRY,
+	DUCK,
+	TREE,
+	VILLAGER
 	}
-
-## Registered archetypes by key name
-var _archetypes:Dictionary[String, EntityArchetype] = {}
-
+## Maps each [enum Type] to its [EntityArchetype] script. Add new archetypes here.
+var TYPES:Dictionary = {
+	Type.ACTOR:		ActorType,
+	Type.BERRY:		BerriesItemType,
+	Type.DUCK:		DuckType,
+	Type.TREE:		TreeType,
+	Type.VILLAGER:	VillagerType,
+	}
+## Cached archetype instances, keyed by [enum Type].
+var _instances:Dictionary[Type, EntityArchetype] = {}
 func _init()->void:
-	_register_default_archetypes()
-
-## Register all built-in archetypes
-func _register_default_archetypes()->void:
-	for type:String in ARCHETYPES:
-		register(type, ARCHETYPES[type].new())
-## Register a custom archetype
-## [param key] - Lookup key for spawning
-## [param archetype] - The archetype instance or resource
-func register(key:String, archetype:EntityArchetype)->void:
-	if _archetypes.has(key):
-		push_warning("[ArchetypeRegistry] Overwriting archetype '%s'" % key)
-	_archetypes[key] = archetype
-
-## Get archetype by key
-func get_archetype(key:String)->EntityArchetype:
-	if not _archetypes.has(key):
-		push_error("[ArchetypeRegistry] No archetype found for key: %s" % key)
+	for type:Type in TYPES:
+		_instances[type] = TYPES[type].new()
+## Returns the [EntityArchetype] instance for [param type].
+## Logs an error and returns null if not found.
+func get_archetype(type:Type)->EntityArchetype:
+	if not _instances.has(type):
+		push_error("[ArchetypeRegistry] No archetype for: %s" % Type.find_key(type))
 		return null
-	return _archetypes[key]
-
-## [param key] - Archetype identifier
-## [param overrides] - Runtime property overrides
-func register_entity(key:String, overrides:Dictionary = {})->int:
-	var archetype:EntityArchetype = get_archetype(key)
+	return _instances[type]
+## Spawns an entity from the archetype matching [param type].
+## Returns the new entity UID, or -1 on failure.
+func spawn(type:Type)->int:
+	var archetype:EntityArchetype = get_archetype(type)
 	if not archetype:
 		return -1
-	return archetype.create(overrides)
-func random_position()->Vector2:
-	return Vector2(
-		randi() % REG.WIDTH * REG.SCALE,
-		randi() % REG.HEIGHT * REG.SCALE
-	)
+	return archetype._build()

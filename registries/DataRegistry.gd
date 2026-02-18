@@ -5,3 +5,4 @@ extends Resource
 @export_category("Names")
 @export_dir var male_names:Array[String] = []
 @export_dir var female_names:Array[String] = []
+@export_dir var duck_names:Array[String] = []

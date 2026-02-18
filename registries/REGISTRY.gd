@@ -3,7 +3,6 @@
 extends Node
 
 enum C_FLAGS {
-	ACTOR = BaseComponent.Flag.ACTOR,
 	ANIM = BaseComponent.Flag.ANIMATION_STATE,
 	BEHAV = BaseComponent.Flag.BEHAVIOR,
 	MOVE = BaseComponent.Flag.MOVEMENT,
@@ -138,7 +137,7 @@ func get_entities_by(bitmask:int)->Array[int]:
 func get_component(uid:int, flag:int)->BaseComponent:
 	if not _is_valid_entity(uid): return null
 	return COMPONENT_STORE[uid].get(flag)
-## For a more complete search use: ACTOR | MOVEMENT (when checking for a list of components)
+## For a more complete search use: BEHAVIOR | MOVEMENT (when checking for a list of components)
 func has_components(uid:int, required_mask:int)->bool:
 	if not _is_valid_entity(uid):
 		return false

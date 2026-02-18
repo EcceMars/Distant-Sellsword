@@ -3,28 +3,8 @@
 class_name TreeType
 extends EntityArchetype
 
-func _init() -> void:
-	archetype = "Tree"
-	
-	# Visual
-	sprite_type = VisualComponent.SpriteType.ANIMATED
-	anim_key = "pines"
-	
-	# Movement - has position but cannot move (yet!)
-	moves = false
-	is_solid = true
-	
-	has_stats = false
-	has_behavior = false
-	has_animations = false
-	has_information = false
-	is_actor = false
-
-## Example of archetype with variant support
-func spawn(overrides:Dictionary = {}) -> int:
-	# Could randomize tree types here
-	if not overrides.has("anim_key"):
-		# Future: ["pine_anim", "oak_tree", "willow_tree"].pick_random()
-		overrides["anim_key"] = "pines"
-	
-	return super.create(overrides)
+func _init()->void:
+	label = "PineTree"
+	data.sprite_type = VisualComponent.SpriteType.STATIC
+	data.sprite_key = "pines"
+	data.is_solid = true

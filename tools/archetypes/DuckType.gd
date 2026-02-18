@@ -3,27 +3,15 @@
 class_name DuckType
 extends EntityArchetype
 
-func _init() -> void:
-	archetype = "Duck"
-	
-	# Visual
-	sprite_type = VisualComponent.SpriteType.ANIMATED
-	anim_key = "duck"
-	
-	# Movement - has position but cannot move (yet!)
-	moves = true
-	is_solid = false
-	
-	has_stats = true
-	has_behavior = true
-	has_animations = true
-	has_information = true
-	is_actor = false
+func _init()->void:
+	label = "Duck"
+	data.sprite_type = VisualComponent.SpriteType.ANIMATED
+	data.sprite_key = "duck"
+	data.moves = true
+	data.has_stats = true
+	data.behavior_keys = ["flee", "rest", "wander", "idle"]
+	data.has_animations = true
+	data.has_information = true
 
-## Example of archetype with variant support
-func spawn(overrides:Dictionary = {}) -> int:
-	# Could randomize tree types here
-	if not overrides.has("anim_key"):
-		overrides["anim_key"] = "duck"
-	
-	return super.create(overrides)
+func _prepare()->void:
+	data.char_name = "Wild Duck" #REG.DATA.duck_names.pick_random()

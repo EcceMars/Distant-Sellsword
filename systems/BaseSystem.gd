@@ -3,7 +3,6 @@
 class_name BaseSystem
 extends Object
 
-const ACTOR_FLAG:BaseComponent.Flag = BaseComponent.Flag.ACTOR
 const ANIM_STATE_FLAG:BaseComponent.Flag = BaseComponent.Flag.ANIMATION_STATE
 const BEHAV_FLAG:BaseComponent.Flag = BaseComponent.Flag.BEHAVIOR
 const INFO_FLAG:BaseComponent.Flag = BaseComponent.Flag.INFORMATION
@@ -12,7 +11,7 @@ const STATS_FLAG:BaseComponent.Flag = BaseComponent.Flag.STATS
 const VIS_FLAG:BaseComponent.Flag = BaseComponent.Flag.VISUAL
 
 static var TYPES:Dictionary[Script, String] = {
-	ActorSystem: "ActorSystem",
+	InputSystem: "InputSystem",
 	AnimationSystem: "AnimationSystem",
 	#BehaviorSystem: "BehaviorSystem",
 	StatsSystem: "StatsSystem",

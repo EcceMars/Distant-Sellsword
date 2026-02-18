@@ -11,7 +11,7 @@ func _ready()->void:
 	REG.start_system(VisualSystem.new())
 	REG.start_system(StatsSystem.new())
 	REG.start_system(AnimationSystem.new())
-	REG.start_system(ActorSystem.new())
+	REG.start_system(InputSystem.new())
 	
 	REG.AR_REG.register_entity("villager")
 	REG.AR_REG.register_entity("berries")

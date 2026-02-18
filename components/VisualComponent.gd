@@ -61,14 +61,14 @@ func _create_sprite(sprite_key:String, position:Vector2i, debug_color:Color) -> 
 			_default(position, debug_color)
 			return
 	
-	sprite.name = "sprite_%d" % Time.get_unix_time_from_system()
+	sprite.name = "sprite_%5d" % randi()
 	
 	REG.CANVAS.add_child(sprite)
 	REG.visual_nodes.append(sprite)
 func _default(position:Vector2i, color:Color)->void:
 	sprite = ColorRect.new()
 	sprite.color = color
-	sprite.name = "def_sprite_" + str(Time.get_unix_time_from_system())
+	sprite.name = "def_sprite_%5d" % randi()
 	sprite.size = Vector2.ONE * 16
 	sprite.position = position * -0.5
 	sprite.offset_bottom = true
