@@ -21,6 +21,6 @@ var type:Type = Type.IDLE
 @export_range(0.0, 1.0, 0.1) var priority:float = 0.1
 
 func get_priority()->float: return 0.0
-func act()->void: pass
+func act(_uid:int)->void: pass
 func on_enter()->void: pass
 func on_exit()->void: pass

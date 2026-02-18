@@ -38,8 +38,8 @@ func get_archetype(type:Type)->EntityArchetype:
 
 ## Spawns an entity from the archetype matching [param type].
 ## Returns the new entity UID, or -1 on failure.
-func spawn(type:Type)->int:
+func spawn(type:Type, spawn_position:Vector2 = -Vector2.ONE)->int:
 	var archetype:EntityArchetype = get_archetype(type)
 	if not archetype:
 		return -1
-	return archetype._build()
+	return archetype._build(spawn_position)

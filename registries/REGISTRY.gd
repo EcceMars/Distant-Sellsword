@@ -18,6 +18,9 @@ var MAX_ENTITIES:int = 64
 ## Delta accumulator
 var DELTA:float = 0.0
 
+## Deterministic accumulator (TEST: will this overflow?)
+var tick:int = 0
+
 ## Next open unique id
 var _open_uid:int = 0
 
@@ -99,6 +102,7 @@ func start_system(system:BaseSystem)->void:
 ## Update all systems at [SYSTEMS].
 func update()->void:
 	for system:BaseSystem in SYSTEMS.values(): system.process()
+	tick += 1
 	CANVAS.queue_redraw()
 ## Register [param component] to uid.
 func add_component(uid:int, component:BaseComponent, override:bool = false)->BaseComponent:

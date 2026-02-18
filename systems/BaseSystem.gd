@@ -6,13 +6,14 @@ extends Object
 const ANIM_STATE_FLAG:BaseComponent.Flag = BaseComponent.Flag.ANIMATION_STATE
 const BEHAV_FLAG:BaseComponent.Flag = BaseComponent.Flag.BEHAVIOR
 const INFO_FLAG:BaseComponent.Flag = BaseComponent.Flag.INFORMATION
+const MEM_FLAG:BaseComponent.Flag = BaseComponent.Flag.MEMORY
 const MOV_FLAG:BaseComponent.Flag = BaseComponent.Flag.MOVEMENT
 const STATS_FLAG:BaseComponent.Flag = BaseComponent.Flag.STATS
 const VIS_FLAG:BaseComponent.Flag = BaseComponent.Flag.VISUAL
 
 static var TYPES:Dictionary[GDScript, String] = {
 	AnimationSystem: "AnimationSystem",
-	#BehaviorSystem: "BehaviorSystem",
+	BehaviorSystem: "BehaviorSystem",
 	InputSystem: "InputSystem",
 	StatsSystem: "StatsSystem",
 	#InformationSystem: "InformationSystem",

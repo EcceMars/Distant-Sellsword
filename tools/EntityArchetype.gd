@@ -24,13 +24,16 @@ func _post_build(_uid:int)->void: pass
 
 ## Assembles a new entity from [member data] at a random valid position.
 ## Returns the new entity UID, or -1 on failure.
-func _build()->int:
+func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	_prepare()
 	var uid:int = REG.create_entity()
 	if uid == -1:
 		push_error("[EntityArchetype] Registry full, cannot spawn: %s" % label)
 		return -1
-	var position:Vector2 = _random_position()
+	
+	var position:Vector2 = spawn_position \
+		if spawn_position != -Vector2.ONE \
+		else _random_position()
 	
 	_add_movement(uid, position)
 	_add_visual(uid, position)

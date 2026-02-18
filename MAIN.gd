@@ -3,11 +3,11 @@ extends Node
 @export var CAM_ANCHOR:CAMERA_MANAGER = null
 
 ## Fixed simulation step length in seconds.
-const FRAME_LEN:float = 0.05
+const FRAME_LEN:float = 5
 var _frame:float = FRAME_LEN
 
 ## How often (in seconds) the world tries to spawn a berry near a tree.
-const BERRY_INTERVAL:float = 10.0
+const BERRY_INTERVAL:float = 1.0
 var _berry_timer:float = BERRY_INTERVAL
 
 func _ready()->void:
@@ -18,6 +18,7 @@ func _ready()->void:
 	REG.start_system(StatsSystem.new())
 	REG.start_system(AnimationSystem.new())
 	REG.start_system(InputSystem.new())
+	REG.start_system(BehaviorSystem.new())
 
 	# Spawn world entities
 	for _i:int in 8:  REG.AR_REG.spawn(ArchetypeRegistry.Type.TREE)
@@ -29,8 +30,6 @@ func _ready()->void:
 
 	CAM_ANCHOR.start(REG.get_ent_position(player_uid))
 	CAM_ANCHOR.follow_uid = player_uid
-	
-	print(REG._display_entity_info(player_uid))
 
 func _process(delta:float)->void:
 	REG.DELTA = delta
@@ -62,12 +61,8 @@ func _try_spawn_berry(delta:float)->void:
 		float(randi_range(-2, 2)) * REG.SCALE,
 		float(randi_range(-2, 2)) * REG.SCALE
 	)
-	var berry_uid:int = REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY)
+	var spawn_pos:Vector2 = tree_pos + offset
+	
+	var berry_uid:int = REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY, spawn_pos)
 	if berry_uid == -1:
 		return
-
-	# Reposition the berry to be near the tree
-	var b_mov:MovementComponent = REG.get_component(berry_uid, BaseComponent.Flag.MOVEMENT)
-	if b_mov:
-		b_mov.position = tree_pos + offset
-		b_mov.grid_posi = Vector2i(b_mov.position).snappedi(REG.SCALE)
