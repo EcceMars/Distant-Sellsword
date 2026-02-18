@@ -32,6 +32,38 @@ func _init(
 	hunger = Vital.new(hunger_max, hunger_max, h_reg)	# Decays over time
 	thirst = Vital.new(thirst_max, thirst_max, t_reg)	# Decays faster than hunger
 	flag = Flag.STATS
+func check_stats()->int:
+	var DEAD:int = 0
+	var UNCONSCIOUS:int = 1
+	var HUNGRY:int = 2
+	var THIRSTY:int = 3
+	var DYING:int = 4
+	var TIRED:int = 5
+	var NORMAL:int = -1
+	if blood:
+		is_alive = blood.check_vital()
+		if not is_alive:
+			return DEAD
+		if blood.check_vital(0.2): return DYING
+	if energy:
+		is_conscious = energy.check_vital()
+		if not is_conscious:
+			return UNCONSCIOUS
+		if energy.check_vital(0.2):
+			return TIRED
+	if hunger:
+		if hunger.check_vital(0.3): return HUNGRY
+	if thirst:
+		if thirst.check_vital(0.3): return THIRSTY
+	return NORMAL
+func _to_string()->String:
+	var message:String = get_script().get_global_name()
+	var list:Dictionary[String, float] = {}
+	if blood: list["Blood"] = blood.ratio()
+	if energy: list["Enery"] = energy.ratio()
+	if hunger: list["Hunger"] = hunger.ratio()
+	if thirst: list["Thrist"] = thirst.ratio()
+	return message + str(list)
 ## Vital stats container
 class Vital:
 	var value:float
@@ -59,3 +91,5 @@ class Vital:
 			value += value * regen_factor
 	func ratio()->float:
 		return value / maximum
+	func check_vital(threshold:float = 0.0)->bool:
+		return ratio() <= threshold

@@ -45,8 +45,8 @@ func activate(uid:int)->void:
 ## Moves toward the nearest known food, eats it on arrival.
 func act(uid:int)->void:
 	activate(uid)		# Keep priority fresh each tick
-
-	var mem: MemoryComponent = REG.get_component(uid, BaseComponent.Flag.MEMORY)
+	_tire(uid)
+	var mem:MemoryComponent = REG.get_component(uid, BaseComponent.Flag.MEMORY)
 	if not mem:
 		return
 

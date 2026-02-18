@@ -6,6 +6,7 @@ enum C_FLAGS {
 	ANIM = BaseComponent.Flag.ANIMATION_STATE,
 	BEHAV = BaseComponent.Flag.BEHAVIOR,
 	MOVE = BaseComponent.Flag.MOVEMENT,
+	STATS = BaseComponent.Flag.STATS,
 	VISUAL = BaseComponent.Flag.VISUAL
 	}
 
