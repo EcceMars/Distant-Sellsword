@@ -8,7 +8,12 @@ func _init()->void:
 	data.moves = true
 	data.is_solid = true
 	data.has_stats = true
-	data.behavior_keys = ["flee", "rest", "wander", "idle"]
+	data.behavior_keys = [
+		BaseBehavior.Type.FLEE,
+		BaseBehavior.Type.REST,
+		BaseBehavior.Type.WANDER,
+		BaseBehavior.Type.IDLE
+]
 	data.has_animations = true
 	data.has_information = true
 

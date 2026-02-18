@@ -10,10 +10,10 @@ const MOV_FLAG:BaseComponent.Flag = BaseComponent.Flag.MOVEMENT
 const STATS_FLAG:BaseComponent.Flag = BaseComponent.Flag.STATS
 const VIS_FLAG:BaseComponent.Flag = BaseComponent.Flag.VISUAL
 
-static var TYPES:Dictionary[Script, String] = {
-	InputSystem: "InputSystem",
+static var TYPES:Dictionary[GDScript, String] = {
 	AnimationSystem: "AnimationSystem",
 	#BehaviorSystem: "BehaviorSystem",
+	InputSystem: "InputSystem",
 	StatsSystem: "StatsSystem",
 	#InformationSystem: "InformationSystem",
 	MovementSystem: "MovementSystem",
@@ -24,7 +24,7 @@ static var TYPES:Dictionary[Script, String] = {
 func process()->void: pass
 ## Returns the name of the [System] as [String].
 ## If no script is provided or if the script does not extends [System], this func will either return null (error) or the [System] class that called it 
-func in_registry(script:Script = null)->String:
+func in_registry(script:GDScript = null)->String:
 	if script:
 		return TYPES.get(script)
 	return TYPES.get(get_script())

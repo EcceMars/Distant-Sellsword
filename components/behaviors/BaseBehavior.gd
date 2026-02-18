@@ -2,6 +2,16 @@
 class_name BaseBehavior
 extends Resource
 
+enum Type {
+	FLEE,
+	IDLE,
+	INPUT,
+	REST,
+	WANDER
+}
+
+var type:Type = Type.IDLE
+
 @export var behavior_name:String = "Unnamed"
 ## Description for editor reference
 @export_multiline var description:String = ""

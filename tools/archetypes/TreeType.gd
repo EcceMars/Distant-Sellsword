@@ -5,6 +5,6 @@ extends EntityArchetype
 
 func _init()->void:
 	label = "PineTree"
-	data.sprite_type = VisualComponent.SpriteType.STATIC
+	data.sprite_type = VisualComponent.SpriteType.ANIMATED
 	data.sprite_key = "pines"
 	data.is_solid = true

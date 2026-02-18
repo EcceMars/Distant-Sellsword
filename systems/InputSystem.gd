@@ -7,10 +7,12 @@ var button_delta:float = 0.0
 
 func process()->void:
 	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
-	for controlled:BehaviorComponent in REG.get_all_components_of(BEHAV_FLAG):
-		if not controlled.active_behavior is InputBehavior: continue
-		var movement:MovementComponent = REG.get_component(controlled.uid, MOV_FLAG)
+	var acting_entities:Array[int] = REG.get_entities_by(BEHAV_FLAG) 
+	for uid:int in acting_entities:
+		var behav_component:BehaviorComponent = REG.get_component(uid, BEHAV_FLAG)
+		if not behav_component.active_behavior or not behav_component.active_behavior is InputBehavior: continue
 		
+		var movement:MovementComponent = REG.get_component(uid, MOV_FLAG)
 		if not MOV_SYS._check_movable(movement): continue
 		
 		var input_dir:Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -18,6 +20,6 @@ func process()->void:
 		if input_dir != Vector2.ZERO:
 			button_delta = clampf(button_delta + REG.DELTA, 0.0, MOVE_THRESHOLD)
 			if button_delta >= MOVE_THRESHOLD:
-				MOV_SYS.add_move(controlled.uid, input_dir, true)
+				MOV_SYS.add_move(uid, input_dir, true)
 		else:
 			button_delta = 0.0

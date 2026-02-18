@@ -1,23 +1,28 @@
-## Base class for entity archetypes - blueprints for entity creation.
-## Archetypes provide convenient defaults but don't restrict runtime modification.
-## The ECS remains fully dynamic - components can be added/removed freely.
+## Base blueprint for all entity archetypes.
+## Subtypes populate [member data] in [method _init] and optionally
+## override [method _prepare] for runtime variation.
 @icon("res://assets/img/icons/main_icon.png")
 class_name EntityArchetype
 extends Resource
 
-## Archetype display name, set in each subtype's [method _init].
+## Human-readable label, set in each subtype's [method _init].
 var label:String = "Unnamed"
-## All configuration for this archetype. Subtypes populate in [method _init].
+## Configuration container. Subtypes populate this in [method _init].
 var data:Data = Data.new()
 
-## Populates [member data] with archetype defaults. Override in each subtype.
+## Populates [member data] with archetype defaults.
+## Always override in subtypes.
 func _init()->void: pass
 
-## Hook for runtime randomisation before [method _build] runs.
-## Override in subtypes that need name/sprite variation.
+## Called at the start of [method _build], before any component is added.
+## Override for randomisation or conditional defaults (e.g. random name, sprite variant).
 func _prepare()->void: pass
 
-## Assembles and registers a new entity from [member data].
+## Called at the end of [method _build], after all standard components.
+## Override for extra components (e.g. [ItemComponent]).
+func _post_build(_uid:int)->void: pass
+
+## Assembles a new entity from [member data] at a random valid position.
 ## Returns the new entity UID, or -1 on failure.
 func _build()->int:
 	_prepare()
@@ -25,29 +30,88 @@ func _build()->int:
 	if uid == -1:
 		push_error("[EntityArchetype] Registry full, cannot spawn: %s" % label)
 		return -1
-	_add_movement(uid)
-	_add_visual(uid)
+	var position:Vector2 = _random_position()
+	
+	_add_movement(uid, position)
+	_add_visual(uid, position)
 	if data.has_stats:					_add_stats(uid)
 	if data.has_animations:				_add_animation_state(uid)
 	if data.behavior_keys.size() > 0:	_add_behavior(uid)
+	if data.has_information:			_add_information(uid)
+
+	_post_build(uid)
 	return uid
 
-## Override in subtypes that need post-build logic (e.g. ItemComponent registration).
-func _post_build(_uid:int)->void: pass
+## Adds a [MovementComponent] to [param uid].
+func _add_movement(uid:int, position:Vector2)->void:
+	REG.add_component(uid, MovementComponent.new(
+		position,
+		data.is_solid,
+		data.moves,
+		data.move_type,
+		data.move_speed
+	))
 
-func _add_movement(_uid:int)->void: pass
-func _add_visual(_uid:int)->void: pass
-func _add_stats(_uid:int)->void: pass
-func _add_animation_state(_uid:int)->void: pass
-func _add_behavior(_uid:int)->void: pass
+## Adds a [VisualComponent] to [param uid].
+func _add_visual(uid:int, position:Vector2)->void:
+	REG.add_component(uid, VisualComponent.new(
+		data.sprite_type,
+		data.sprite_key,
+		Vector2i(position),
+		data.debug_color
+	))
+
+## Adds a [StatsComponent] to [param uid].
+func _add_stats(uid:int)->void:
+	REG.add_component(uid, StatsComponent.new(
+		data.char_name,
+		data.gender,
+		data.blood_max,   data.blood_regen,
+		data.energy_max,  data.energy_regen,
+		data.hunger_max,  data.hunger_regen,
+		data.thirst_max,  data.thirst_regen
+	))
+
+## Adds an [AnimationStateComponent] to [param uid].
+func _add_animation_state(uid:int)->void:
+	REG.add_component(uid, AnimationStateComponent.new())
+
+## Adds a [BehaviorComponent] to [param uid].
+## Warns if any key in [member Data.behavior_keys] is not registered in [BehaviorRegistry].
+func _add_behavior(uid:int)->void:
+	for key:BaseBehavior.Type in data.behavior_keys:
+		if not REG.BE_REG.has_behavior(uid, key):
+			push_warning("[EntityArchetype] Behavior '%s' not found — '%s' may need configuration." % [key, label])
+	REG.add_component(uid, BehaviorComponent.new(data.behavior_keys))
+
+# TODO: implement InformationComponent
+## Adds an [InformationComponent] to [param uid].
+func _add_information(uid:int)->void: pass
+	#REG.add_component(uid, InformationComponent.new())
+
+## Returns a random unoccupied world position snapped to the grid.
+## Falls back to [constant Vector2.ZERO] after 16 failed attempts.
+func _random_position()->Vector2:
+	var mov_sys:MovementSystem = REG.SYSTEMS.get("MovementSystem")
+	var attempts:int = 16
+	while attempts > 0:
+		var x:float = float(randi_range(0, REG.WIDTH - 1)) * REG.SCALE
+		var y:float = float(randi_range(0, REG.HEIGHT - 1)) * REG.SCALE
+		var candidate:Vector2 = Vector2(x, y)
+		if mov_sys and mov_sys.blocked_positions.has(Vector2i(candidate)):
+			attempts -= 1
+			continue
+		return candidate
+	push_warning("[EntityArchetype] No free position found for '%s', spawning at origin." % label)
+	return Vector2.ZERO
 ## All configuration data for a single archetype.
-## Modify members before calling [method EntityArchetype._build] for runtime customisation.
+## Members are read by [method _build] to assemble components.
 class Data:
 	## Visual
 	var sprite_type:VisualComponent.SpriteType = VisualComponent.SpriteType.DEBUG
 	var sprite_key:String = ""
 	var debug_color:Color = Color.PURPLE
-	## Movement
+	## Movement — position is assigned at build time
 	var moves:bool = false
 	var is_solid:bool = false
 	var move_type:MovementComponent.Movable.Flag = MovementComponent.Movable.Flag.GROUND
@@ -66,8 +130,7 @@ class Data:
 	var char_name:String = ""
 	var gender:String = "Female"
 	## Behavior
-	var behavior_keys:Array[String] = []
+	var behavior_keys:Array[BaseBehavior.Type] = []
 	## Flags
 	var has_animations:bool = false
 	var has_information:bool = false
-	var is_actor:bool = false

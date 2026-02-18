@@ -3,21 +3,27 @@
 class_name BehaviorRegistry
 extends BaseRegistry
 
-static var BEHAVIORS:Dictionary[String, Script] = {
-	"idle": IdleBehavior,
-	"input": InputBehavior,
-	"wander": WanderBehavior
-	}
+const BEHAV_CFLAG:BaseComponent.Flag = BaseComponent.Flag.BEHAVIOR
+
+var BEHAVIORS:Dictionary[BaseBehavior.Type, GDScript] = {
+	BaseBehavior.Type.FLEE:		FleeBehavior,
+	BaseBehavior.Type.IDLE:		IdleBehavior,
+	BaseBehavior.Type.INPUT:	InputBehavior,
+	BaseBehavior.Type.REST:		RestBehavior,
+	BaseBehavior.Type.WANDER:	WanderBehavior,
+}
 
 ## Cache for behavior instances
-var _cache:Dictionary[String, BaseBehavior] = {}
-
+var _cache:Dictionary[BaseBehavior.Type, BaseBehavior] = {}
 func get_behavior(uid:int, name:String)->BaseBehavior:
 	if not REG.get_component(uid, REG.C_FLAGS.BEHAV): return null
 	return REG.get_component(uid, REG.C_FLAGS.BEHAV).get_behavior(name)
-
+func has_behavior(uid:int, key:BaseBehavior.Type)->bool:
+	var behav_component:BehaviorComponent = REG.get_component(uid, BEHAV_CFLAG)
+	if not behav_component: return false
+	return not behav_component.behaviors.get(key, true)
 ## Gets a behavior instance by key, creating and loading it to [_cache] if needed.
-func load_behavior(key:String)->BaseBehavior:
+func load_behavior(key:BaseBehavior.Type)->BaseBehavior:
 	if _cache.has(key): return _cache[key]
 	if not BEHAVIORS.has(key):
 		push_warning("[BehaviorRegistry] No behavior registered for key:'%s'" % key)
@@ -27,10 +33,10 @@ func load_behavior(key:String)->BaseBehavior:
 	_cache[key] = behavior
 	return behavior
 ## Gets behaviors from a list of keys
-func load_behaviors(keys:Array[String]) -> Array[BaseBehavior]:
+func load_behaviors(keys:Array[BaseBehavior.Type])->Array[BaseBehavior]:
 	var behaviors:Array[BaseBehavior] = []
 	
-	for key:String in keys:
+	for key:BaseBehavior.Type in keys:
 		var behavior:BaseBehavior = load_behavior(key)
 		if behavior:
 			behaviors.append(behavior)

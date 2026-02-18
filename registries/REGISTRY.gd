@@ -104,7 +104,7 @@ func update()->void:
 func add_component(uid:int, component:BaseComponent, override:bool = false)->BaseComponent:
 	if not _is_valid_entity(uid): return null
 	if not component or not component.flag: return null
-
+	
 	ENTITIES[uid] |= component.flag
 	if not override and COMPONENT_STORE[uid].get(component.flag): return COMPONENT_STORE[uid][component.flag]
 	COMPONENT_STORE[uid][component.flag] = component
