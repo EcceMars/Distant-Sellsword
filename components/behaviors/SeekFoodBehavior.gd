@@ -7,6 +7,8 @@ const EAT_RADIUS:float = 4.0
 const EAT_ENERGY:float = 30.0
 ## How much hunger is restored on eating.
 const EAT_HUNGER:float = 40.0
+## How much thirst is restored on eating.
+const EAT_THIRST:float = 10.0
 
 ## UID of the food item currently being pursued. -1 means none.
 var _target_uid:int = -1
@@ -120,12 +122,12 @@ func _is_valid_target(food_uid: int) -> bool:
 	return REG.has_components(food_uid, BaseComponent.Flag.ITEM)
 
 ## Restores stats and destroys the food entity.
-func _eat(eater_uid: int, food_uid: int) -> void:
+func _eat(eater_uid:int, food_uid:int) -> void:
 	var stats: StatsComponent = REG.get_component(eater_uid, BaseComponent.Flag.STATS)
 	if stats:
-		stats.energy.recover(EAT_ENERGY)
-		stats.hunger.recover(EAT_HUNGER)
-
+		if stats.energy: stats.energy.recover(EAT_ENERGY)
+		if stats.hunger: stats.hunger.recover(EAT_HUNGER)
+		if stats.thirst: stats.thirst.recover(EAT_THIRST)
 	# Forget the entry so memory stays consistent
 	var mem: MemoryComponent = REG.get_component(eater_uid, BaseComponent.Flag.MEMORY)
 	if mem:
