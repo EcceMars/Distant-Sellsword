@@ -31,5 +31,5 @@ func _to_string()->String:
 	var list:String = ": { "
 	for behavior in behaviors.keys():
 		list += str(behavior) + " "
-	list += "} -> Act: " + str(active_behavior.get_script())
+	list += "} -> Act: " + str(active_behavior.get_script().get_global_name())
 	return message + list

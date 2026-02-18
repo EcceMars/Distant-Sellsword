@@ -41,6 +41,7 @@ func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	if data.has_animations:				_add_animation_state(uid)
 	if data.behavior_keys.size() > 0:	_add_behavior(uid)
 	if data.has_information:			_add_information(uid)
+	if data.has_memory:					_add_memory(uid)
 
 	_post_build(uid)
 	return uid
@@ -89,9 +90,15 @@ func _add_behavior(uid:int)->void:
 
 # TODO: implement InformationComponent
 ## Adds an [InformationComponent] to [param uid].
-func _add_information(uid:int)->void: pass
+func _add_information(_uid:int)->void: pass
 	#REG.add_component(uid, InformationComponent.new())
-
+## Adds a [MemoryComponent] to [param uid] using archetype-level vision parameters.
+func _add_memory(uid: int) -> void:
+	REG.add_component(uid, MemoryComponent.new(
+		data.memory_focus_limit,
+		data.vision_range,
+		data.vision_width
+	))
 ## Returns a random unoccupied world position snapped to the grid.
 ## Falls back to [constant Vector2.ZERO] after 16 failed attempts.
 func _random_position()->Vector2:
@@ -137,3 +144,8 @@ class Data:
 	## Flags
 	var has_animations:bool = false
 	var has_information:bool = false
+	var has_memory:bool = false
+	## Memory
+	var memory_focus_limit:int = 8
+	var vision_range:float = 5.0 * REG.SCALE
+	var vision_width:float = 2.0 * REG.SCALE

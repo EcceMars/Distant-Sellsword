@@ -10,13 +10,15 @@ func _init()->void:
 	data.moves = true
 	data.has_stats = true
 	data.behavior_keys = [
-		BaseBehavior.Type.FLEE,
-		BaseBehavior.Type.REST,
+		#BaseBehavior.Type.FLEE,
+		#BaseBehavior.Type.REST,
+		BaseBehavior.Type.SEEK_FOOD,
 		BaseBehavior.Type.WANDER,
 		BaseBehavior.Type.IDLE
 	]
 	data.has_animations = true
 	data.has_information = true
+	data.has_memory = true
 
 func _prepare()->void:
 	data.char_name = "Wild Duck" #REG.DATA.duck_names.pick_random()

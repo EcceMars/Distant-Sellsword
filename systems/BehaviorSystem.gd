@@ -26,9 +26,17 @@ func process() -> void:
 			continue
 
 		_update_perception(uid, behav)
+		_activate_all(uid, behav)
 		_select_behavior(behav)
 		behav.active_behavior.act(uid)
-
+## Calls [method BaseBehavior.activate] on every behavior the entity owns,
+## so each can update its priority before [method _select_behavior] runs.
+## Only [SeekFoodBehavior] (and future dynamic behaviors) implement this;
+## the base no-op is safe for all others.
+func _activate_all(uid:int, behav:BehaviorComponent)->void:
+	for b:BaseBehavior in behav.behaviors.values():
+		if b and b.has_method("activate"):
+			b.activate(uid)
 ## Rebuilds the vision triangle and records newly visible entities into memory.
 ## Skips if not enough ticks have elapsed since the last update.
 func _update_perception(uid:int, behav:BehaviorComponent) -> void:
@@ -80,10 +88,11 @@ func _select_behavior(behav:BehaviorComponent)->void:
 
 	for type:BaseBehavior.Type in behav.behaviors:
 		var candidate:BaseBehavior = behav.behaviors[type]
+		if not candidate: continue
 		var p:float = candidate.get_priority()
 		if p > best_priority:
 			best_priority = p
-			best          = candidate
+			best = candidate
 
 	if not best or best == behav.active_behavior:
 		return

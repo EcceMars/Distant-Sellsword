@@ -4,7 +4,7 @@ extends Node
 
 ## Fixed simulation step length in seconds.
 const FRAME_LEN:float = 5
-var _frame:float = FRAME_LEN
+#var _frame:float = FRAME_LEN
 
 ## How often (in seconds) the world tries to spawn a berry near a tree.
 const BERRY_INTERVAL:float = 1.0

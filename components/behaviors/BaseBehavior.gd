@@ -7,6 +7,7 @@ enum Type {
 	IDLE,
 	INPUT,
 	REST,
+	SEEK_FOOD,
 	WANDER
 }
 
@@ -24,3 +25,6 @@ func get_priority()->float: return 0.0
 func act(_uid:int)->void: pass
 func on_enter()->void: pass
 func on_exit()->void: pass
+
+func _to_string()->String:
+	return str(type) + ": " + get_script().get_global_name()

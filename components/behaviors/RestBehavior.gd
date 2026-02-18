@@ -9,4 +9,5 @@ func _init()->void:
 func get_priority()->float:
 	if not active: return 0.0
 	return priority
+func activate(_uid:int)->void: pass
 func act(uid:int)->void: pass
