@@ -49,18 +49,26 @@ func _get_move_state(uid:int, mov_component:MovementComponent, stats_component:S
 	
 	var movable:MovementComponent.Movable = mov_component.movable
 	
-	# Check if we have a path
 	if movable.path.is_empty():
 		movable.has_target = false
 		return MoveState.STOPPED
 	
-	# Check if destination is blocked (but we still want to try moving there)
 	var target_grid:Vector2i = movable.path[0]
+
+	## Check terrain passability before entity blocking
+	if not _can_enter_tile(mov_component, target_grid):
+		return MoveState.BLOCKED
+
 	if blocked_positions.has(target_grid) and blocked_positions[target_grid] != uid:
-		# Path is blocked - we'll keep has_target true but report blocked
 		return MoveState.BLOCKED
 	
 	return MoveState.MOVING
+
+## Returns true if [param mov_component]'s movement type can enter [param grid].
+func _can_enter_tile(mov_component:MovementComponent, grid:Vector2i)->bool:
+	if not REG.TE_REG: return true
+	var world_pos:Vector2 = Vector2(grid)
+	return REG.TE_REG.can_spawn(world_pos, mov_component.movable.mov_type)
 
 func _update_movable_state(mov_component:MovementComponent, move_state:MoveState)->void:
 	var movable:MovementComponent.Movable = mov_component.movable
@@ -165,5 +173,5 @@ func _world_to_grid(position:Vector2)->Vector2i:
 	var snapped_pos:Vector2 = position.snapped(Vector2(factor, factor))
 	return Vector2i(snapped_pos).clamp(
 		Vector2i.ZERO, 
-		Vector2i(REG.WIDTH, REG.HEIGHT) * REG.SCALE
+		Vector2i(REG.WIDTH -1, REG.HEIGHT -1) * REG.SCALE
 	)

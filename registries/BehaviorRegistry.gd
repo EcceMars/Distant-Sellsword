@@ -11,6 +11,7 @@ var BEHAVIORS:Dictionary[BaseBehavior.Type, GDScript] = {
 	BaseBehavior.Type.INPUT:		InputBehavior,
 	BaseBehavior.Type.REST:			RestBehavior,
 	BaseBehavior.Type.SEEK_FOOD:	SeekFoodBehavior,
+	BaseBehavior.Type.SEEK_WATER:	SeekWaterBehavior,
 	BaseBehavior.Type.WANDER:		WanderBehavior,
 }
 

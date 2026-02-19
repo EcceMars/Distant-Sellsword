@@ -7,6 +7,9 @@ extends BaseSystem
 ## If an action must override the wait time, it just needs to reuse the position at uid.
 var _wait_timers:Dictionary[int, float] = {}
 
+## World position of the current water target. Zero means unresolved.
+var _water_pos:Vector2 = Vector2.ZERO
+
 # TODO! Move these to the item description
 ## How much energy is restored on eating.
 const EAT_ENERGY:float = 30.0
@@ -14,6 +17,9 @@ const EAT_ENERGY:float = 30.0
 const EAT_HUNGER:float = 40.0
 ## How much thirst is restored on eating.
 const EAT_THIRST:float = 10.0
+
+const DRINK_AMOUNT:float = 40.0
+const DRINK_DURATION:float = 1.5
 
 func process()->void:
 	for uid:int in _wait_timers.keys():
@@ -31,10 +37,39 @@ func is_waiting(uid:int)->bool:
 func move(uid:int, target:Vector2)->bool:
 	if is_waiting(uid): return false
 
+	var mov:MovementComponent = REG.get_component(uid, REG.C_FLAGS.MOVE)
+	if not mov or not mov.movable: return false
+
+	if not REG.TE_REG.can_spawn(target, mov.movable.mov_type):
+		return false
+
 	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
 	if not MOV_SYS: return false
 	
 	return MOV_SYS.add_move(uid, target)
+func move_closer(uid:int, target:Vector2)->bool:
+	if is_waiting(uid): return false
+	
+	var mov:MovementComponent = REG.get_component(uid, REG.C_FLAGS.MOVE)
+	if not mov or not mov.movable: return false
+	
+	var origin:Vector2 = mov.position
+	var distance:float = origin.distance_to(target)
+	if distance < REG.SCALE: return false
+	
+	var direction:Vector2 = (target - origin).normalized()
+	var steps:int = int(distance / REG.SCALE)
+	var last_valid:Vector2 = origin
+	
+	for i:int in range(1, steps + 1):
+		var candidate:Vector2 = origin + direction * (i * REG.SCALE)
+		if not REG.TE_REG.can_spawn(candidate, mov.movable.mov_type):
+			break
+		last_valid = candidate
+	
+	if last_valid == origin: return false
+	
+	return move(uid, last_valid)
 ## Scans the entity's vision triangle and updates its [MemoryComponent].
 func look(uid:int)->Array[int]:
 	if is_waiting(uid): return []
@@ -56,22 +91,30 @@ func turn_around(uid:int)->void:
 ## Recovers stats, cleans memory, triggers visual effects and queues destruction.
 func eat(eater_uid:int, food_uid:int)->void:
 	if is_waiting(eater_uid): return
-	
+
+	## Data first — registry and stats
+	REG.IT_REG.unregister_item(food_uid)
+
 	var stats:StatsComponent = REG.get_component(eater_uid, BaseComponent.Flag.STATS)
 	if stats:
 		if stats.energy: stats.energy.recover(EAT_ENERGY)
 		if stats.hunger: stats.hunger.recover(EAT_HUNGER)
 		if stats.thirst: stats.thirst.recover(EAT_THIRST)
 
-	# Forget the entry so memory stays consistent
-	var mem:MemoryComponent=REG.get_component(eater_uid, BaseComponent.Flag.MEMORY)
-	if mem:
-		mem.forget(food_uid)
+	var mem:MemoryComponent = REG.get_component(eater_uid, BaseComponent.Flag.MEMORY)
+	if mem: mem.forget(food_uid)
 
-	# Visual effects + queue destruction
+	## Visual last — cosmetic only, entity is already logically gone
 	var food_vis:VisualComponent = REG.get_component(food_uid, REG.C_FLAGS.VISUAL)
-	if food_vis:
-		_consume_food(food_vis)
+	if food_vis: _consume_food(food_vis)
+## Recovers thirst and issues a wait to simulate drinking time.
+func drink(uid:int)->void:
+	var stats:StatsComponent = REG.get_component(uid, BaseComponent.Flag.STATS)
+	if not stats or not stats.thirst: return
+	
+	stats.thirst.recover(DRINK_AMOUNT)
+	REG.ACT.wait(uid, DRINK_DURATION)
+	_water_pos = Vector2.ZERO  ## Clear so it re-evaluates next time
 ## Internal helper for visual consumption of food.
 func _consume_food(food_vis:VisualComponent)->void:
 	var ANI_SYS:AnimationSystem = REG.SYSTEMS.get("AnimationSystem")
@@ -81,3 +124,11 @@ func _consume_food(food_vis:VisualComponent)->void:
 
 	food_vis.destroy_time = 0.5
 	food_vis.queue_destroy = true
+## Request the entity to die
+func die(uid:int)->void:
+	var vis:VisualComponent = REG.get_component(uid, REG.C_FLAGS.VISUAL)
+	if vis:
+		vis.queue_destroy = true
+		vis.destroy_time = 3.0  ## Let VisualSystem handle the fade and cleanup
+		return
+	REG.destroy_entity(uid)

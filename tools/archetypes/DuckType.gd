@@ -8,10 +8,12 @@ func _init()->void:
 	data.sprite_type = VisualComponent.SpriteType.ANIMATED
 	data.sprite_key = "duck"
 	data.moves = true
+	data.move_type = MovementComponent.Movable.Flag.AMPHIBIAN
 	data.has_stats = true
 	data.behavior_keys = [
 		#BaseBehavior.Type.FLEE,
 		#BaseBehavior.Type.REST,
+		BaseBehavior.Type.SEEK_WATER,
 		BaseBehavior.Type.SEEK_FOOD,
 		BaseBehavior.Type.WANDER,
 		BaseBehavior.Type.IDLE

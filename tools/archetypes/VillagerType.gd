@@ -13,7 +13,8 @@ func _init()->void:
 		#BaseBehavior.Type.REST,
 		BaseBehavior.Type.SEEK_FOOD,
 		BaseBehavior.Type.WANDER,
-		BaseBehavior.Type.IDLE
+		BaseBehavior.Type.IDLE,
+		BaseBehavior.Type.SEEK_WATER
 	]
 	data.has_animations = true
 	data.has_information = true

@@ -61,6 +61,15 @@ func drop_to_world(item_uid:int, position:Vector2)->bool:
 	_world_items[grid_pos].append(item_uid)
 	
 	return true
+## Returns the [ItemComponent] for [param uid], or null if not registered.
+func get_item(uid:int)->ItemComponent:
+	return _items.get(uid)
+## Returns all registered item uids.
+func get_all_items()->Array[int]:
+	var result:Array[int] = []
+	for uid:int in _items:
+		result.append(uid)
+	return result
 ## Get all items at a world position
 func get_items_at_position(position:Vector2)->Array[int]:
 	var grid_pos:Vector2i = Vector2i(position)

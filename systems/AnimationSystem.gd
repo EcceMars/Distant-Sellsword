@@ -96,9 +96,9 @@ func burst_particles(sprite:Node2D, color:Color = Color.RED, amount:int = 8) -> 
 		particles.position = Vector2(16, 16)  # Default position
 	
 	# Add to scene and emit
-	REG.CANVAS.add_child(particles)
+	REG.ENT_LAYER.add_child(particles)
 	particles.emitting = true
 	
 	# Clean up when done
-	await REG.CANVAS.get_tree().create_timer(particles.lifetime + 0.1).timeout
+	await REG.ENT_LAYER.get_tree().create_timer(particles.lifetime + 0.1).timeout
 	particles.queue_free()

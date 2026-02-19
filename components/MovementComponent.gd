@@ -25,6 +25,7 @@ func _init(_position:Vector2, _solid:bool = true, moves:bool = false,
 class Movable:
 	enum Flag {
 		AIR,		## Usually, will only collide with other AIR entities or ceiling structures (special tile type)
+		AMPHIBIAN,	## Will collide with both water and ground types
 		GROUND,		## General enitity move type
 		PHASE,		## Can only collide with the same type of mov_type entity. Will phase solid blocks (e.g. ghosts)
 		UNDER,		## Moves underground, colliding with others of the same [param mov_type]

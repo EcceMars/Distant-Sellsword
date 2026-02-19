@@ -8,6 +8,7 @@ enum Type {
 	INPUT,
 	REST,
 	SEEK_FOOD,
+	SEEK_WATER,
 	WANDER
 	}
 

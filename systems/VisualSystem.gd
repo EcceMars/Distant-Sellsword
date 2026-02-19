@@ -9,24 +9,24 @@ func process()->void:
 	_update_animation()
 ## Clear the registry, so the canvas nodes can be deleted
 func _clean_registry()->void:
-	var uids:Array[int] = REG.get_entities_by(VIS_FLAG)
-	
+	var uids:Array[int] = REG.get_entities_by(VIS_FLAG).duplicate()  ## Duplicate to avoid mid-loop mutation
 	for uid:int in uids:
 		var component:VisualComponent = REG.get_component(uid, VIS_FLAG)
-		if component and component.queue_destroy:
-			if component.destroy_time <= 0:
-				component.sprite.queue_free()
-				REG.visual_nodes.erase(component.sprite)
-				REG.destroy_entity(uid)
-			else:
-				component.destroy_time -= REG.DELTA
+		if not component or not component.queue_destroy: continue
+		if component.destroy_time > 0:
+			component.destroy_time -= REG.DELTA
+			continue
+		## Time elapsed — safe to destroy
+		if is_instance_valid(component.sprite):
+			component.sprite.queue_free()
+			REG.visual_nodes.erase(component.sprite)
 ## Update sprite positions to [MovementComponent]
 func _update_positions()->void:
 	var uids:Array[int] = REG.get_entities_by(VIS_FLAG | MOV_FLAG)
 	
 	for uid:int in uids:
 		var vis_comp:VisualComponent = REG.get_component(uid, VIS_FLAG)
-		if not vis_comp: continue
+		if not vis_comp or not vis_comp.sprite: continue
 		
 		var mov_comp:MovementComponent = REG.get_component(uid, MOV_FLAG)
 		if not mov_comp: continue

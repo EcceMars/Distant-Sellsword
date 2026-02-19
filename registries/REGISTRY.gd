@@ -46,30 +46,47 @@ var AR_REG:ArchetypeRegistry = null
 var BE_REG:BehaviorRegistry = null
 ## [ItemRegistry]
 var IT_REG:ItemRegistry = null
+## [TerrainRegistry]
+var TE_REG:TerrainRegistry = null
 ## [SpriteRegistry]
 var SP_REG:SpriteRegistry = null
 ## [DataRegistry]
 var DATA:DataRegistry = null
 
-## [Node2D] responsible for holding [VisualComponent] sprites
+## [Node2D] responsible for holding visuals
 var CANVAS:Node2D = null
+var ENT_LAYER:Node2D = null
+## Texture for holding biome data.
+var TERRAIN:Node2D = null
 ## List of [CANVAS] child nodes
 var visual_nodes:Array[Node] = []
 
 
-func start(MAIN:Node, max_entities:int = MAX_ENTITIES, canvas:Node2D = CanvasScript.new(), width:int = WIDTH, height:int = HEIGHT, scale:int = SCALE)->void:
+func start(MAIN:Node, max_entities:int = MAX_ENTITIES, width:int = WIDTH, height:int = HEIGHT, scale:int = SCALE)->void:
 	MAX_ENTITIES = max_entities
-	CANVAS = canvas
+	CANVAS = CanvasScript.new()
 	CANVAS.name = "CANVAS"
-	CANVAS.y_sort_enabled = true
+	CANVAS.y_sort_enabled = false
+	
 	MAIN.add_child(CANVAS)
 	WIDTH = width
 	HEIGHT = height
 	SCALE = scale
 	
+	TERRAIN = Node2D.new()
+	TERRAIN.name = "TERRAIN"
+	TERRAIN.z_index = -1
+	CANVAS.add_child(TERRAIN)
+	
+	ENT_LAYER = Node2D.new()
+	ENT_LAYER.name = "ENTITIES"
+	ENT_LAYER.y_sort_enabled = true
+	CANVAS.add_child(ENT_LAYER)
+	
 	AR_REG = ArchetypeRegistry.new()
 	BE_REG = BehaviorRegistry.new()
 	IT_REG = ItemRegistry.new()
+	TE_REG = TerrainRegistry.new()
 	SP_REG = SpriteRegistry.new()
 
 	DATA = load("res://registries/GENERAL_DATA.tres")

@@ -30,10 +30,7 @@ func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	if uid == -1:
 		push_error("[EntityArchetype] Registry full, cannot spawn: %s" % label)
 		return -1
-	
-	var position:Vector2 = spawn_position \
-		if spawn_position != -Vector2.ONE \
-		else _random_position()
+	var position:Vector2 = spawn_position if spawn_position != -Vector2.ONE else _random_position()
 	
 	_add_movement(uid, position)
 	_add_visual(uid, position)
@@ -42,7 +39,7 @@ func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	if data.behavior_keys.size() > 0:	_add_behavior(uid)
 	if data.has_information:			_add_information(uid)
 	if data.has_memory:					_add_memory(uid)
-	if data.is_item:					_add_item_condition(uid, data.item_type)
+	if data.is_item:					_add_item_condition(uid, data.item_type, position)
 
 	_post_build(uid)
 	return uid
@@ -100,23 +97,21 @@ func _add_memory(uid: int) -> void:
 		data.vision_range,
 		data.vision_width
 	))
-func _add_item_condition(uid:int, item_type:String)->void:
-	REG.add_component(uid, ItemComponent.new(item_type))
+func _add_item_condition(uid:int, item_type:String, spawn_position:Vector2 = Vector2.ZERO)->void:
+	var item_component:ItemComponent = ItemComponent.new(item_type)
+	if not item_component: return
+	
+	item_component.world_position = spawn_position
+	REG.add_component(uid, item_component)
+	REG.IT_REG.register_item(uid, item_component)
 ## Returns a random unoccupied world position snapped to the grid.
 ## Falls back to [constant Vector2.ZERO] after 16 failed attempts.
 func _random_position()->Vector2:
 	var mov_sys:MovementSystem = REG.SYSTEMS.get("MovementSystem")
-	var attempts:int = 16
-	while attempts > 0:
-		var x:float = float(randi_range(0, REG.WIDTH - 1)) * REG.SCALE
-		var y:float = float(randi_range(0, REG.HEIGHT - 1)) * REG.SCALE
-		var candidate:Vector2 = Vector2(x, y)
-		if mov_sys and mov_sys.blocked_positions.has(Vector2i(candidate)):
-			attempts -= 1
-			continue
-		return candidate
-	push_warning("[EntityArchetype] No free position found for '%s', spawning at origin." % label)
-	return Vector2.ZERO
+	var candidate:Vector2 = REG.TE_REG.random_position_for(data.move_type)
+	if mov_sys and mov_sys.blocked_positions.has(Vector2i(candidate)):
+		return REG.TE_REG.random_position_for(data.move_type)  ## One retry
+	return candidate
 ## All configuration data for a single archetype.
 ## Members are read by [method _build] to assemble components.
 class Data:

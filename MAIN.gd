@@ -3,6 +3,12 @@ extends Node
 @export var CAM_ANCHOR:CAMERA_MANAGER = null
 @export var UI:Control = null
 
+@export var MAX_ENTITIES:int = 128
+
+@export var WIDTH:int = 32
+@export var HEIGHT:int = 24
+@export var SCALE:int = 16
+
 ## Fixed simulation step length in seconds.
 const FRAME_LEN:float = 5
 #var _frame:float = FRAME_LEN
@@ -12,7 +18,7 @@ const BERRY_INTERVAL:float = 6.0
 var _berry_timer:float = BERRY_INTERVAL
 
 func _ready()->void:
-	REG.start(self)
+	REG.start(self, MAX_ENTITIES, WIDTH, HEIGHT, SCALE)
 
 	REG.start_system(MovementSystem.new())
 	REG.start_system(VisualSystem.new())
@@ -27,10 +33,10 @@ func _ready()->void:
 	REG.ACT = REG.SYSTEMS.get("ActionSystem")
 
 	# Spawn world entities
-	for _i:int in 8:  REG.AR_REG.spawn(ArchetypeRegistry.Type.TREE)
+	for _i:int in 16:  REG.AR_REG.spawn(ArchetypeRegistry.Type.TREE)
 	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.VILLAGER)
 	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.DUCK)
-	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY)
+	for _i:int in 8:  REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY)
 
 	var player_uid:int = REG.AR_REG.spawn(ArchetypeRegistry.Type.ACTOR)
 	

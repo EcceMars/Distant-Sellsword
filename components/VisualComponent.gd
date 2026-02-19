@@ -65,7 +65,7 @@ func _create_sprite(sprite_key:String, position:Vector2i, debug_color:Color) -> 
 	
 	sprite.name = "sprite_%5d" % randi()
 	
-	REG.CANVAS.add_child(sprite)
+	REG.ENT_LAYER.add_child(sprite)
 	REG.visual_nodes.append(sprite)
 func _default(position:Vector2i, color:Color)->void:
 	sprite = ColorRect.new()
@@ -75,7 +75,7 @@ func _default(position:Vector2i, color:Color)->void:
 	sprite.position = position * -0.5
 	sprite.offset_bottom = true
 	
-	REG.CANVAS.add_child(sprite)
+	REG.ENT_LAYER.add_child(sprite)
 	REG.visual_nodes.append(sprite)
 func _offset(size:Vector2)->Vector2:
 	var offset:Vector2 = Vector2.ZERO

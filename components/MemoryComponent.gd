@@ -153,7 +153,7 @@ func _debug_draw_vision_triangle(owner_uid:int, triangle:Triangle2D)->void:
 	## Vertices are already in world space — no offset needed
 	poly.polygon = PackedVector2Array([triangle.a, triangle.b, triangle.c])
 
-	REG.CANVAS.add_child(poly)
+	REG.ENT_LAYER.add_child(poly)
 
 	var t:SceneTreeTimer = vis.sprite.get_tree().create_timer(1.0)
 	t.timeout.connect(poly.queue_free)

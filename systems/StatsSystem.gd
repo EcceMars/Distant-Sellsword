@@ -31,7 +31,7 @@ func check_vitals(uid:int)->void:
 		if stats.energy.ratio() > 0.2:
 			stats.is_conscious = true
 func die(uid:int)->void:
-	REG.destroy_entity(uid)
+	REG.ACT.die(uid)
 func faint(uid:int)->void:
 	var movement:MovementComponent = REG.get_component(uid, MOV_FLAG)
 	if movement and movement.movable:

@@ -19,6 +19,11 @@ func process()->void:
 			destroy(info)
 			continue
 		
+		var vis:VisualComponent = REG.get_component(uid, REG.C_FLAGS.VISUAL)
+		if vis and vis.queue_destroy:
+			destroy(info)
+			continue
+
 		if info.is_active and not info.panel_ref:
 			create_panel(uid)
 		
