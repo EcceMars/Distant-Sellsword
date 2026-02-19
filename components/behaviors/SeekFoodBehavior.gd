@@ -72,7 +72,7 @@ func act(uid:int)->void:
 	var distance:float   = mov.position.distance_to(food_pos)
 
 	if distance <= EAT_RADIUS:
-		_eat(uid, _target_uid)
+		REG.ACT.eat(uid, _target_uid)
 		_target_uid = -1
 		return
 
@@ -123,26 +123,3 @@ func _is_valid_target(food_uid:int)->bool:
 		return false
 	var item:ItemComponent = REG.get_component(food_uid, BaseComponent.Flag.ITEM)
 	return item != null
-
-## Restores stats and destroys the food entity.
-func _eat(eater_uid:int, food_uid:int) -> void:
-	var stats:StatsComponent = REG.get_component(eater_uid, BaseComponent.Flag.STATS)
-	if stats:
-		if stats.energy: stats.energy.recover(EAT_ENERGY)
-		if stats.hunger: stats.hunger.recover(EAT_HUNGER)
-		if stats.thirst: stats.thirst.recover(EAT_THIRST)
-	# Forget the entry so memory stays consistent
-	var mem:MemoryComponent = REG.get_component(eater_uid, BaseComponent.Flag.MEMORY)
-	if mem:
-		mem.forget(food_uid)
-	var food_vis:VisualComponent = REG.get_component(food_uid, REG.C_FLAGS.VISUAL)
-	if food_vis:
-		var ANI_SYS:AnimationSystem = REG.SYSTEMS.get("AnimationSystem")
-		if ANI_SYS:
-			_consume_food(food_vis, ANI_SYS)
-func _consume_food(food_vis:VisualComponent, ANI_SYS:AnimationSystem)->void:
-	ANI_SYS._shake_sprite(food_vis.sprite)
-	ANI_SYS.burst_particles(food_vis.sprite)
-	
-	food_vis.destroy_time = 0.5
-	food_vis.queue_destroy = true

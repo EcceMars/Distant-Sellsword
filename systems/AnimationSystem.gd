@@ -45,27 +45,26 @@ func _determine_animation_state(uid:int)->AC_STATE:
 	
 	# Default to idle
 	return AC_STATE.IDLE
-func _shake_sprite(sprite:Node2D, duration:float = 0.2, intensity:float = 5.0)->void:
-	if not sprite or not sprite.is_inside_tree() or not sprite.position: return
+## Shakes [param sprite] for a short time to simulate consumption.
+## Uses sequential tweens so the shake animation is actually visible.
+func shake_sprite(sprite:Node2D, duration:float = 0.25, intensity:float = 5.0)->void:
+	if not sprite or not sprite.is_inside_tree(): return
 	
 	var original_position:Vector2 = sprite.position
-	var elapsed:float = 0.0
-	
-	# Create a tween for the shake effect
 	var tween:Tween = REG.CANVAS.create_tween()
-	tween.set_parallel(true)
 	
-	# Shake by randomly offsetting position over time
-	while elapsed < duration:
+	var step_time:float = 0.05
+	var steps:int = int(duration/step_time)
+	
+	for i:int in steps:
 		var offset:Vector2 = Vector2(
 			randf_range(-intensity, intensity),
-			randf_range(-intensity, intensity)
+			0.0
 		)
-		tween.tween_property(sprite, "position", original_position + offset, 0.05)
-		elapsed += 0.05
+		tween.tween_property(sprite, "position", original_position+offset,step_time)
 	
-	# Return to original position
-	tween.tween_property(sprite, "position", original_position, 0.05)
+	# Smooth return to original position
+	tween.tween_property(sprite, "position", original_position,0.08)
 func burst_particles(sprite:Node2D, color:Color = Color.RED, amount:int = 8) -> void:
 	if not sprite or not sprite.is_inside_tree() or not sprite.position: return
 	

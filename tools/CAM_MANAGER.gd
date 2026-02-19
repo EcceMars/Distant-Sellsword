@@ -136,6 +136,9 @@ func _handle_click_search_display()->void:
 			var info:InformationComponent = REG.get_component(clicked_uid, REG.C_FLAGS.INFO)
 			if info:
 				info.is_active = !info.is_active
+			var mem:MemoryComponent = REG.get_component(clicked_uid, REG.C_FLAGS.MEMORY)
+			if mem:
+				mem.draw_vision = !mem.draw_vision
 func _find_entity_at_position(world_pos:Vector2)->int:
 	var entities:Array[int] = REG.get_entities_by(REG.C_FLAGS.VISUAL | REG.C_FLAGS.MOVE)
 	var sort_y:Array[Dictionary] = []

@@ -29,6 +29,9 @@ var last_update_tick:int = 0
 ## Set by [BehaviorSystem] based on the active behavior.
 var update_interval:int = 10
 
+var draw_vision:bool = false
+var redraw:bool = true
+
 func _init(
 	_focus_limit:int   = 8,
 	_vision_range:float = 5.0 * 16.0,
@@ -72,7 +75,8 @@ func look(owner_uid:int, current_tick:int) -> Array[int]:
 		return []
 	
 	var vision_triangle:Triangle2D = build_vision_triangle(mov)
-	
+	if draw_vision and redraw:
+		_debug_draw_vision_triangle(owner_uid, vision_triangle)
 	# Get all entities with visual components (visible things)
 	var visible_uids:Array[int] = REG.get_entities_by(BaseComponent.Flag.VISUAL)
 	
@@ -97,6 +101,7 @@ func look(owner_uid:int, current_tick:int) -> Array[int]:
 		updated_uids.append(target_uid)
 	
 	last_update_tick = current_tick
+	redraw = true
 	return updated_uids
 ## Builds the vision [Triangle2D] for this entity based on its [MovementComponent].
 func build_vision_triangle(mov:MovementComponent)->Triangle2D:
@@ -135,6 +140,23 @@ func _evict_oldest()->void:
 			oldest_uid  = uid
 	if oldest_uid != -1:
 		entries.erase(oldest_uid)
+## Internal debug: draws the vision triangle (green overlay) on the entity's sprite.
+## Auto-cleans after 1s so scene stays clean.
+func _debug_draw_vision_triangle(owner_uid:int, triangle:Triangle2D)->void:
+	redraw = false
+	var vis:VisualComponent = REG.get_component(owner_uid,BaseComponent.Flag.VISUAL)
+	if not vis or not vis.sprite: return
+	
+	var center:Vector2 = vis.sprite.position
+	
+	var poly:Polygon2D = Polygon2D.new()
+	poly.name = "VisionDebug"
+	poly.color = Color(0.2,1.0,0.4,0.22)
+	poly.polygon = PackedVector2Array([triangle.a - center, triangle.b - center, triangle.c - center])
+	vis.sprite.add_child(poly)
+	
+	var t:SceneTreeTimer = vis.sprite.get_tree().create_timer(1.0)
+	t.timeout.connect(poly.queue_free)
 ## Single perception record.
 class MemoryEntry:
 	## UID of the remembered entity or item.
