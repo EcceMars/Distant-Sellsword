@@ -3,19 +3,20 @@
 [ext_resource type="Script" uid="uid://bajb6o38s30uy" path="res://MAIN.gd" id="1_0llpg"]
 [ext_resource type="Script" uid="uid://ckubws2uw1q3o" path="res://tools/CAM_MANAGER.gd" id="2_a1u8q"]
 
-[node name="MAIN" type="Node" unique_id=1149854532 node_paths=PackedStringArray("CAM_ANCHOR")]
+[node name="MAIN" type="Node" unique_id=1149854532 node_paths=PackedStringArray("CAM_ANCHOR", "UI")]
 script = ExtResource("1_0llpg")
 CAM_ANCHOR = NodePath("CAM_ANCHOR")
+UI = NodePath("UI")
 
 [node name="CAM_ANCHOR" type="Node2D" parent="." unique_id=798793816 node_paths=PackedStringArray("camera")]
 script = ExtResource("2_a1u8q")
 camera = NodePath("CAM")
 
-[node name="UI" type="Control" parent="CAM_ANCHOR" unique_id=663036910]
+[node name="CAM" type="Camera2D" parent="CAM_ANCHOR" unique_id=958866767]
+
+[node name="UI" type="Control" parent="." unique_id=663036910]
 z_index = 1
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="CAM" type="Camera2D" parent="CAM_ANCHOR" unique_id=958866767]

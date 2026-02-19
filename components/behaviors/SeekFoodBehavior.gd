@@ -22,7 +22,7 @@ func _init()->void:
 	priority = 0.0			# Computed dynamically in get_priority()
 	active = true
 ## Raises priority when the entity is hungry; returns 0 when inactive or well-fed.
-## Outbids [WanderBehavior] (0.2) once hunger drops below 60 %.
+## Outbids [WanderBehavior] (0.3) once hunger drops below 30 %.
 func get_priority(_uid:int)->float:
 	if not active:
 		return 0.0
@@ -59,14 +59,18 @@ func act(uid:int)->void:
 		_target_uid = _nearest_food_uid(uid, mem)
 	
 	if _target_uid == -1:
-		return		# No food visible; stay put until memory updates
+		if not REG.ACT.look(uid):
+			REG.ACT.turn_around(uid)
+			REG.ACT.look(uid)
+		#return		# No food visible; stay put until memory updates
+		_target_uid = _nearest_food_uid(uid, mem)
 
-	var mov: MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
+	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
 	if not mov:
 		return
 
-	var food_pos: Vector2 = _food_position(_target_uid, mem)
-	var distance: float   = mov.position.distance_to(food_pos)
+	var food_pos:Vector2 = _food_position(_target_uid, mem)
+	var distance:float   = mov.position.distance_to(food_pos)
 
 	if distance <= EAT_RADIUS:
 		_eat(uid, _target_uid)
@@ -75,64 +79,34 @@ func act(uid:int)->void:
 
 	# Issue movement only when not already heading there
 	if mov.movable and not mov.movable.has_target:
-		var mov_sys: MovementSystem = REG.SYSTEMS.get("MovementSystem")
-		if mov_sys:
-			mov_sys.add_move(uid, food_pos)
-## Performs the look-around behavior, turning if nothing found
-func _look_around(uid:int, mem:MemoryComponent)->bool:
-	# Perform the actual vision scan
-	var found:Array[int] = mem.look(uid, REG.tick)
-	
-	# If we found something, reset latency and return true
-	if not found.is_empty():
-		look_latency = 0.0
-		return true
-	
-	# Nothing found, accumulate look time
-	look_latency += REG.DELTA
-	
-	# If we've been looking too long without finding anything, turn around
-	if look_latency >= LOOK_AROUND_INTERVAL:
-		var mov_component:MovementComponent = REG.get_component(uid, REG.C_FLAGS.MOVE)
-		if mov_component and mov_component.movable:
-			# Turn to face the opposite direction
-			mov_component.movable.faces_right = !mov_component.movable.faces_right
-			# Reset latency to start the look cycle again
-			look_latency = 0.0
-	
-	return false
+		REG.ACT.move(uid, food_pos)
 ## Clears the cached target so this entity looks for a new one next tick.
 func on_exit() -> void:
 	_target_uid = -1
 ## Returns the UID of the closest FOOD memory entry, or -1 if none exist.
-func _nearest_food_uid(uid:int, mem:MemoryComponent)->int:
-	var found_something:bool = _look_around(uid, mem)
+func _nearest_food_uid(uid:int, mem:MemoryComponent) -> int:
 	var food_entries:Array[MemoryComponent.MemoryEntry] = \
 		mem.get_by_relation(MemoryComponent.Relation.FOOD)
+
 	if food_entries.is_empty():
 		return -1
-	
-	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
-	if found_something:
-		if mov:
-			for entry:MemoryComponent.MemoryEntry in food_entries:
-					if entry.last_tick == REG.tick and _is_valid_target(entry.uid):
-						return entry.uid
-	
-	if not mov:
-		return food_entries[0].uid if food_entries else -1
-	var best_uid: int    = -1
-	var best_dist: float = INF
 
-	for entry: MemoryComponent.MemoryEntry in food_entries:
+	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
+	if not mov:
+		return food_entries[0].uid
+
+	var best_uid:int = -1
+	var best_dist:float = INF
+
+	for entry:MemoryComponent.MemoryEntry in food_entries:
 		if not _is_valid_target(entry.uid):
 			continue
-		var dist: float = mov.position.distance_to(entry.last_position)
+		var dist:float = mov.position.distance_to(entry.last_position)
 		if dist < best_dist:
 			best_dist = dist
-			best_uid  = entry.uid
-	return best_uid
+			best_uid = entry.uid
 
+	return best_uid
 ## Returns the best known world position for [param food_uid]:
 ## the live entity position if available, otherwise the last-seen memory position.
 func _food_position(food_uid:int, mem:MemoryComponent) -> Vector2:

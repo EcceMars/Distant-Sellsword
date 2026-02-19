@@ -1,6 +1,7 @@
 extends Node
 
 @export var CAM_ANCHOR:CAMERA_MANAGER = null
+@export var UI:Control = null
 
 ## Fixed simulation step length in seconds.
 const FRAME_LEN:float = 5
@@ -19,6 +20,11 @@ func _ready()->void:
 	REG.start_system(AnimationSystem.new())
 	REG.start_system(InputSystem.new())
 	REG.start_system(BehaviorSystem.new())
+	REG.start_system(ActionSystem.new())
+	REG.start_system(InformationSystem.new(UI))
+	
+	REG.SYSTEMS.get("InformationSystem").instance()
+	REG.ACT = REG.SYSTEMS.get("ActionSystem")
 
 	# Spawn world entities
 	for _i:int in 8:  REG.AR_REG.spawn(ArchetypeRegistry.Type.TREE)

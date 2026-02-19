@@ -5,6 +5,7 @@ extends Node
 enum C_FLAGS {
 	ANIM = BaseComponent.Flag.ANIMATION_STATE,
 	BEHAV = BaseComponent.Flag.BEHAVIOR,
+	INFO = BaseComponent.Flag.INFORMATION,
 	ITEM = BaseComponent.Flag.ITEM,
 	MEMORY = BaseComponent.Flag.MEMORY,
 	MOVE = BaseComponent.Flag.MOVEMENT,
@@ -36,8 +37,10 @@ var COMPONENT_STORE:Dictionary[int, Dictionary] = {}
 ## All loaded systems.
 var SYSTEMS:Dictionary[String, BaseSystem] = {}
 
+## [ActionSystem]
+var ACT:ActionSystem = null
 # REGISTRIES
-## Archetype registry
+## [ArchetypeRegistry]
 var AR_REG:ArchetypeRegistry = null
 ## [BehaviorRegistry]
 var BE_REG:BehaviorRegistry = null
@@ -69,7 +72,6 @@ func start(MAIN:Node, max_entities:int = MAX_ENTITIES, canvas:Node2D = CanvasScr
 	IT_REG = ItemRegistry.new()
 	SP_REG = SpriteRegistry.new()
 
-	
 	DATA = load("res://registries/GENERAL_DATA.tres")
 
 	for n:int in MAX_ENTITIES:

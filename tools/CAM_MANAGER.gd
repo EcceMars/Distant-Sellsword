@@ -132,7 +132,10 @@ func _handle_click_search_display()->void:
 		#_draw_rect_nodes()
 		var clicked_uid:int = _find_entity_at_position(world_pos)
 		if clicked_uid >= 0:
-			REG._display_entity_info(clicked_uid)
+			#REG._display_entity_info(clicked_uid)
+			var info:InformationComponent = REG.get_component(clicked_uid, REG.C_FLAGS.INFO)
+			if info:
+				info.is_active = !info.is_active
 func _find_entity_at_position(world_pos:Vector2)->int:
 	var entities:Array[int] = REG.get_entities_by(REG.C_FLAGS.VISUAL | REG.C_FLAGS.MOVE)
 	var sort_y:Array[Dictionary] = []

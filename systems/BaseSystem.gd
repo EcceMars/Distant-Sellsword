@@ -12,11 +12,12 @@ const STATS_FLAG:BaseComponent.Flag = BaseComponent.Flag.STATS
 const VIS_FLAG:BaseComponent.Flag = BaseComponent.Flag.VISUAL
 
 static var TYPES:Dictionary[GDScript, String] = {
+	ActionSystem: "ActionSystem",
 	AnimationSystem: "AnimationSystem",
 	BehaviorSystem: "BehaviorSystem",
 	InputSystem: "InputSystem",
 	StatsSystem: "StatsSystem",
-	#InformationSystem: "InformationSystem",
+	InformationSystem: "InformationSystem",
 	MovementSystem: "MovementSystem",
 	VisualSystem: "VisualSystem"
 	}

@@ -17,20 +17,18 @@ func get_priority(_uid:int)->float:
 	if not active: return 0.0
 	return priority
 func act(uid:int)->void:
-	var mov_sys: MovementSystem = REG.SYSTEMS.get("MovementSystem")
-	if not mov_sys:
-		return
 	_latency -= REG.DELTA
 	if _latency > 0.0:
 		return
 	_latency = WANDER_INTERVAL
 	
+	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSytem")
 	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
 	if not mov:
 		return
 	
-	var destination:Vector2 = _pick_destination(mov.position, mov_sys)
-	mov_sys.add_move(uid, destination)
+	var destination:Vector2 = _pick_destination(mov.position, MOV_SYS)
+	REG.ACT.move(uid, destination)
 ## Returns a random unblocked grid position within [constant WANDER_RADIUS] tiles.
 func _pick_destination(origin: Vector2, mov_sys: MovementSystem) -> Vector2:
 	var scale: int = REG.SCALE
@@ -47,8 +45,8 @@ func _pick_destination(origin: Vector2, mov_sys: MovementSystem) -> Vector2:
 			Vector2(REG.WIDTH, REG.HEIGHT) * scale
 		)
 
-		var grid_candidate: Vector2i = Vector2i(candidate.snapped(Vector2(scale, scale)))
-		if not mov_sys.blocked_positions.has(grid_candidate):
+		var grid_candidate:Vector2i = Vector2i(candidate.snapped(Vector2(scale, scale)))
+		if not mov_sys or not mov_sys.blocked_positions.has(grid_candidate):
 			return candidate
 
 		attempts -= 1

@@ -91,8 +91,8 @@ func _add_behavior(uid:int)->void:
 
 # TODO: implement InformationComponent
 ## Adds an [InformationComponent] to [param uid].
-func _add_information(_uid:int)->void: pass
-	#REG.add_component(uid, InformationComponent.new())
+func _add_information(uid:int)->void:
+	REG.add_component(uid, InformationComponent.new(data.char_name, "Female", false))
 ## Adds a [MemoryComponent] to [param uid] using archetype-level vision parameters.
 func _add_memory(uid: int) -> void:
 	REG.add_component(uid, MemoryComponent.new(
