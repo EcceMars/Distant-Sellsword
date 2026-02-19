@@ -18,8 +18,8 @@ func _init(
 	
 	blood_max:float = 100.0, b_reg:float = 0.1,
 	energy_max:float = 100.0, e_reg:float = 0.5,
-	hunger_max:float = 100.0, h_reg:float = -0.2,
-	thirst_max:float = 100.0, t_reg:float = -0.3)->void:
+	hunger_max:float = 100.0, h_reg:float = -0.01,
+	thirst_max:float = 100.0, t_reg:float = -0.02)->void:
 	
 	if not _name:
 		char_name = REG.DATA.female_names.pick_random() if _gender == "Female" else REG.DATA.male_names.pick_random()

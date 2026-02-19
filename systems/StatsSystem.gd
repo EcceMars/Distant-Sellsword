@@ -17,7 +17,7 @@ func apply_passive_fx(stats:StatsComponent)->void:
 	if stats.hunger.ratio() > 0.3 and stats.thirst.ratio() > 0.3:
 		stats.blood.modify(stats.blood.regen_factor)
 	else:
-		stats.blood.hurt(0.05)
+		stats.blood.hurt(0.01)
 func check_vitals(uid:int)->void:
 	var stats:StatsComponent = REG.get_component(uid, STATS_FLAG)
 	if stats.blood.is_depleted():

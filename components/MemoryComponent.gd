@@ -21,7 +21,7 @@ var focus_limit:int = 32
 # Vision parameters
 var vision_range:float = 5.0 * REG.SCALE		## How far it sees
 var vision_width:float = 2.0 * REG.SCALE		## How wide it sees
-var vision_back_ratio:float = 0.2				## Small offset back
+var vision_back_ratio:float = 0.01				## Small offset back
 
 ## [member REG.tick] value of the last perception update for this entity.
 var last_update_tick:int = 0
@@ -140,23 +140,24 @@ func _evict_oldest()->void:
 			oldest_uid  = uid
 	if oldest_uid != -1:
 		entries.erase(oldest_uid)
-## Internal debug: draws the vision triangle (green overlay) on the entity's sprite.
-## Auto-cleans after 1s so scene stays clean.
+## Internal debug: draws the vision triangle (green overlay) on the canvas.
+## Auto-cleans after 1s so the scene stays clean.
 func _debug_draw_vision_triangle(owner_uid:int, triangle:Triangle2D)->void:
 	redraw = false
-	var vis:VisualComponent = REG.get_component(owner_uid,BaseComponent.Flag.VISUAL)
+	var vis:VisualComponent = REG.get_component(owner_uid, BaseComponent.Flag.VISUAL)
 	if not vis or not vis.sprite: return
-	
-	var center:Vector2 = vis.sprite.position
-	
+
 	var poly:Polygon2D = Polygon2D.new()
-	poly.name = "VisionDebug"
-	poly.color = Color(0.2,1.0,0.4,0.22)
-	poly.polygon = PackedVector2Array([triangle.a - center, triangle.b - center, triangle.c - center])
-	vis.sprite.add_child(poly)
-	
+	poly.name = "VisionDebug_%d" % owner_uid
+	poly.color = Color(0.2, 1.0, 0.4, 0.22)
+	## Vertices are already in world space — no offset needed
+	poly.polygon = PackedVector2Array([triangle.a, triangle.b, triangle.c])
+
+	REG.CANVAS.add_child(poly)
+
 	var t:SceneTreeTimer = vis.sprite.get_tree().create_timer(1.0)
 	t.timeout.connect(poly.queue_free)
+	t.timeout.connect(func()->void: redraw = true)
 ## Single perception record.
 class MemoryEntry:
 	## UID of the remembered entity or item.

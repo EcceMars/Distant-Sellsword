@@ -2,14 +2,19 @@
 class_name SeekFoodBehavior
 extends BaseBehavior
 
-const EAT_RADIUS:float = 4.0
-## How much energy is restored on eating.
-const EAT_ENERGY:float = 30.0
-## How much hunger is restored on eating.
-const EAT_HUNGER:float = 40.0
-## How much thirst is restored on eating.
-const EAT_THIRST:float = 10.0
+enum SearchState {
+	IDLE,           ## Not searching
+	LOOK_FIRST,     ## First look in current direction
+	WAIT_FIRST,     ## Waiting after first look
+	TURN,           ## Turning around
+	LOOK_SECOND,    ## Second look in opposite direction
+	WAIT_SECOND,    ## Waiting after second look
+	USE_MEMORY      ## Fall back to last known position
+}
 
+var _state:SearchState = SearchState.IDLE
+
+const EAT_RADIUS:float = 4.0
 const LOOK_AROUND_INTERVAL:float = 0.5
 var look_latency:float = 0.0
 
@@ -48,38 +53,65 @@ func activate(uid:int)->void:
 ## Called every BehaviorSystem tick while this behavior is selected.
 ## Moves toward the nearest known food, eats it on arrival.
 func act(uid:int)->void:
-	activate(uid)		# Keep priority fresh each tick
 	var mem:MemoryComponent = REG.get_component(uid, BaseComponent.Flag.MEMORY)
-	if not mem:
-		return
-	
-	# Validate or refresh target
+	if not mem: return
+
 	if not _is_valid_target(_target_uid):
 		_target_uid = _nearest_food_uid(uid, mem)
-	
-	if _target_uid == -1:
-		if not REG.ACT.look(uid):
-			REG.ACT.turn_around(uid)
-			REG.ACT.look(uid)
-		#return		# No food visible; stay put until memory updates
-		_target_uid = _nearest_food_uid(uid, mem)
 
-	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
-	if not mov:
+	if _target_uid == -1:
+		_do_search(uid)
 		return
 
-	var food_pos:Vector2 = _food_position(_target_uid, mem)
-	var distance:float   = mov.position.distance_to(food_pos)
+	_state = SearchState.IDLE  ## Reset search when target is found
 
-	if distance <= EAT_RADIUS:
+	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
+	if not mov: return
+
+	var food_pos:Vector2 = _food_position(_target_uid, mem)
+	if mov.position.distance_to(food_pos) <= EAT_RADIUS:
 		REG.ACT.eat(uid, _target_uid)
 		_target_uid = -1
 		return
 
-	# Issue movement only when not already heading there
 	if mov.movable and not mov.movable.has_target:
 		REG.ACT.move(uid, food_pos)
 ## Clears the cached target so this entity looks for a new one next tick.
+func _do_search(uid:int)->void:
+	match _state:
+		SearchState.IDLE:
+			_state = SearchState.LOOK_FIRST
+
+		SearchState.LOOK_FIRST:
+			var found:Array[int] = REG.ACT.look(uid)
+			REG.ACT.wait(uid, 1.0)
+			_state = SearchState.WAIT_FIRST if found.is_empty() \
+				else SearchState.IDLE
+
+		SearchState.WAIT_FIRST:
+			if not REG.ACT.is_waiting(uid):
+				_target_uid = _nearest_food_uid(uid, REG.get_component(uid, BaseComponent.Flag.MEMORY))
+				_state = SearchState.TURN if _target_uid == -1 \
+					else SearchState.IDLE
+
+		SearchState.TURN:
+			REG.ACT.turn_around(uid)
+			_state = SearchState.LOOK_SECOND
+
+		SearchState.LOOK_SECOND:
+			REG.ACT.look(uid)
+			REG.ACT.wait(uid, 2.0)
+			_state = SearchState.WAIT_SECOND
+
+		SearchState.WAIT_SECOND:
+			if not REG.ACT.is_waiting(uid):
+				_target_uid = _nearest_food_uid(uid, REG.get_component(uid, BaseComponent.Flag.MEMORY))
+				_state = SearchState.USE_MEMORY if _target_uid == -1 \
+					else SearchState.IDLE
+
+		SearchState.USE_MEMORY:
+			## Target will be -1 here; act() will use last known memory position
+			_state = SearchState.IDLE
 func on_exit() -> void:
 	_target_uid = -1
 ## Returns the UID of the closest FOOD memory entry, or -1 if none exist.

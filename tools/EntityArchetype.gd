@@ -136,9 +136,9 @@ class Data:
 	var energy_max:float = 100.0
 	var energy_regen:float = 0.5
 	var hunger_max:float = 100.0
-	var hunger_regen:float = -0.2
+	var hunger_regen:float = -0.01
 	var thirst_max:float = 100.0
-	var thirst_regen:float = -0.3
+	var thirst_regen:float = -0.02
 	## Identity
 	var char_name:String = ""
 	var gender:String = "Female"

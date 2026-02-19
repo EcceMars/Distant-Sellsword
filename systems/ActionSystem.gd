@@ -3,6 +3,10 @@
 class_name ActionSystem
 extends BaseSystem
 
+## Wait timer associated to entities.
+## If an action must override the wait time, it just needs to reuse the position at uid.
+var _wait_timers:Dictionary[int, float] = {}
+
 # TODO! Move these to the item description
 ## How much energy is restored on eating.
 const EAT_ENERGY:float = 30.0
@@ -11,14 +15,29 @@ const EAT_HUNGER:float = 40.0
 ## How much thirst is restored on eating.
 const EAT_THIRST:float = 10.0
 
+func process()->void:
+	for uid:int in _wait_timers.keys():
+		_wait_timers[uid] -= REG.DELTA
+		if _wait_timers[uid] <= 0.0:
+			_wait_timers.erase(uid)
+
+## Prevents the entity from issuing new move commands for [param duration] seconds.
+func wait(uid:int, duration:float = 1.0)->void:
+	_wait_timers[uid] = duration
+## Returns true if [param uid] is currently in a wait state.
+func is_waiting(uid:int)->bool:
+	return _wait_timers.has(uid)
 ## Requests the entity to move to [param target]
 func move(uid:int, target:Vector2)->bool:
+	if is_waiting(uid): return false
+
 	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
 	if not MOV_SYS: return false
 	
 	return MOV_SYS.add_move(uid, target)
 ## Scans the entity's vision triangle and updates its [MemoryComponent].
 func look(uid:int)->Array[int]:
+	if is_waiting(uid): return []
 	var mem:MemoryComponent = REG.get_component(uid, MEM_FLAG)
 	if not mem:
 		return []
@@ -27,6 +46,8 @@ func look(uid:int)->Array[int]:
 	return found
 ## Flips the entity's horizontal facing direction.
 func turn_around(uid:int)->void:
+	if is_waiting(uid): return
+	
 	var mov:MovementComponent = REG.get_component(uid, REG.C_FLAGS.MOVE)
 	if not mov or not mov.movable: return
 	
@@ -34,6 +55,8 @@ func turn_around(uid:int)->void:
 ## Consumes [param food_uid] for [param eater_uid].
 ## Recovers stats, cleans memory, triggers visual effects and queues destruction.
 func eat(eater_uid:int, food_uid:int)->void:
+	if is_waiting(eater_uid): return
+	
 	var stats:StatsComponent = REG.get_component(eater_uid, BaseComponent.Flag.STATS)
 	if stats:
 		if stats.energy: stats.energy.recover(EAT_ENERGY)

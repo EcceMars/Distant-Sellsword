@@ -43,7 +43,7 @@ func create_panel(uid:int)->void:
 	info.containers["Title"] = title
 	vbox.add_child(title)
 	
-	var stats:StatsComponent = REG.COMPONENT_STORE[uid].get(STATS_FLAG)
+	var stats:StatsComponent = REG.get_component(uid, STATS_FLAG)
 	if stats:
 		for vital_data in [
 			["Blood", stats.blood],
