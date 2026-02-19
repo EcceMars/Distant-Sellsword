@@ -32,6 +32,7 @@ func act(_uid:int)->void: pass
 func on_enter()->void: pass
 func on_exit()->void: pass
 
+## DEPRECATED and tiring mechanics are to be moved to [ActionSystem]
 func _tire(uid:int)->void:
 	var stats:StatsComponent = REG.get_component(uid, REG.C_FLAGS.STATS)
 	if not stats: return
