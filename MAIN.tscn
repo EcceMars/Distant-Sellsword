@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://fo45wuye3147"]
 
 [ext_resource type="Script" uid="uid://bajb6o38s30uy" path="res://MAIN.gd" id="1_0llpg"]
+[ext_resource type="Resource" uid="uid://cva2x2vd6hqsq" path="res://GENERAL_DATA.tres" id="2_78rud"]
 [ext_resource type="Script" uid="uid://ckubws2uw1q3o" path="res://tools/CAM_MANAGER.gd" id="2_a1u8q"]
 
 [node name="MAIN" type="Node" unique_id=1149854532 node_paths=PackedStringArray("CAM_ANCHOR", "UI")]
 script = ExtResource("1_0llpg")
+_DATA_REG = ExtResource("2_78rud")
 CAM_ANCHOR = NodePath("CAM_ANCHOR")
 UI = NodePath("UI")
 WIDTH = 64

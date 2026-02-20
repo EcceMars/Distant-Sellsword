@@ -1,5 +1,7 @@
 extends Node
 
+@export var _DATA_REG:DataRegistry = null
+
 @export var CAM_ANCHOR:CAMERA_MANAGER = null
 @export var UI:Control = null
 
@@ -18,7 +20,7 @@ const BERRY_INTERVAL:float = 6.0
 var _berry_timer:float = BERRY_INTERVAL
 
 func _ready()->void:
-	REG.start(self, MAX_ENTITIES, WIDTH, HEIGHT, SCALE)
+	REG.start(self, _DATA_REG, MAX_ENTITIES, WIDTH, HEIGHT, SCALE)
 
 	REG.start_system(MovementSystem.new())
 	REG.start_system(VisualSystem.new())

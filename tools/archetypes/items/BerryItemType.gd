@@ -1,6 +1,6 @@
 ## Archetype for berries items
 class_name BerriesItemType
-extends EntityArchetype
+extends Entity
 
 func _init()->void:
 	label = "RedBerries"
