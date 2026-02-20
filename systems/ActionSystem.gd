@@ -128,6 +128,9 @@ func _consume_food(food_vis:VisualComponent)->void:
 func die(uid:int)->void:
 	var vis:VisualComponent = REG.get_component(uid, REG.C_FLAGS.VISUAL)
 	if vis:
+		var ANI_SYS:AnimationSystem = REG.SYSTEMS.get("AnimationSystem")
+		if ANI_SYS:
+			ANI_SYS.play_death(vis.sprite)
 		vis.queue_destroy = true
 		vis.destroy_time = 3.0  ## Let VisualSystem handle the fade and cleanup
 		return

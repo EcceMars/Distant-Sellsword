@@ -3,7 +3,7 @@ class_name SeekFoodBehavior
 extends BaseBehavior
 
 enum SearchState {
-	IDLE,			## Not searching
+	START,			## Not searching
 	LOOK_FIRST,		## First look in current direction
 	WAIT_FIRST,		## Waiting after first look
 	TURN,			## Turning around
@@ -11,9 +11,9 @@ enum SearchState {
 	WAIT_SECOND,	## Waiting after second look
 	USE_MEMORY,		## Fall back to last known position
 	WANDER_SEARCH   ## If no item is found either in the new or the older memory entries
-}
+	}
 
-var _state:SearchState = SearchState.IDLE
+var _state:SearchState = SearchState.START
 
 const EAT_RADIUS:float = 4.0
 const LOOK_AROUND_INTERVAL:float = 0.5
@@ -64,7 +64,7 @@ func act(uid:int)->void:
 		_do_search(uid)
 		return
 
-	_state = SearchState.IDLE  ## Reset search when target is found
+	_state = SearchState.START  ## Reset search when target is found
 
 	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
 	if not mov: return
@@ -80,18 +80,18 @@ func act(uid:int)->void:
 ## Clears the cached target so this entity looks for a new one next tick.
 func _do_search(uid:int)->void:
 	match _state:
-		SearchState.IDLE:
+		SearchState.START:
 			_state = SearchState.LOOK_FIRST
 		
 		SearchState.LOOK_FIRST:
 			var found:Array[int] = REG.ACT.look(uid)
 			REG.ACT.wait(uid, 1.0)
-			_state = SearchState.WAIT_FIRST if found.is_empty() else SearchState.IDLE
+			_state = SearchState.WAIT_FIRST if found.is_empty() else SearchState.START
 		
 		SearchState.WAIT_FIRST:
 			if not REG.ACT.is_waiting(uid):
 				_target_uid = _nearest_food_uid(uid, REG.get_component(uid, BaseComponent.Flag.MEMORY))
-				_state = SearchState.TURN if _target_uid == -1 else SearchState.IDLE
+				_state = SearchState.TURN if _target_uid == -1 else SearchState.START
 		
 		SearchState.TURN:
 			REG.ACT.turn_around(uid)
@@ -105,12 +105,12 @@ func _do_search(uid:int)->void:
 		SearchState.WAIT_SECOND:
 			if not REG.ACT.is_waiting(uid):
 				_target_uid = _nearest_food_uid(uid, REG.get_component(uid, BaseComponent.Flag.MEMORY))
-				_state = SearchState.USE_MEMORY if (_target_uid == -1) else SearchState.IDLE
+				_state = SearchState.USE_MEMORY if (_target_uid == -1) else SearchState.START
 		
 		SearchState.USE_MEMORY:
 			_target_uid = _nearest_food_uid(uid, REG.get_component(uid, BaseComponent.Flag.MEMORY))
 			if _target_uid != -1:
-				_state = SearchState.IDLE
+				_state = SearchState.START
 				return
 			_state = SearchState.WANDER_SEARCH
 			
@@ -122,7 +122,7 @@ func _do_search(uid:int)->void:
 			## Picked a destination and arrived — restart the search cycle
 			REG.ACT.move(uid, _random_nearby(mov.position))
 			REG.ACT.wait(uid, 2.0)
-			_state = SearchState.IDLE
+			_state = SearchState.START
 func on_exit() -> void:
 	_target_uid = -1
 ## Returns the UID of the closest FOOD memory entry, or -1 if none exist.

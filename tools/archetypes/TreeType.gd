@@ -1,7 +1,7 @@
 ## Concrete archetype for trees and vegetation
 ## Demonstrates static entities that could become movable at runtime
 class_name TreeType
-extends EntityArchetype
+extends Entity
 
 func _init()->void:
 	label = "PineTree"

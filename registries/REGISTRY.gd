@@ -58,9 +58,6 @@ var CANVAS:Node2D = null
 var ENT_LAYER:Node2D = null
 ## Texture for holding biome data.
 var TERRAIN:Node2D = null
-## List of [CANVAS] child nodes
-var visual_nodes:Array[Node] = []
-
 
 func start(MAIN:Node, max_entities:int = MAX_ENTITIES, width:int = WIDTH, height:int = HEIGHT, scale:int = SCALE)->void:
 	MAX_ENTITIES = max_entities
@@ -106,22 +103,18 @@ func create_entity()->int:
 func destroy_entity(uid:int)->void:
 	if not _is_valid_entity(uid): return
 	
+	# Waits until VisualSytem deletes the sprite
+	var visual_node_check:VisualComponent = get_component(uid, C_FLAGS.VISUAL)
+	if visual_node_check and visual_node_check.sprite:
+		return
+	
 	var item:ItemComponent = get_component(uid, C_FLAGS.ITEM)
-	if item:
-		IT_REG.unregister_item(uid)
-	var visual:VisualComponent = get_component(uid, C_FLAGS.VISUAL)
-	if visual:
-		visual.clear()
-	
-	# Get the last entity's data
+	if item: IT_REG.unregister_item(uid)
+
 	var last_uid:int = _open_uid - 1
-	
 	if uid != last_uid:
-		# Move last entity's data to the deleted entity's slot
 		ENTITIES[uid] = ENTITIES[last_uid]
 		COMPONENT_STORE[uid] = COMPONENT_STORE[last_uid]
-	
-	# Clean up the last entity
 	ENTITIES.erase(last_uid)
 	COMPONENT_STORE.erase(last_uid)
 	_open_uid -= 1

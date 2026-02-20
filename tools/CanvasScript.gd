@@ -7,14 +7,10 @@ var GRID_WIDTH:int = REG.WIDTH * REG.SCALE +1
 var GRID_HEIGHT:int = REG.HEIGHT * REG.SCALE +1
 var TILE_RECT:Rect2 = Rect2(0, 0, REG.SCALE, REG.SCALE)
 
-var visual_nodes:Array[Node] = []
 var queue_deletion:Array[Node] = []
 
 var mov_sys:MovementSystem = null
 
-## Use [Main.gd]'s visual_nodes array here
-func set_ref(v_arr:Array[Node])->void:
-	visual_nodes = v_arr
 ## Request a visual node to be deleted after a death animation
 func request_removal(visual:Node)->void:
 	if not is_instance_valid(visual): return
@@ -29,11 +25,6 @@ func request_removal(visual:Node)->void:
 	tween.tween_property(visual, "modulate", Color(1, 1, 1), 0.5)
 	tween.tween_property(visual, "modulate", Color.BLACK, 2.8)
 	tween.tween_property(visual, "modulate", Color(0, 0, 0, 0), 3.0)
-	tween.tween_callback(func(): cleanup(visual))
-func cleanup(visual:Node)->void:
-	visual_nodes.erase(visual)
-	queue_deletion.erase(visual)
-	visual.queue_free()
 func _draw()->void:
 	if not DEBUG: return
 	_draw_grid()

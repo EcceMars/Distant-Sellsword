@@ -22,25 +22,23 @@ var type:Type = Type.IDLE
 ## Priority threshold
 @export_range(0.0, 1.0, 0.1) var priority:float = 0.1
 
-@export_category("Health cost")
-@export var blood:float = 0.00005
-@export var energy:float = 0.00001
-@export var hunger:float = 0.00005
-@export var thirst:float = 0.00001
-
 func get_priority(_uid:int)->float: return 0.0
 func act(_uid:int)->void: pass
 func on_enter()->void: pass
 func on_exit()->void: pass
 
-## DEPRECATED and tiring mechanics are to be moved to [ActionSystem]
-func _tire(uid:int)->void:
-	var stats:StatsComponent = REG.get_component(uid, REG.C_FLAGS.STATS)
-	if not stats: return
-	
-	if stats.blood: stats.blood.hurt(blood)
-	if stats.energy: stats.energy.hurt(energy)
-	if stats.hunger: stats.hunger.hurt(hunger)
-	if stats.thirst: stats.thirst.hurt(thirst)
 func _to_string()->String:
 	return str(type) + ": " + get_script().get_global_name()
+class STATE_MACHINE:
+	enum SearchState {
+	START,			## Not searching
+	LOOK_FRONT,		## First look in current direction
+	WAIT_FIRST,		## Waiting after first look
+	TURN,			## Turning around
+	LOOK_SECOND,	## Second look in opposite direction
+	WAIT_SECOND,	## Waiting after second look
+	USE_MEMORY,		## Fall back to last known position
+	WANDER_ON		## If no item is found either in the new or the older memory entries
+	}
+
+	var _state:SearchState = SearchState.START

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dupoa7rrijmrt"
-path="res://.godot/imported/blue_berries.png-556621cd4c28ab02ea2bab2366572964.ctex"
+uid="uid://bvcgia2iswrt7"
+path="res://.godot/imported/wood.png-dc9f055f6cc5ac3ddfdf76f480de3102.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/items/blue_berries.png"
-dest_files=["res://.godot/imported/blue_berries.png-556621cd4c28ab02ea2bab2366572964.ctex"]
+source_file="res://assets/img/sprite_img/wood.png"
+dest_files=["res://.godot/imported/wood.png-dc9f055f6cc5ac3ddfdf76f480de3102.ctex"]
 
 [params]
 

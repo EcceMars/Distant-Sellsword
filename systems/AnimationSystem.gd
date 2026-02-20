@@ -102,3 +102,11 @@ func burst_particles(sprite:Node2D, color:Color = Color.RED, amount:int = 8) -> 
 	# Clean up when done
 	await REG.ENT_LAYER.get_tree().create_timer(particles.lifetime + 0.1).timeout
 	particles.queue_free()
+func play_death(sprite:Node2D)->void:
+	if not sprite or not sprite.is_inside_tree(): return
+	var tween:Tween = sprite.create_tween()
+	tween.tween_property(sprite, "modulate", Color(0.06, 0.06, 0.06), 0.08)
+	tween.tween_property(sprite, "modulate", Color(15, 15, 15), 0.02)
+	tween.tween_property(sprite, "modulate", Color(1, 1, 1), 0.5)
+	tween.tween_property(sprite, "modulate", Color.BLACK, 2.8)
+	tween.tween_property(sprite, "modulate", Color(0, 0, 0, 0), 3.0)

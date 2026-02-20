@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="DataRegistry" format=3 uid="uid://cva2x2vd6hqsq"]
-
-[ext_resource type="Script" uid="uid://btrp4lev30rmk" path="res://registries/DataRegistry.gd" id="1_rv0sc"]
-
-[resource]
-script = ExtResource("1_rv0sc")
-male_names = ["Bran", "Tomas", "Erik", "Alden", "Jorin"]
-female_names = Array[String](["Rita", "Rena", "Elyia", "Visca", "Casa"])
-metadata/_custom_type_script = "uid://btrp4lev30rmk"

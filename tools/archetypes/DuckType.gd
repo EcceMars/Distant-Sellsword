@@ -1,7 +1,7 @@
 ## Concrete archetype for trees and vegetation
 ## Demonstrates static entities that could become movable at runtime
 class_name DuckType
-extends EntityArchetype
+extends Entity
 
 func _init()->void:
 	label = "Duck"
@@ -23,4 +23,4 @@ func _init()->void:
 	data.has_memory = true
 
 func _prepare()->void:
-	data.char_name = "Wild Duck" #REG.DATA.duck_names.pick_random()
+	data.char_name = "Wild Duck" #REG.DATA.DUCK_NAMES.pick_random()

@@ -92,13 +92,13 @@ func is_water_adjacent(world_pos:Vector2)->bool:
 				return true
 	return false
 ## Returns the nearest world position of [param biome] to [param world_pos].
-## Returns Vector2.ZERO if none exists.
+## Returns -Vector2.ONE (out of bounds) if none exists.
 func nearest_of_biome(world_pos:Vector2, biome:BIOME)->Vector2:
 	var positions:Array = _biome_positions.get(biome, [])
-	if positions.is_empty(): return Vector2.ZERO
+	if positions.is_empty(): return -Vector2.ONE
 
 	var best_dist:float = INF
-	var best_pos:Vector2 = Vector2.ZERO
+	var best_pos:Vector2 = -Vector2.ONE
 
 	for grid:Vector2i in positions:
 		var candidate:Vector2 = Vector2(grid * REG.SCALE)
@@ -127,7 +127,7 @@ func can_spawn(world_pos:Vector2, mov_type:MovementComponent.Movable.Flag)->bool
 		MovementComponent.Movable.Flag.AIR, MovementComponent.Movable.Flag.PHASE:
 			return true
 	return true
-## Returns a random world position valid for [param mov_type], or Vector2.ZERO on failure.
+## Returns a random world position valid for [param mov_type], or -Vector2.ONE on failure.
 func random_position_for(mov_type:MovementComponent.Movable.Flag)->Vector2:
 	var attempts:int = 32
 	while attempts > 0:
@@ -138,4 +138,4 @@ func random_position_for(mov_type:MovementComponent.Movable.Flag)->Vector2:
 			return candidate
 		attempts -= 1
 	push_warning("[TerrainRegistry] No valid spawn found for mov_type: %d" % mov_type)
-	return Vector2.ZERO
+	return -Vector2.ONE

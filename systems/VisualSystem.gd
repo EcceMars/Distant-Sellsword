@@ -18,8 +18,9 @@ func _clean_registry()->void:
 			continue
 		## Time elapsed — safe to destroy
 		if is_instance_valid(component.sprite):
+			REG.ENT_LAYER.remove_child(component.sprite)
 			component.sprite.queue_free()
-			REG.visual_nodes.erase(component.sprite)
+			component.sprite = null
 ## Update sprite positions to [MovementComponent]
 func _update_positions()->void:
 	var uids:Array[int] = REG.get_entities_by(VIS_FLAG | MOV_FLAG)
@@ -43,7 +44,7 @@ func _update_animation()->void:
 		if not component: continue
 		if component.sprite_type != ANIM_FLAG: continue
 		
-		var anim_sprite:AnimatedSprite2D = component.sprite as AnimatedSprite2D
+		var anim_sprite:AnimatedSprite2D = component.sprite
 		if not is_instance_valid(anim_sprite): continue
 		
 		if anim_sprite.animation != component.current_animation:

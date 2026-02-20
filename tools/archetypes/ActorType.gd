@@ -1,5 +1,5 @@
 class_name ActorType
-extends EntityArchetype
+extends Entity
 
 func _init()->void:
 	label = "Actor"

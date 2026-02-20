@@ -1,5 +1,5 @@
 class_name VillagerType
-extends EntityArchetype
+extends Entity
 
 func _init()->void:
 	label = "Villager"
@@ -12,14 +12,14 @@ func _init()->void:
 		#BaseBehavior.Type.FLEE,
 		#BaseBehavior.Type.REST,
 		BaseBehavior.Type.SEEK_FOOD,
+		BaseBehavior.Type.SEEK_WATER,
 		BaseBehavior.Type.WANDER,
 		BaseBehavior.Type.IDLE,
-		BaseBehavior.Type.SEEK_WATER
 	]
 	data.has_animations = true
 	data.has_information = true
 	data.has_memory = true
 
 func _prepare()->void:
-	data.char_name = REG.DATA.female_names.pick_random()
+	data.char_name = REG.DATA.FEMALE_NAMES.pick_random()
 	data.sprite_key = ["f_human", "f_dwarf", "f_ranger"].pick_random()

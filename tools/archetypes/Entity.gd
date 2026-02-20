@@ -1,12 +1,20 @@
 ## Base blueprint for all entity archetypes.
 ## Subtypes populate [member data] in [method _init] and optionally
 ## override [method _prepare] for runtime variation.
-@icon("res://assets/img/icons/main_icon.png")
-class_name EntityArchetype
+@icon("res://assets/img/icons/entity_icon.png")
+class_name Entity
 extends Resource
 
+## Defines if the sprite's texture is animated or just a sequence of states.
+## In any case, sprite_res is supposed to be a [SpritesFrame].
+enum SPRITE_TYPE {
+	STATIC,			## Each frame is a state of the entity (a stone may have a normal state, or a cracked/break state)
+	ANIMATED		## The [SpritesFrame] is animated.
+	}
+
 ## Human-readable label, set in each subtype's [method _init].
-var label:String = "Unnamed"
+@export var label:String = "Unnamed"
+@export var sprite_res:SpriteFrames
 ## Configuration container. Subtypes populate this in [method _init].
 var data:Data = Data.new()
 
@@ -28,7 +36,7 @@ func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	_prepare()
 	var uid:int = REG.create_entity()
 	if uid == -1:
-		push_error("[EntityArchetype] Registry full, cannot spawn: %s" % label)
+		push_error("[Entity] Registry full, cannot spawn: %s" % label)
 		return -1
 	var position:Vector2 = spawn_position if spawn_position != -Vector2.ONE else _random_position()
 	
@@ -83,7 +91,7 @@ func _add_animation_state(uid:int)->void:
 func _add_behavior(uid:int)->void:
 	for key:BaseBehavior.Type in data.behavior_keys:
 		if not REG.BE_REG.has_behavior(uid, key):
-			push_warning("[EntityArchetype] Behavior '%s' not found — '%s' may need configuration." % [key, label])
+			push_warning("[Entity] Behavior '%s' not found — '%s' may need configuration." % [key, label])
 	REG.add_component(uid, BehaviorComponent.new(data.behavior_keys))
 
 # TODO: implement InformationComponent

@@ -66,7 +66,6 @@ func _create_sprite(sprite_key:String, position:Vector2i, debug_color:Color) -> 
 	sprite.name = "sprite_%5d" % randi()
 	
 	REG.ENT_LAYER.add_child(sprite)
-	REG.visual_nodes.append(sprite)
 func _default(position:Vector2i, color:Color)->void:
 	sprite = ColorRect.new()
 	sprite.color = color

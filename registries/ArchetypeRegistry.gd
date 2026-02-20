@@ -12,7 +12,7 @@ enum Type {
 	VILLAGER
 	}
 
-## Maps each [enum Type] to its [EntityArchetype] script. Add new archetypes here.
+## Maps each [enum Type] to its [Entity] script. Add new archetypes here.
 var TYPES:Dictionary = {
 	Type.ACTOR:		ActorType,
 	Type.BERRY:		BerriesItemType,
@@ -22,15 +22,15 @@ var TYPES:Dictionary = {
 	}
 
 ## Cached archetype instances, keyed by [enum Type].
-var _instances:Dictionary[Type, EntityArchetype] = {}
+var _instances:Dictionary[Type, Entity] = {}
 
 func _init()->void:
 	for type:Type in TYPES:
 		_instances[type] = TYPES[type].new()
 
-## Returns the [EntityArchetype] instance for [param type].
+## Returns the [Entity] instance for [param type].
 ## Logs an error and returns null if not found.
-func get_archetype(type:Type)->EntityArchetype:
+func get_archetype(type:Type)->Entity:
 	if not _instances.has(type):
 		push_error("[ArchetypeRegistry] No archetype for: %s" % Type.find_key(type))
 		return null
@@ -39,7 +39,7 @@ func get_archetype(type:Type)->EntityArchetype:
 ## Spawns an entity from the archetype matching [param type].
 ## Returns the new entity UID, or -1 on failure.
 func spawn(type:Type, spawn_position:Vector2 = -Vector2.ONE)->int:
-	var archetype:EntityArchetype = get_archetype(type)
+	var archetype:Entity = get_archetype(type)
 	if not archetype:
 		return -1
 	return archetype._build(spawn_position)
