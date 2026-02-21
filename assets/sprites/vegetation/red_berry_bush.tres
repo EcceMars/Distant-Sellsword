@@ -1,0 +1,42 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://qc5rjyu252bi"]
+
+[ext_resource type="Texture2D" uid="uid://jwjcspffvh05" path="res://assets/img/sprite_img/vegetation/fruit_bush.png" id="1_8hpfw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rkk2h"]
+atlas = ExtResource("1_8hpfw")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6dwe4"]
+atlas = ExtResource("1_8hpfw")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w18l6"]
+atlas = ExtResource("1_8hpfw")
+region = Rect2(16, 0, 16, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rkk2h")
+}],
+"loop": true,
+"name": &"empty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6dwe4")
+}],
+"loop": true,
+"name": &"full",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w18l6")
+}],
+"loop": true,
+"name": &"growing",
+"speed": 5.0
+}]

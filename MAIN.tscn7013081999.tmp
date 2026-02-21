@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://fo45wuye3147"]
+
+[ext_resource type="Script" uid="uid://bajb6o38s30uy" path="res://MAIN.gd" id="1_0llpg"]
+[ext_resource type="Script" uid="uid://btrp4lev30rmk" path="res://registries/stores/src/DATASTORE.gd" id="2_78rud"]
+[ext_resource type="Script" uid="uid://ckubws2uw1q3o" path="res://tools/CAM_MANAGER.gd" id="2_a1u8q"]
+
+[sub_resource type="Resource" id="Resource_rf5wo"]
+script = ExtResource("2_78rud")
+metadata/_custom_type_script = "uid://btrp4lev30rmk"
+
+[node name="MAIN" type="Node" unique_id=1149854532 node_paths=PackedStringArray("CAM_ANCHOR", "UI")]
+script = ExtResource("1_0llpg")
+_DATA_REG = SubResource("Resource_rf5wo")
+CAM_ANCHOR = NodePath("CAM_ANCHOR")
+UI = NodePath("UI")
+MAX_ENTITIES = null
+WIDTH = 64
+HEIGHT = 48
+SCALE = null
+
+[node name="CAM_ANCHOR" type="Node2D" parent="." unique_id=798793816 node_paths=PackedStringArray("camera")]
+script = ExtResource("2_a1u8q")
+camera = NodePath("CAM")
+
+[node name="CAM" type="Camera2D" parent="CAM_ANCHOR" unique_id=958866767]
+
+[node name="UI" type="Control" parent="." unique_id=663036910]
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

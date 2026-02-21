@@ -3,43 +3,25 @@
 class_name ArchetypeRegistry
 extends BaseRegistry
 
-## Hardcoded archetype identifiers. Update when adding new types.
-enum Type {
-	ACTOR,
-	BERRY,
-	DUCK,
-	TREE,
-	VILLAGER
-	}
-
-## Maps each [enum Type] to its [Entity] script. Add new archetypes here.
-var TYPES:Dictionary = {
-	Type.ACTOR:		ActorType,
-	Type.BERRY:		BerriesItemType,
-	Type.DUCK:		DuckType,
-	Type.TREE:		TreeType,
-	Type.VILLAGER:	VillagerType,
-	}
+## Maps each [enum Type] to its [EntityType] script. Add new archetypes here.
+const TYPES = REG.DATA.ARCHETYPES.TYPES
 
 ## Cached archetype instances, keyed by [enum Type].
-var _instances:Dictionary[Type, Entity] = {}
+var _instances:Dictionary[TYPES, EntityType] = {}
 
-func _init()->void:
-	for type:Type in TYPES:
-		_instances[type] = TYPES[type].new()
-
-## Returns the [Entity] instance for [param type].
+## Returns the [EntityType] instance for [param type].
 ## Logs an error and returns null if not found.
-func get_archetype(type:Type)->Entity:
-	if not _instances.has(type):
-		push_error("[ArchetypeRegistry] No archetype for: %s" % Type.find_key(type))
+func get_archetype(type:TYPES, specific:String)->EntityType:
+	if not type in TYPES.values():
+		push_error("[ArchetypeRegistry] No archetype for: %s" % TYPES.find_key(type), " using ", type)
 		return null
+	_instances[type] = REG.DATA.ARCHETYPES.get_type(type, specific)
 	return _instances[type]
 
 ## Spawns an entity from the archetype matching [param type].
 ## Returns the new entity UID, or -1 on failure.
-func spawn(type:Type, spawn_position:Vector2 = -Vector2.ONE)->int:
-	var archetype:Entity = get_archetype(type)
+func spawn(type:TYPES, specific:String = "", spawn_position:Vector2 = -Vector2.ONE)->int:
+	var archetype:EntityType = get_archetype(type, specific)
 	if not archetype:
 		return -1
 	return archetype._build(spawn_position)

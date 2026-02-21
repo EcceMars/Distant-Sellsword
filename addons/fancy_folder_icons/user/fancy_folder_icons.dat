@@ -1,0 +1,10 @@
+[DAT]
+
+PTH={
+"res://assets/": Resource("uid://cpopoq2y588fn", "res://assets/img/sprite_img/items/red_berries.png"),
+"res://components/": Resource("uid://fh3lejfsj4wr", "res://assets/img/icons/component_icon.png"),
+"res://registries/": Resource("uid://dwq8ito1rthly", "res://assets/img/icons/registry_base.png"),
+"res://registries/stores/": Resource("uid://b3bq0midhsvql", "res://assets/img/icons/store_base.png"),
+"res://systems/": Resource("uid://c4xo8n3i3aij6", "res://assets/img/icons/system_icon.png"),
+"res://tools/archetypes/": Resource("uid://c2bnd3bvbwscu", "res://assets/img/icons/entity_icon.png")
+}

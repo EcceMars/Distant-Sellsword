@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BushType" format=3 uid="uid://htwfgypwh4b3"]
+
+[ext_resource type="Script" uid="uid://w1naqd2f5n48" path="res://tools/archetypes/objects/vegetation/BushType.gd" id="1_3ux6p"]
+[ext_resource type="Script" uid="uid://ciusolyf50wxm" path="res://tools/archetypes/EntityData.gd" id="1_rh10q"]
+[ext_resource type="SpriteFrames" uid="uid://qc5rjyu252bi" path="res://assets/sprites/vegetation/red_berry_bush.tres" id="2_5wsoi"]
+[ext_resource type="Texture2D" uid="uid://7qlqq3gekb05" path="res://assets/img/sprite_img/vegetation/fruit_bush_icon.png" id="4_4ppcd"]
+
+[sub_resource type="Resource" id="Resource_wbrbp"]
+script = ExtResource("1_rh10q")
+sprite_type = 1
+sprite_key = ExtResource("2_5wsoi")
+debug_color = Color(0.3214647, 0.49582535, 0.29295444, 1)
+vision_range = null
+vision_width = null
+drops = Array[int]([2])
+metadata/_custom_type_script = "uid://ciusolyf50wxm"
+
+[resource]
+script = ExtResource("1_3ux6p")
+label = "RedBushType"
+sprite_icon = ExtResource("4_4ppcd")
+data = SubResource("Resource_wbrbp")
+metadata/_custom_type_script = "uid://w1naqd2f5n48"

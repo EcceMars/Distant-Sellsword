@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BerryType" format=3 uid="uid://bfs6h7y2uvaio"]
+
+[ext_resource type="Script" uid="uid://ciusolyf50wxm" path="res://tools/archetypes/EntityData.gd" id="1_8wltx"]
+[ext_resource type="SpriteFrames" uid="uid://bhgiqpobf8aje" path="res://assets/sprites/items/blue_berries.tres" id="2_8wltx"]
+[ext_resource type="Script" uid="uid://doit1a6naikl4" path="res://tools/archetypes/objects/items/BerryType.gd" id="3_5ny6b"]
+[ext_resource type="Texture2D" uid="uid://dupoa7rrijmrt" path="res://assets/img/sprite_img/items/blue_berries.png" id="4_be42n"]
+
+[sub_resource type="Resource" id="Resource_7a76f"]
+script = ExtResource("1_8wltx")
+sprite_type = 1
+sprite_key = ExtResource("2_8wltx")
+debug_color = Color(0.068727456, 0, 0.8424358, 1)
+vision_range = null
+vision_width = null
+is_item = true
+metadata/_custom_type_script = "uid://ciusolyf50wxm"
+
+[resource]
+script = ExtResource("3_5ny6b")
+label = "BlueBerry"
+sprite_icon = ExtResource("4_be42n")
+data = SubResource("Resource_7a76f")
+metadata/_custom_type_script = "uid://doit1a6naikl4"

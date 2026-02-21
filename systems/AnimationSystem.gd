@@ -13,7 +13,7 @@ func process()->void:
 		var anim_state:AnimationStateComponent = REG.get_component(uid, ANIM_STATE_FLAG)
 		var vis_comp:VisualComponent = REG.get_component(uid, VIS_FLAG)
 		
-		if not vis_comp or vis_comp.sprite_type != VisualComponent.SpriteType.ANIMATED:
+		if not vis_comp or vis_comp.type != VisualComponent.TYPES.ANIMATED:
 			continue
 		
 		# Determine desired animation state

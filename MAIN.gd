@@ -1,6 +1,6 @@
 extends Node
 
-@export var _DATA_REG:DataRegistry = null
+@export var _DATA_REG:DATASTORE = null
 
 @export var CAM_ANCHOR:CAMERA_MANAGER = null
 @export var UI:Control = null
@@ -34,14 +34,14 @@ func _ready()->void:
 	REG.SYSTEMS.get("InformationSystem").instance()
 	REG.ACT = REG.SYSTEMS.get("ActionSystem")
 
-	# Spawn world entities
-	for _i:int in 16:  REG.AR_REG.spawn(ArchetypeRegistry.Type.TREE)
-	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.VILLAGER)
-	for _i:int in 4:  REG.AR_REG.spawn(ArchetypeRegistry.Type.DUCK)
-	for _i:int in 8:  REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY)
+	## Spawn world entities
+	for _i:int in 16: REG.AR_REG.spawn(ENTITYSTORE.TYPES.TREE, "PineType")
+	for _i:int in 4:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "F_WoodcutterType")
+	for _i:int in 4:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.DUCK, "DuckType")
+	for _i:int in 8:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.BERRY, ["BlueBerryType", "RedBerryType"].pick_random())
 
-	var player_uid:int = REG.AR_REG.spawn(ArchetypeRegistry.Type.ACTOR)
-	
+	var player_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.ACTOR, "ActorType")
+	REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "RitaType")
 	CAM_ANCHOR.start(REG.get_ent_position(player_uid))
 	CAM_ANCHOR.follow_uid = player_uid
 
@@ -77,6 +77,6 @@ func _try_spawn_berry(delta:float)->void:
 	)
 	var spawn_pos:Vector2 = tree_pos + offset
 	
-	var berry_uid:int = REG.AR_REG.spawn(ArchetypeRegistry.Type.BERRY, spawn_pos)
+	var berry_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.BERRY, ["BlueBerryType", "RedBerryType"].pick_random(), spawn_pos)
 	if berry_uid == -1:
 		return

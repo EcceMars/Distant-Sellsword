@@ -3,29 +3,9 @@
 class_name TerrainRegistry
 extends BaseRegistry
 
-enum BIOME {
-	WATER,
-	GRASS
-	}
-
-## Color palette, one per biome.
-const BIOME_COLOURS:Dictionary = {
-	BIOME.WATER:	Color(0.18, 0.42, 0.72),
-	#BIOME.SAND:	Color(0.85, 0.78, 0.52),
-	BIOME.GRASS:	Color(0.44, 0.70, 0.30),
-	#BIOME.FOREST:	Color(0.20, 0.45, 0.18),
-	#BIOME.DIRT: 	Color(0.55, 0.38, 0.22)
-	}
-
-## Thresholds map noise value [-1, 1] to a biome.
-## Evaluated top-to-bottom — first match wins.
-const BIOME_THRESHOLDS:Array = [
-	[-0.3, BIOME.WATER],
-	#[-0.1, BIOME.SAND],
-	[ 0.4, BIOME.GRASS],
-	#[ 0.7, BIOME.FOREST],
-	#[ 1.0, BIOME.DIRT]
-	]
+const BIOME = REG.DATA.TERRAIN.BIOME
+var BIOME_THRESHOLDS = REG.DATA.TERRAIN.BIOME_THRESHOLDS
+var BIOME_COLORS = REG.DATA.TERRAIN.BIOME_COLORS
 
 ## Flat biome lookup, keyed by grid position.
 var _biome_map:Dictionary[Vector2i, BIOME] = {}
@@ -52,11 +32,11 @@ func _generate()->void:
 	for y:int in REG.HEIGHT:
 		for x:int in REG.WIDTH:
 			var value:float = _noise.get_noise_2d(float(x), float(y))
-			var biome:BIOME = _sample_biome(value)
+			var biome:BIOME = REG.DATA.TERRAIN.sample_biome(value)
 			var in_grid:Vector2i = Vector2i(x, y)
 			_biome_map[in_grid] = biome
 			_biome_positions[biome].append(in_grid)
-			img.set_pixel(x, y, BIOME_COLOURS[biome])
+			img.set_pixel(x, y, BIOME_COLORS[biome])
 	
 	var texture:ImageTexture = ImageTexture.create_from_image(img)
 	var sprite:Sprite2D = Sprite2D.new()
@@ -68,11 +48,11 @@ func _generate()->void:
 	
 	REG.TERRAIN.add_child(sprite)
 ## Maps a noise [param value] to a [enum Biome] via [constant BIOME_THRESHOLDS].
-func _sample_biome(value:float)->BIOME:
-	for threshold:Array in BIOME_THRESHOLDS:
-		if value <= threshold[0]:
-			return threshold[1]
-	return BIOME.GRASS
+#func _sample_biome(value:float)->BIOME:
+	#for threshold:Array in BIOME_THRESHOLDS:
+		#if value <= threshold[0]:
+			#return threshold[1]
+	#return BIOME.GRASS
 
 ## Returns the [enum Biome] at [param world_pos].
 func get_biome(world_pos:Vector2)->BIOME:

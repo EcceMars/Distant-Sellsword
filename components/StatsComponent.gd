@@ -22,7 +22,7 @@ func _init(
 	thirst_max:float = 100.0, t_reg:float = -0.02)->void:
 	
 	if not _name:
-		char_name = REG.DATA.FEMALE_NAMES.pick_random() if _gender == "Female" else REG.DATA.MALE_NAMES.pick_random()
+		char_name = REG.DATA.LORE.FEMALE_NAMES.pick_random() if _gender == "Female" else REG.DATA.LORE.MALE_NAMES.pick_random()
 	else:
 		char_name = _name
 	gender = _gender

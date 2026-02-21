@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="BerryType" format=3 uid="uid://dv6rsdf36gmrl"]
+
+[ext_resource type="Script" uid="uid://ciusolyf50wxm" path="res://tools/archetypes/EntityData.gd" id="1_t38qh"]
+[ext_resource type="SpriteFrames" uid="uid://cd3wavd74ao4s" path="res://assets/sprites/items/red_berries.tres" id="2_s0tro"]
+[ext_resource type="Script" uid="uid://doit1a6naikl4" path="res://tools/archetypes/objects/items/BerryType.gd" id="3_77r4l"]
+[ext_resource type="Texture2D" uid="uid://cpopoq2y588fn" path="res://assets/img/sprite_img/items/red_berries.png" id="4_wc6ri"]
+
+[sub_resource type="Resource" id="Resource_7a76f"]
+script = ExtResource("1_t38qh")
+sprite_type = 1
+sprite_key = ExtResource("2_s0tro")
+debug_color = Color(0.8509804, 0, 0, 1)
+vision_range = null
+vision_width = null
+is_item = true
+metadata/_custom_type_script = "uid://ciusolyf50wxm"
+
+[resource]
+script = ExtResource("3_77r4l")
+label = "RedBerry"
+sprite_icon = ExtResource("4_wc6ri")
+data = SubResource("Resource_7a76f")
+metadata/_custom_type_script = "uid://doit1a6naikl4"
