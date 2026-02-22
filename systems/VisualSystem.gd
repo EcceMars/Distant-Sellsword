@@ -1,7 +1,7 @@
 class_name VisualSystem
 extends BaseSystem
 
-const ANIM_FLAG:VisualComponent.SpriteType = VisualComponent.SpriteType.ANIMATED
+const ANIM_FLAG:VisualComponent.TYPES = VisualComponent.TYPES.ANIMATED
 
 func process()->void:
 	_clean_registry()
@@ -42,7 +42,7 @@ func _update_animation()->void:
 	for uid:int in uids:
 		var component:VisualComponent = REG.get_component(uid, VIS_FLAG)
 		if not component: continue
-		if component.sprite_type != ANIM_FLAG: continue
+		if component.type != ANIM_FLAG: continue
 		
 		var anim_sprite:AnimatedSprite2D = component.sprite
 		if not is_instance_valid(anim_sprite): continue

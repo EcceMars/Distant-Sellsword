@@ -29,16 +29,3 @@ func on_exit()->void: pass
 
 func _to_string()->String:
 	return str(type) + ": " + get_script().get_global_name()
-class STATE_MACHINE:
-	enum SearchState {
-	START,			## Not searching
-	LOOK_FRONT,		## First look in current direction
-	WAIT_FIRST,		## Waiting after first look
-	TURN,			## Turning around
-	LOOK_SECOND,	## Second look in opposite direction
-	WAIT_SECOND,	## Waiting after second look
-	USE_MEMORY,		## Fall back to last known position
-	WANDER_ON		## If no item is found either in the new or the older memory entries
-	}
-
-	var _state:SearchState = SearchState.START

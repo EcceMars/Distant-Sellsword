@@ -21,7 +21,7 @@ func get_behavior(uid:int, name:String)->BaseBehavior:
 func has_behavior(uid:int, key:BaseBehavior.Type)->bool:
 	var behav_component:BehaviorComponent = REG.get_component(uid, BEHAV_CFLAG)
 	if not behav_component: return false
-	return not behav_component.behaviors.get(key, true)
+	return behav_component.behaviors.get(key)
 ## Gets a behavior instance by key, creating and loading it to [_cache] if needed.
 func load_behavior(key:BaseBehavior.Type)->BaseBehavior:
 	if not BEHAVIORS.has(key):

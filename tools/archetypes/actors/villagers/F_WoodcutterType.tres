@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="VillagerType" format=3 uid="uid://yvwc55qd3t1g"]
+
+[ext_resource type="Script" uid="uid://ciusolyf50wxm" path="res://tools/archetypes/EntityData.gd" id="1_3p68q"]
+[ext_resource type="SpriteFrames" uid="uid://dqb5vu2j6l6hm" path="res://assets/sprites/actors/f_woodcutter.tres" id="2_ni6yk"]
+[ext_resource type="Script" uid="uid://oigj0vtwfiky" path="res://tools/archetypes/actors/villagers/VillagerType.gd" id="3_0wvw5"]
+[ext_resource type="Texture2D" uid="uid://cj02kcxeubdl5" path="res://assets/img/icons/_icon.svg" id="4_usm6g"]
+
+[sub_resource type="Resource" id="Resource_rpiq0"]
+script = ExtResource("1_3p68q")
+sprite_type = 2
+sprite_key = ExtResource("2_ni6yk")
+has_animations = true
+debug_color = Color(0, 0.48277396, 0.7679028, 1)
+moves = true
+is_solid = true
+is_pushable = true
+has_information = true
+has_stats = true
+behavior_keys = Array[int]([1, 4, 5, 6])
+has_memory = true
+vision_range = 10.0
+vision_width = 5.0
+metadata/_custom_type_script = "uid://ciusolyf50wxm"
+
+[resource]
+script = ExtResource("3_0wvw5")
+label = "F_Woodcutter"
+sprite_icon = ExtResource("4_usm6g")
+data = SubResource("Resource_rpiq0")
+metadata/_custom_type_script = "uid://0f6voks4yv7c"

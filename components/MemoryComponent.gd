@@ -33,9 +33,9 @@ var draw_vision:bool = false
 var redraw:bool = true
 
 func _init(
-	_focus_limit:int   = 8,
-	_vision_range:float = 5.0 * 16.0,
-	_vision_width:float = 2.0 * 16.0)->void:
+	_focus_limit:int   = focus_limit,
+	_vision_range:float = vision_range,
+	_vision_width:float = vision_width)->void:
 	focus_limit  = _focus_limit
 	vision_range = _vision_range
 	vision_width = _vision_width
@@ -165,7 +165,7 @@ class MemoryEntry:
 	## How this entity relates to the owner.
 	var relation:Relation = Relation.NEUTRAL
 	## World position where it was last observed.
-	var last_position:Vector2 = Vector2.ZERO
+	var last_position:Vector2 = -Vector2.ONE
 	## [member REGISTRY.tick] value when this entry was last refreshed.
 	var last_tick:int = 0
 

@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="DATASTORE" format=3 uid="uid://bpsevkyxgx3w3"]
+
+[ext_resource type="Script" uid="uid://c67mymecsqvok" path="res://registries/stores/src/ACTIONSTORE.gd" id="1_7xihy"]
+[ext_resource type="Script" uid="uid://btrp4lev30rmk" path="res://registries/stores/src/DATASTORE.gd" id="1_nf40a"]
+[ext_resource type="Script" uid="uid://ckrfgmfk7f7lf" path="res://registries/stores/src/ENTITYSTORE.gd" id="2_cj6cf"]
+[ext_resource type="Script" uid="uid://csy78ggwssck2" path="res://registries/stores/src/ITEMSTORE.gd" id="3_ipe6q"]
+[ext_resource type="Script" uid="uid://b0k448ofbldk7" path="res://registries/stores/src/LORESTORE.gd" id="4_h6t21"]
+[ext_resource type="Script" uid="uid://2fnqhgkwd2j5" path="res://registries/stores/src/SPRITESTORE.gd" id="5_7411p"]
+[ext_resource type="Script" uid="uid://osqager0vvhs" path="res://registries/stores/src/TERRAINSTORE.gd" id="6_sbesk"]
+
+[sub_resource type="Resource" id="Resource_3qt7b"]
+script = ExtResource("1_7xihy")
+metadata/_custom_type_script = "uid://c67mymecsqvok"
+
+[sub_resource type="Resource" id="Resource_ipe6q"]
+script = ExtResource("2_cj6cf")
+metadata/_custom_type_script = "uid://ckrfgmfk7f7lf"
+
+[sub_resource type="Resource" id="Resource_5wutj"]
+script = ExtResource("3_ipe6q")
+metadata/_custom_type_script = "uid://csy78ggwssck2"
+
+[sub_resource type="Resource" id="Resource_0rns3"]
+script = ExtResource("4_h6t21")
+metadata/_custom_type_script = "uid://b0k448ofbldk7"
+
+[sub_resource type="Resource" id="Resource_r4uwd"]
+script = ExtResource("5_7411p")
+metadata/_custom_type_script = "uid://2fnqhgkwd2j5"
+
+[sub_resource type="Resource" id="Resource_xlail"]
+script = ExtResource("6_sbesk")
+metadata/_custom_type_script = "uid://osqager0vvhs"
+
+[resource]
+script = ExtResource("1_nf40a")
+ACTIONS = SubResource("Resource_3qt7b")
+ARCHETYPES = SubResource("Resource_ipe6q")
+ITEMS = SubResource("Resource_5wutj")
+LORE = SubResource("Resource_0rns3")
+SPRITES = SubResource("Resource_r4uwd")
+TERRAIN = SubResource("Resource_xlail")
+metadata/_custom_type_script = "uid://btrp4lev30rmk"

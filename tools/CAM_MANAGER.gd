@@ -16,15 +16,15 @@ var acceleration:float = 0.0
 ## Edge scroll settings
 const EDGE_SCROLL_MARGIN:float = 32.0
 const EDGE_SCROLL_SPEED:float = 200.0
-var permit_edge_scrool:bool = false
+@export var permit_edge_scrool:bool = false
 
 ## Pan settings
-var is_panning:bool = false
+@export var is_panning:bool = false
 var pan_start_pos:Vector2 = Vector2.ZERO
 var pan_start_cam_pos:Vector2 = Vector2.ZERO
 
 ## Follow settings
-var follow_uid:int = -1
+@export var follow_uid:int = -1
 var follow_enabled:bool = false
 
 ## World bounds
@@ -108,7 +108,6 @@ func _handle_edge_scroll(delta:float)->void:
 		target_position = _clamp_position(
 			target_position + scroll_dir.normalized() * EDGE_SCROLL_SPEED * delta
 		)
-
 ## Handle following an entity
 func _handle_follow()->void:
 	if not follow_enabled or follow_uid == -1:
@@ -119,7 +118,7 @@ func _handle_follow()->void:
 		target_position = _clamp_position(pos)
 ## Centers the camera on the setted [member follow_uid] when 'space' is pressed.
 func _handle_quick_follow()->void:
-	if follow_uid < -0: return
+	if follow_uid < 0: return
 	
 	if Input.is_action_just_released("space"):
 		var pos:Vector2 = REG.get_ent_position(follow_uid)
@@ -170,15 +169,8 @@ func _get_expanded_sprite_rect(vis:VisualComponent, mov:MovementComponent)->Rect
 	var pos:Vector2 = mov.position
 	var rect:Rect2 = Rect2()
 	
-	match vis.sprite_type:
-		VisualComponent.SpriteType.STATIC:
-			var sprite2d:Sprite2D = sprite as Sprite2D
-			if sprite2d and sprite2d.texture:
-				var size:Vector2 = sprite2d.texture.get_size()
-				var offset:Vector2 = sprite2d.offset
-				rect = Rect2(pos + offset, size)
-		
-		VisualComponent.SpriteType.ANIMATED:
+	match vis.type:
+		VisualComponent.TYPES.STATIC, VisualComponent.TYPES.ANIMATED:
 			var anim_sprite:AnimatedSprite2D = sprite as AnimatedSprite2D
 			if anim_sprite and anim_sprite.sprite_frames:
 				var frames:SpriteFrames = anim_sprite.sprite_frames
@@ -190,7 +182,7 @@ func _get_expanded_sprite_rect(vis:VisualComponent, mov:MovementComponent)->Rect
 						var size:Vector2 = texture.get_size()
 						var offset:Vector2 = anim_sprite.offset
 						rect = Rect2(pos + offset, size)
-		VisualComponent.SpriteType.DEBUG:
+		VisualComponent.TYPES.DEBUG:
 			var color_rect:ColorRect = sprite as ColorRect
 			if color_rect:
 				rect = Rect2(pos + color_rect.position, color_rect.size)

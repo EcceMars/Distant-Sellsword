@@ -158,7 +158,7 @@ func _food_position(food_uid:int, mem:MemoryComponent) -> Vector2:
 	var entry: MemoryComponent.MemoryEntry = mem.entries.get(food_uid)
 	if entry:
 		return entry.last_position
-	return Vector2.ZERO
+	return -Vector2.ONE
 
 ## Returns true if [param food_uid] still refers to a living item entity.
 func _is_valid_target(food_uid:int)->bool:
@@ -166,7 +166,7 @@ func _is_valid_target(food_uid:int)->bool:
 	return REG.IT_REG.get_item(food_uid) != null
 ## Picks a random world position within a short radius to resume searching.
 func _random_nearby(origin:Vector2)->Vector2:
-	const RADIUS:int = 4
+	var RADIUS:int = REG.DATA.ACTIONS.SEEK_WANDER
 	var scale:int = REG.SCALE
 	var dx:int = randi_range(-RADIUS, RADIUS) * scale
 	var dy:int = randi_range(-RADIUS, RADIUS) * scale

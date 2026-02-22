@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="TreeType" format=3 uid="uid://bxmwipirlrlv1"]
+
+[ext_resource type="Script" uid="uid://b87dox0q71cil" path="res://tools/archetypes/objects/vegetation/TreeType.gd" id="1_a27fl"]
+[ext_resource type="Script" uid="uid://ciusolyf50wxm" path="res://tools/archetypes/EntityData.gd" id="1_g73xg"]
+[ext_resource type="SpriteFrames" uid="uid://lys0une5owga" path="res://assets/sprites/vegetation/pines.tres" id="2_5xjxo"]
+[ext_resource type="Texture2D" uid="uid://b5wr8xe65d1q7" path="res://assets/img/sprite_img/vegetation/pines.png" id="4_0sl7e"]
+
+[sub_resource type="Resource" id="Resource_ab6nd"]
+script = ExtResource("1_g73xg")
+sprite_type = 1
+sprite_key = ExtResource("2_5xjxo")
+debug_color = Color(0.02296578, 0.2950907, 0.09710831, 1)
+is_solid = true
+vision_range = null
+vision_width = null
+drops = Array[int]([3])
+metadata/_custom_type_script = "uid://ciusolyf50wxm"
+
+[resource]
+script = ExtResource("1_a27fl")
+label = "Pine"
+sprite_icon = ExtResource("4_0sl7e")
+data = SubResource("Resource_ab6nd")
+metadata/_custom_type_script = "uid://b87dox0q71cil"

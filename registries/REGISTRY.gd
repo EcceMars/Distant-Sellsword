@@ -50,8 +50,8 @@ var IT_REG:ItemRegistry = null
 var TE_REG:TerrainRegistry = null
 ## [SpriteRegistry]
 var SP_REG:SpriteRegistry = null
-## [DataRegistry]
-var DATA:DataRegistry = null
+## [DATASTORE]
+var DATA:DATASTORE = null
 
 ## [Node2D] responsible for holding visuals
 var CANVAS:Node2D = null
@@ -59,11 +59,13 @@ var ENT_LAYER:Node2D = null
 ## Texture for holding biome data.
 var TERRAIN:Node2D = null
 
-func start(MAIN:Node, max_entities:int = MAX_ENTITIES, width:int = WIDTH, height:int = HEIGHT, scale:int = SCALE)->void:
+func start(MAIN:Node, _data:DATASTORE, max_entities:int = MAX_ENTITIES, width:int = WIDTH, height:int = HEIGHT, scale:int = SCALE)->void:
 	MAX_ENTITIES = max_entities
 	CANVAS = CanvasScript.new()
 	CANVAS.name = "CANVAS"
 	CANVAS.y_sort_enabled = false
+	
+	DATA = _data
 	
 	MAIN.add_child(CANVAS)
 	WIDTH = width
@@ -85,8 +87,6 @@ func start(MAIN:Node, max_entities:int = MAX_ENTITIES, width:int = WIDTH, height
 	IT_REG = ItemRegistry.new()
 	TE_REG = TerrainRegistry.new()
 	SP_REG = SpriteRegistry.new()
-
-	DATA = load("res://registries/GENERAL_DATA.tres")
 
 	for n:int in MAX_ENTITIES:
 		ENTITIES[n] = 0

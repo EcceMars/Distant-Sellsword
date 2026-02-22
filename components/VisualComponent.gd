@@ -1,14 +1,10 @@
 class_name VisualComponent
 extends BaseComponent
 
-enum SpriteType {
-	DEBUG,		## ColorRect for debugging
-	STATIC,		## Sprite2D for non-animated
-	ANIMATED	## AnimatedSprite2D
-}
+const TYPES = REG.DATA.SPRITES.TYPES
 
 var sprite:Node = null
-var sprite_type:SpriteType = SpriteType.DEBUG
+var type:TYPES = TYPES.DEBUG
 
 var queue_destroy:bool = false
 var destroy_time:float = 0.0
@@ -19,47 +15,30 @@ var previous_animation:String = "idle"
 var animation_speed:float = 1.0
 
 func _init(
-	_sprite_type:SpriteType = SpriteType.DEBUG,
-	sprite_key:String = "",  ## Visual key for the [SpriteRegistry]
+	_type:TYPES = TYPES.DEBUG,
+	sprite_frames:SpriteFrames = null,  ## Visual key for the [SpriteRegistry]
 	position:Vector2i = Vector2i.ZERO,
 	debug_color:Color = Color.PURPLE) -> void:
-	sprite_type = _sprite_type
+	type = _type
 	flag = Flag.VISUAL
-	_create_sprite(sprite_key, position, debug_color)
+	_create_sprite(sprite_frames, position, debug_color)
 
-func _create_sprite(sprite_key:String, position:Vector2i, debug_color:Color) -> void:
-	match sprite_type:
-		SpriteType.STATIC:
-			sprite = Sprite2D.new()
-			if sprite_key:
-				var texture:Texture2D = REG.SP_REG.get_texture(sprite_key)
-				if texture:
-					sprite.texture = texture
-					var texture_size:Vector2 = texture.get_size()
-					sprite.offset = _offset(texture_size)
+func _create_sprite(sprite_frames:SpriteFrames, position:Vector2i, debug_color:Color) -> void:
+	match type:
+		TYPES.STATIC, TYPES.ANIMATED:
+			sprite = AnimatedSprite2D.new()
+			if sprite_frames:
+				sprite.sprite_frames = sprite_frames
+				var frame_size:Vector2 = sprite_frames.get_frame_texture(REG.SP_REG.get_default_anim_name(sprite_frames), 0).get_size()
+				sprite.offset = _offset(frame_size)
 			else:
-				push_warning("[VisualComponent] Texture '%s' not found, using debug visual" % sprite_key)
+				push_warning("[VisualComponent] Animation '%s' not found, using debug visual" % sprite_frames)
 				_default(position, debug_color)
 				return
 			sprite.position = position
 			sprite.centered = false
 		
-		SpriteType.ANIMATED:
-			sprite = AnimatedSprite2D.new()
-			if sprite_key:
-				var frames:SpriteFrames = REG.SP_REG.get_frames(sprite_key)
-				if frames:
-					sprite.sprite_frames = frames
-					var frame_size:Vector2 = frames.get_frame_texture("idle", 0).get_size()
-					sprite.offset = _offset(frame_size)
-				else:
-					push_warning("[VisualComponent] Animation '%s' not found, using debug visual" % sprite_key)
-					_default(position, debug_color)
-					return
-			sprite.position = position
-			sprite.centered = false
-		
-		SpriteType.DEBUG:
+		TYPES.DEBUG:
 			_default(position, debug_color)
 			return
 	
@@ -75,7 +54,6 @@ func _default(position:Vector2i, color:Color)->void:
 	sprite.offset_bottom = true
 	
 	REG.ENT_LAYER.add_child(sprite)
-	REG.visual_nodes.append(sprite)
 func _offset(size:Vector2)->Vector2:
 	var offset:Vector2 = Vector2.ZERO
 	var factor:float = (size.y / (size.y / REG.SCALE))
@@ -85,3 +63,7 @@ func _offset(size:Vector2)->Vector2:
 	return offset
 func clear()->void:
 	queue_destroy = true
+func _to_string()->String:
+	var message:String = get_script().get_global_name()
+	message += " is " + TYPES.keys()[type]
+	return message
