@@ -3,7 +3,7 @@ class_name WanderBehavior
 extends BaseBehavior
 
 const WANDER_INTERVAL:float = 3.0
-const WANDER_RADIUS:int = 4
+var WANDER_RADIUS:int = REG.DATA.ACTIONS.IDLE_WANDER
 
 var _latency:float = 0.0
 
@@ -22,7 +22,7 @@ func act(uid:int)->void:
 		return
 	_latency = WANDER_INTERVAL
 	
-	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSytem")
+	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
 	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
 	if not mov:
 		return
@@ -31,21 +31,20 @@ func act(uid:int)->void:
 	REG.ACT.move(uid, destination)
 ## Returns a random unblocked grid position within [constant WANDER_RADIUS] tiles.
 func _pick_destination(origin: Vector2, mov_sys: MovementSystem) -> Vector2:
-	var scale: int = REG.SCALE
 	var attempts: int = 8
 
 	while attempts > 0:
-		var dx: int = randi_range(-WANDER_RADIUS, WANDER_RADIUS) * scale
-		var dy: int = randi_range(-WANDER_RADIUS, WANDER_RADIUS) * scale
+		var dx: int = randi_range(-WANDER_RADIUS, WANDER_RADIUS) * REG.SCALE
+		var dy: int = randi_range(-WANDER_RADIUS, WANDER_RADIUS) * REG.SCALE
 		var candidate: Vector2 = origin + Vector2(dx, dy)
 
 		# Keep within world bounds
 		candidate = candidate.clamp(
 			Vector2.ZERO,
-			Vector2(REG.WIDTH, REG.HEIGHT) * scale
+			Vector2(REG.WIDTH -1, REG.HEIGHT -1) * REG.SCALE
 		)
 
-		var grid_candidate:Vector2i = Vector2i(candidate.snapped(Vector2(scale, scale)))
+		var grid_candidate:Vector2i = Vector2i(candidate.snapped(Vector2(REG.SCALE, REG.SCALE)))
 		if not mov_sys or not mov_sys.blocked_positions.has(grid_candidate):
 			return candidate
 

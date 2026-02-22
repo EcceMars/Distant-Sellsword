@@ -8,7 +8,7 @@ extends BaseSystem
 var _wait_timers:Dictionary[int, float] = {}
 
 ## World position of the current water target. Zero means unresolved.
-var _water_pos:Vector2 = Vector2.ZERO
+var _water_pos:Vector2 = -Vector2.ONE
 
 # TODO! Move these to the item description
 ## How much energy is restored on eating.
@@ -114,7 +114,7 @@ func drink(uid:int)->void:
 	
 	stats.thirst.recover(DRINK_AMOUNT)
 	REG.ACT.wait(uid, DRINK_DURATION)
-	_water_pos = Vector2.ZERO  ## Clear so it re-evaluates next time
+	_water_pos = -Vector2.ONE  ## Clear so it re-evaluates next time
 ## Internal helper for visual consumption of food.
 func _consume_food(food_vis:VisualComponent)->void:
 	var ANI_SYS:AnimationSystem = REG.SYSTEMS.get("AnimationSystem")

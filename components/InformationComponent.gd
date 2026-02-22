@@ -14,7 +14,7 @@ func _init(_name:String, _gender:String, _is_active:bool = false)->void:
 	id = ID.new(_name, _gender)
 	flag = BaseComponent.Flag.INFORMATION
 ## RPG-esque information
-class ID extends InformationComponent:
+class ID extends RefCounted:
 	var name:String = "noname"
 	var gender:String = "Female":
 		set(value):

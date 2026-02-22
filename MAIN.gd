@@ -36,14 +36,14 @@ func _ready()->void:
 
 	## Spawn world entities
 	for _i:int in 16: REG.AR_REG.spawn(ENTITYSTORE.TYPES.TREE, "PineType")
-	for _i:int in 4:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "F_WoodcutterType")
-	for _i:int in 4:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.DUCK, "DuckType")
+	#for _i:int in 4:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "F_WoodcutterType")
+	#for _i:int in 4:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.DUCK, "DuckType")
 	for _i:int in 8:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.BERRY, ["BlueBerryType", "RedBerryType"].pick_random())
 
-	var player_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.ACTOR, "ActorType")
-	REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "RitaType")
-	CAM_ANCHOR.start(REG.get_ent_position(player_uid))
-	CAM_ANCHOR.follow_uid = player_uid
+	#var player_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.ACTOR, "ActorType")
+	var rita_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "RitaType")
+	CAM_ANCHOR.start(REG.get_ent_position(rita_uid))
+	CAM_ANCHOR.follow_uid = rita_uid
 
 func _process(delta:float)->void:
 	REG.DELTA = delta
@@ -76,6 +76,7 @@ func _try_spawn_berry(delta:float)->void:
 		float(randi_range(-2, 2)) * REG.SCALE
 	)
 	var spawn_pos:Vector2 = tree_pos + offset
+	spawn_pos = spawn_pos.clamp(Vector2.ZERO, Vector2(WIDTH -1, HEIGHT -1) * SCALE)
 	
 	var berry_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.BERRY, ["BlueBerryType", "RedBerryType"].pick_random(), spawn_pos)
 	if berry_uid == -1:

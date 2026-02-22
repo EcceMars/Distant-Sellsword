@@ -43,5 +43,5 @@ func _init()->void: pass
 
 @export_group("Item")
 @export var is_item:bool = false
-@export var item_type:ITEMSTORE.ItemType = ITEMSTORE.ItemType.NONE
-@export var drops:Array[ITEMSTORE.ItemType] = []
+@export var item_class:ITEMSTORE.ItemClass = ITEMSTORE.ItemClass.NONE
+@export var drops:Array[ITEMSTORE.ItemClass] = []

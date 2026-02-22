@@ -1,7 +1,7 @@
 class_name SpriteRegistry
 extends BaseRegistry
 
-const CATEGORIES:Dictionary[String, String] = REG.DATA.SPRITES.CATEGORIES
+var CATEGORIES:Dictionary[String, String] = REG.DATA.SPRITES.CATEGORIES
 
 ## Cache for loaded SpriteFrames
 var _cache:Dictionary[String, SpriteFrames] = {}

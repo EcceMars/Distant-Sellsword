@@ -43,7 +43,7 @@ func _build(spawn_position:Vector2 = -Vector2.ONE)->int:
 	if data.behavior_keys.size() > 0:	_add_behavior(uid)
 	if data.has_information:			_add_information(uid)
 	if data.has_memory:					_add_memory(uid)
-	if data.is_item:					_add_item_condition(uid, data.item_type, position)
+	if data.is_item:					_add_item_condition(uid, data.item_class, position)
 
 	_post_build(uid)
 	return uid
@@ -101,8 +101,8 @@ func _add_memory(uid: int) -> void:
 		data.vision_range,
 		data.vision_width
 	))
-func _add_item_condition(uid:int, item_type:ITEMSTORE.ItemType, spawn_position:Vector2 = Vector2.ZERO)->void:
-	var item_component:ItemComponent = ItemComponent.new(item_type)
+func _add_item_condition(uid:int, item_class:ITEMSTORE.ItemClass, spawn_position:Vector2 = -Vector2.ONE)->void:
+	var item_component:ItemComponent = ItemComponent.new(item_class)
 	if not item_component: return
 	
 	item_component.world_position = spawn_position
