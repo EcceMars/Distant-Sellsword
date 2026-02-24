@@ -70,7 +70,7 @@ func look(owner_uid:int, current_tick:int) -> Array[int]:
 	if not mov:
 		return updated_uids
 	
-	var BEHAV_SYS:BehaviorSystem = REG.SYSTEMS.get("BehaviorSystem")
+	var BEHAV_SYS:BehaviorSystem = REG.get_system(BehaviorSystem)
 	if not BEHAV_SYS: 
 		return []
 	

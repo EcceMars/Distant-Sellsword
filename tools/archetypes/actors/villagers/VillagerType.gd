@@ -15,4 +15,8 @@ func _load_specific(key:String)->bool:
 	var model:VillagerType = ResourceLoader.load("res://tools/archetypes/actors/villagers/" + key + ".tres")
 	if not model: return false
 	data = model.data
+	if data.has_btree:
+		data.has_behavior = false
+		data.btree_nodes.append(BTThirsty.new())
+		data.behavior_keys.clear()
 	return true

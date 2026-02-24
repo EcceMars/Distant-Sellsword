@@ -51,6 +51,7 @@ func _get_move_state(uid:int, mov_component:MovementComponent, stats_component:S
 	
 	if movable.path.is_empty():
 		movable.has_target = false
+		REG.CANVAS.debug_lines[uid] = []
 		return MoveState.STOPPED
 	
 	var target_grid:Vector2i = movable.path[0]

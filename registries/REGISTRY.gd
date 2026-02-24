@@ -1,5 +1,5 @@
-## REGISTRY.gd
 ## Accessor and store for all relevant data
+## REGISTRY.gd
 extends Node
 
 enum C_FLAGS {
@@ -91,6 +91,7 @@ func start(MAIN:Node, _data:DATASTORE, max_entities:int = MAX_ENTITIES, width:in
 	for n:int in MAX_ENTITIES:
 		ENTITIES[n] = 0
 		COMPONENT_STORE[n] = {}
+	CANVAS.update_canvas()
 ## Register a new entity.
 ## Returns -1 if registry is full.
 func create_entity()->int:
@@ -121,6 +122,8 @@ func destroy_entity(uid:int)->void:
 ## Starts [param system] and adds it to the [SYSTEMS].
 func start_system(system:BaseSystem)->void:
 	SYSTEMS[system.in_registry()] = system
+func get_system(system_script:GDScript)->BaseSystem:
+	return SYSTEMS.get(system_script.get_global_name())
 ## Update all systems at [SYSTEMS].
 func update()->void:
 	for system:BaseSystem in SYSTEMS.values(): system.process()

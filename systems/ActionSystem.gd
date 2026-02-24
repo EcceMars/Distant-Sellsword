@@ -7,9 +7,6 @@ extends BaseSystem
 ## If an action must override the wait time, it just needs to reuse the position at uid.
 var _wait_timers:Dictionary[int, float] = {}
 
-## World position of the current water target. Zero means unresolved.
-var _water_pos:Vector2 = -Vector2.ONE
-
 # TODO! Move these to the item description
 ## How much energy is restored on eating.
 const EAT_ENERGY:float = 30.0
@@ -43,9 +40,10 @@ func move(uid:int, target:Vector2)->bool:
 	if not REG.TE_REG.can_spawn(target, mov.movable.mov_type):
 		return false
 
-	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
+	var MOV_SYS:MovementSystem = REG.get_system(MovementSystem)
 	if not MOV_SYS: return false
 	
+	REG.CANVAS.debug_lines[uid] = [mov.position, target]
 	return MOV_SYS.add_move(uid, target)
 func move_closer(uid:int, target:Vector2)->bool:
 	if is_waiting(uid): return false
@@ -70,6 +68,29 @@ func move_closer(uid:int, target:Vector2)->bool:
 	if last_valid == origin: return false
 	
 	return move(uid, last_valid)
+## Picks a random destination within [param in_radius].
+func wander_about(origin:Vector2, in_radius:float = 8)->Vector2:
+	var MOV_SYS:MovementSystem = REG.get_system(MovementSystem)
+	if not MOV_SYS: return origin
+	
+	var attempts:int = 8
+
+	while attempts > 0:
+		var dx:int = randi_range(-in_radius, in_radius) * REG.SCALE
+		var dy:int = randi_range(-in_radius, in_radius) * REG.SCALE
+		var candidate: Vector2 = origin + Vector2(dx, dy)
+
+		# Keep within world bounds
+		candidate = candidate.clamp(
+			Vector2.ZERO,
+			Vector2(REG.WIDTH -1, REG.HEIGHT -1) * REG.SCALE
+		)
+
+		var grid_candidate:Vector2i = Vector2i(candidate.snapped(Vector2(REG.SCALE, REG.SCALE)))
+		if not MOV_SYS.blocked_positions.has(grid_candidate):
+			return candidate
+		attempts -= 1
+	return origin
 ## Scans the entity's vision triangle and updates its [MemoryComponent].
 func look(uid:int)->Array[int]:
 	if is_waiting(uid): return []
@@ -108,16 +129,16 @@ func eat(eater_uid:int, food_uid:int)->void:
 	var food_vis:VisualComponent = REG.get_component(food_uid, REG.C_FLAGS.VISUAL)
 	if food_vis: _consume_food(food_vis)
 ## Recovers thirst and issues a wait to simulate drinking time.
-func drink(uid:int)->void:
+func drink(uid:int)->bool:
 	var stats:StatsComponent = REG.get_component(uid, BaseComponent.Flag.STATS)
-	if not stats or not stats.thirst: return
+	if not stats or not stats.thirst: return false
 	
 	stats.thirst.recover(DRINK_AMOUNT)
 	REG.ACT.wait(uid, DRINK_DURATION)
-	_water_pos = -Vector2.ONE  ## Clear so it re-evaluates next time
+	return true
 ## Internal helper for visual consumption of food.
 func _consume_food(food_vis:VisualComponent)->void:
-	var ANI_SYS:AnimationSystem = REG.SYSTEMS.get("AnimationSystem")
+	var ANI_SYS:AnimationSystem = REG.get_system(AnimationSystem)
 	if ANI_SYS:
 		ANI_SYS.shake_sprite(food_vis.sprite)
 		ANI_SYS.burst_particles(food_vis.sprite)
@@ -128,7 +149,7 @@ func _consume_food(food_vis:VisualComponent)->void:
 func die(uid:int)->void:
 	var vis:VisualComponent = REG.get_component(uid, REG.C_FLAGS.VISUAL)
 	if vis:
-		var ANI_SYS:AnimationSystem = REG.SYSTEMS.get("AnimationSystem")
+		var ANI_SYS:AnimationSystem = REG.get_system(AnimationSystem)
 		if ANI_SYS:
 			ANI_SYS.play_death(vis.sprite)
 		vis.queue_destroy = true

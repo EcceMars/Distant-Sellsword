@@ -7,7 +7,7 @@ const EAT_RADIUS:float = 8.0
 var button_delta:float = 0.0
 
 func process()->void:
-	var MOV_SYS:MovementSystem = REG.SYSTEMS.get("MovementSystem")
+	var MOV_SYS:MovementSystem = REG.get_system(MovementSystem)
 	var acting_entities:Array[int] = REG.get_entities_by(BEHAV_FLAG) 
 	for uid:int in acting_entities:
 		var movement:MovementComponent = REG.get_component(uid, MOV_FLAG)

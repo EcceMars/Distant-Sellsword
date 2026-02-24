@@ -264,7 +264,7 @@ func _draw_rect_nodes()->void:
 	for node:Node in debug_nodes:
 		node.queue_free()
 	debug_nodes.clear()
-	for posi:Vector2i in REG.SYSTEMS.get("MovementSystem").grid_positions:
+	for posi:Vector2i in REG.get_system(MovementSystem).grid_positions:
 		var point:ColorRect = ColorRect.new()
 		point.position = posi - Vector2i(position)
 		point.size = Vector2.ONE * REG.SCALE

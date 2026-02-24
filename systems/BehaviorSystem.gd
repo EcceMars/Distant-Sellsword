@@ -61,7 +61,7 @@ func _update_perception(uid:int, behav:BehaviorComponent) -> void:
 	var triangle:Triangle2D = mem.build_vision_triangle(mov)
 
 	## Iterate grid_positions — already computed this frame by MovementSystem
-	var mov_sys:MovementSystem = REG.SYSTEMS.get("MovementSystem")
+	var mov_sys:MovementSystem = REG.get_system(MovementSystem)
 	if not mov_sys:
 		return
 

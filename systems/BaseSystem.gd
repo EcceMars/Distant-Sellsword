@@ -5,6 +5,7 @@ extends Object
 
 const ANIM_STATE_FLAG:BaseComponent.Flag = BaseComponent.Flag.ANIMATION_STATE
 const BEHAV_FLAG:BaseComponent.Flag = BaseComponent.Flag.BEHAVIOR
+const BTREE_FLAG:BaseComponent.Flag = BaseComponent.Flag.BTREE
 const INFO_FLAG:BaseComponent.Flag = BaseComponent.Flag.INFORMATION
 const MEM_FLAG:BaseComponent.Flag = BaseComponent.Flag.MEMORY
 const MOV_FLAG:BaseComponent.Flag = BaseComponent.Flag.MOVEMENT
@@ -15,6 +16,7 @@ static var TYPES:Dictionary[GDScript, String] = {
 	ActionSystem: "ActionSystem",
 	AnimationSystem: "AnimationSystem",
 	BehaviorSystem: "BehaviorSystem",
+	BTreeSystem: "BTreeSystem",
 	InputSystem: "InputSystem",
 	StatsSystem: "StatsSystem",
 	InformationSystem: "InformationSystem",

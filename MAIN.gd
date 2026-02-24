@@ -28,11 +28,12 @@ func _ready()->void:
 	REG.start_system(AnimationSystem.new())
 	REG.start_system(InputSystem.new())
 	REG.start_system(BehaviorSystem.new())
+	REG.start_system(BTreeSystem.new())
 	REG.start_system(ActionSystem.new())
 	REG.start_system(InformationSystem.new(UI))
 	
-	REG.SYSTEMS.get("InformationSystem").instance()
-	REG.ACT = REG.SYSTEMS.get("ActionSystem")
+	REG.get_system(InformationSystem).instance()
+	REG.ACT = REG.get_system(ActionSystem)
 
 	## Spawn world entities
 	for _i:int in 16: REG.AR_REG.spawn(ENTITYSTORE.TYPES.TREE, "PineType")
@@ -41,7 +42,7 @@ func _ready()->void:
 	for _i:int in 8:  REG.AR_REG.spawn(ENTITYSTORE.TYPES.BERRY, ["BlueBerryType", "RedBerryType"].pick_random())
 
 	#var player_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.ACTOR, "ActorType")
-	var rita_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "RitaType")
+	var rita_uid:int = REG.AR_REG.spawn(ENTITYSTORE.TYPES.VILLAGER, "BTRitaType")
 	CAM_ANCHOR.start(REG.get_ent_position(rita_uid))
 	CAM_ANCHOR.follow_uid = rita_uid
 

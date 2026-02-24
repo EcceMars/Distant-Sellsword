@@ -1,4 +1,5 @@
 ## Base class for all AI behaviors.
+@icon("res://assets/img/icons/behavior_icon.png")
 class_name BaseBehavior
 extends Resource
 

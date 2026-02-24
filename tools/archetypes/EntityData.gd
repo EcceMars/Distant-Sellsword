@@ -34,6 +34,8 @@ func _init()->void: pass
 @export_group("Behaviors")
 @export var has_behavior:bool = false
 @export var behavior_keys:Array[BaseBehavior.Type] = []
+@export var has_btree:bool = false
+@export var btree_nodes:Array = []
 
 @export_group("Memory")
 @export var has_memory:bool = false

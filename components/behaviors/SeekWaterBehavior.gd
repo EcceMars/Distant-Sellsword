@@ -52,7 +52,7 @@ func get_priority(_uid:int)->float:
 func act(uid:int)->void:
 	if REG.ACT.is_waiting(uid): return
 
-	var mov:MovementComponent = REG.get_component(uid, BaseComponent.Flag.MOVEMENT)
+	var mov:MovementComponent = REG.get_component(uid, REG.C_FLAGS.MOVE)
 	if not mov: return
 
 	## Resolve water position once, or re-resolve if it landed on a non-water tile.
@@ -65,11 +65,11 @@ func act(uid:int)->void:
 	
 	if mov.movable and not mov.movable.has_target:
 		REG.ACT.move_closer(uid, _water_pos)
-
 ## Clears the cached target so this entity looks for a new one next tick.
 func _do_search(uid:int)->void:
 	var mov:MovementComponent = REG.get_component(uid, REG.C_FLAGS.MOVE)
 	if not mov: return
+	
 	match _state:
 		SearchState.START:
 			print("START: at ", mov.position, " to ", _water_pos)
@@ -82,7 +82,6 @@ func _do_search(uid:int)->void:
 			_water_pos = REG.TE_REG.nearest_water(further_on)
 			print("LOOK_FIRST: at ", mov.position, " to ", _water_pos)
 			
-			## TODO! IF FOUND, APPROXIMATE
 			REG.ACT.wait(uid, 1.0)
 			_state = SearchState.WAIT_FIRST if _water_pos == -Vector2.ONE else SearchState.START
 		
@@ -99,6 +98,8 @@ func _do_search(uid:int)->void:
 			var forward:Vector2 = Vector2.RIGHT if mov.movable.faces_right else Vector2.LEFT
 			var further_on:Vector2 = mov.position + forward * REG.SCALE * 15
 			_water_pos = REG.TE_REG.nearest_water(further_on)
+			print("LOOK_SECOND: at ", mov.position, " to ", _water_pos)
+			
 			REG.ACT.wait(uid, 2.0)
 			_state = SearchState.WAIT_SECOND
 		

@@ -17,6 +17,7 @@ is_pushable = true
 has_information = true
 char_name = "Rita"
 has_stats = true
+has_behavior = true
 behavior_keys = Array[int]([1, 4, 5, 6])
 has_memory = true
 vision_range = 10.0

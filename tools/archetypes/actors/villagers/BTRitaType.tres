@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="VillagerType" format=3 uid="uid://cu31r0n3htp7c"]
+
+[ext_resource type="Script" uid="uid://ciusolyf50wxm" path="res://tools/archetypes/EntityData.gd" id="1_at3ea"]
+[ext_resource type="SpriteFrames" uid="uid://qnwam8akuvo8" path="res://assets/sprites/actors/f_human.tres" id="2_hllnl"]
+[ext_resource type="Script" uid="uid://oigj0vtwfiky" path="res://tools/archetypes/actors/villagers/VillagerType.gd" id="3_ikp1c"]
+[ext_resource type="Texture2D" uid="uid://cj02kcxeubdl5" path="res://assets/img/icons/_icon.svg" id="4_g8gbj"]
+
+[sub_resource type="Resource" id="Resource_rpiq0"]
+script = ExtResource("1_at3ea")
+sprite_type = 2
+sprite_key = ExtResource("2_hllnl")
+has_animations = true
+debug_color = Color(0.60171884, 0.2989838, 0.76958275, 1)
+moves = true
+is_solid = true
+is_pushable = true
+has_information = true
+char_name = "Rita"
+has_stats = true
+has_btree = true
+has_memory = true
+vision_range = 10.0
+vision_width = 5.0
+metadata/_custom_type_script = "uid://ciusolyf50wxm"
+
+[resource]
+script = ExtResource("3_ikp1c")
+label = "Rita"
+sprite_icon = ExtResource("4_g8gbj")
+data = SubResource("Resource_rpiq0")
+metadata/_custom_type_script = "uid://0f6voks4yv7c"
